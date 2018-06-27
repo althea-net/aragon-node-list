@@ -1,0 +1,6 @@
+{
+  "extends": ["plugin:react-app/recommended"],
+  "rules": {
+    "no-loop-func": "off"
+  }
+}
