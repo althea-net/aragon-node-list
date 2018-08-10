@@ -21,8 +21,12 @@
     "rules": {
         "indent": [
             "error",
-            2
+            2,
+            {
+            "SwitchCase": 1
+            }
         ],
+        "no-loop-func": "off",
         "linebreak-style": [
             "error",
             "unix"
@@ -37,3 +41,4 @@
         ]
     }
 }
+ 
