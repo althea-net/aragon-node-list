@@ -1,5 +1,5 @@
 {
-  "name": "Counter",
+  "name": "Nodes List",
   "description": "An application for Aragon",
   "icons": [{
     "src": "/dist/images/icon.png",

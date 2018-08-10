@@ -1,5 +1,5 @@
 {
-  "appName": "bao.aragonpm.eth",
+  "appName": "althea-nodes.aragonpm.eth",
   "version": "1.0.0",
   "roles": [
     {
@@ -13,5 +13,5 @@
       "params": []
     }
   ],
-  "path": "contracts/CounterApp.sol"
+  "path": "contracts/NodesList.sol"
 }
