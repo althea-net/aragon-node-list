@@ -6,7 +6,6 @@ import "@aragon/os/contracts/lib/zeppelin/math/SafeMath.sol";
 contract NodesList is AragonApp {
   using SafeMath for uint256;
 
-  // I think entity is something of Aragon
   event NewMember(address indexed ethNodeAddress, string ipAddress);
   event MemberRemoved(address indexed ethNodeAddress);
  
