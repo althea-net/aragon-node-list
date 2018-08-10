@@ -1,15 +1,15 @@
 {
-  "appName": "althea-nodes.aragonpm.eth",
+  "appName": "altheanodes.aragonpm.eth",
   "version": "1.0.0",
   "roles": [
     {
-      "name": "Increment the counter",
-      "id": "INCREMENT_ROLE",
+      "name": "Add a new ETH address and IP address to list",
+      "id": "ADD_MEMBER",
       "params": []
     },
     {
-      "name": "Decrement the counter",
-      "id": "DECREMENT_ROLE",
+      "name": "Remove an IP address from list",
+      "id": "MemberRemoved",
       "params": []
     }
   ],
