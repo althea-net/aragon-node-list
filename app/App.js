@@ -3,40 +3,13 @@ import { AragonApp, Text, observe, TextInput } from "@aragon/ui";
 // import Aragon, { providers } from "@aragon/client";
 import styled from "styled-components";
 
+import FormData from "./FormData.js"
+
 const AppContainer = styled(AragonApp)`
   display: flex;
   align-items: center;
   justify-content: center;
 `;
-
-class FormData {
-  constructor(validators, that) {
-    this.validators = validators;
-    this.that = that;
-  }
-
-  onFieldChange = e => {
-    const { name, value } = e.target;
-
-    this.that.setState({
-      fields: {
-        ...this.that.state.fields,
-        [name]: value
-      },
-
-      valid: {
-        ...this.that.state.valid,
-        [name]: this.validators[name] && this.validators[name](value)
-      }
-    });
-  };
-
-  isFieldValid = name => {
-    return this.that.state.fields && this.that.state.fields[name]
-      ? this.that.state.valid && this.that.state.valid[name]
-      : undefined;
-  };
-}
 
 class NewNodeForm extends React.Component {
   constructor(props) {
