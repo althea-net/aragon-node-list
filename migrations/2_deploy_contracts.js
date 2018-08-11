@@ -1,5 +1,5 @@
-var App = artifacts.require('./App.sol')
+var NodesList = artifacts.require('./NodesList.sol')
 
 module.exports = function (deployer) {
-  deployer.deploy(App)
+  deployer.deploy(NodesList)
 }
