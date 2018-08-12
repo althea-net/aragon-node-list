@@ -1,8 +1,6 @@
 import React from "react";
-import { AragonApp, Text, observe, TextInput } from "@aragon/ui";
+import { AragonApp, Button, observe, TextInput } from "@aragon/ui";
 import styled from "styled-components";
-
-import FormData from "./FormData.js"
 
 const FormContainer = styled(AragonApp)`
   padding: 5% 10px;
@@ -11,7 +9,7 @@ const FormContainer = styled(AragonApp)`
 const NewNodeContainer = styled(AragonApp)`
   display: inline-flex;
   padding-top: 2%;
-  margin-top: 10px; 
+  margin-top: 10px;
 `
 
 const BasicForm = (props) => {
@@ -19,7 +17,7 @@ const BasicForm = (props) => {
     <form onSubmit={props.onSubmit}>
       <TextInput
         name={props.name}
-        placeholder={props.addressType}
+        placeholder={props.placeholder}
         required
         wide
       />
@@ -27,35 +25,34 @@ const BasicForm = (props) => {
   )
 }
 
+const SubmitButton = (props) => {
+  return(
+    <Button>
+      Submit
+    </Button>
+  )
+}
+
 class NewNodeForm extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
-      fields: {
-        eth_addr: "ope"
-      }
-    };
-    this.formData = new FormData(
-      {
-        eth_addr: value => {
-          return value.length > 8;
-        }
-      },
-      this
-    );
+        ethAddr: "",
+        ipAddr: ""
+    }
   }
 
   handleSubmit() {
-    alert("SUBMITTED")
+    alert("SUBMITTEDD")
   }
 
-  renderForms(type, nameInput) {
+  renderForm(type, nameInput, value, handleSubmit) {
     return (
       <BasicForm
-        name="NAME"
-        value="hi"
-        onSubmit={() => this.handleSubmit()}
-        addressType="TYPE"
+        name={nameInput}
+        value={value}
+        onSubmit={handleSubmit()}
+        placeholder ={type}
       />
     )
   }
@@ -65,10 +62,27 @@ class NewNodeForm extends React.Component {
       <div>
         <NewNodeContainer>
           <FormContainer>
-            {this.renderForms("ETH", "ethereum")}
+            {
+              this.renderForm(
+                "ETH",
+                "ethereum",
+                this.state.ethAddr,
+                this.handleSubmit
+              )
+            }
           </FormContainer>
           <FormContainer>
-            {this.renderForms("IP", "ip")}
+            {
+              this.renderForm(
+                "IP",
+                "ip",
+                this.state.ipAddr,
+                this.handleSubmit
+              )
+            }
+          </FormContainer>
+          <FormContainer>
+            <SubmitButton />
           </FormContainer>
         </NewNodeContainer>
       </div>
