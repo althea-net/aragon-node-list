@@ -3,7 +3,6 @@ import { AragonApp, Text, observe, TextInput } from "@aragon/ui";
 // import Aragon, { providers } from "@aragon/client";
 import styled from "styled-components";
 
-import FormData from "./FormData"
 import NewNodeForm from "./NewNodeForm"
 
 const AppContainer = styled(AragonApp)`
@@ -16,7 +15,6 @@ export default class App extends React.Component {
   render() {
     return (
       <AppContainer>
-        <div>fuck that</div>
         <NewNodeForm />
       </AppContainer>
     );
