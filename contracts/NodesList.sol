@@ -20,6 +20,7 @@ contract NodesList is AragonApp {
     bytes4 _ip)
     auth(ADD_MEMBER)
     external
+    returns(bool)
   {
     require(addr.length<256);
     addr.push(_ethAddr);
@@ -28,7 +29,11 @@ contract NodesList is AragonApp {
     return true;
   }
 
-  function deleteMember(uint _index) auth(DELETE_MEMBER) external returns(bool){
+  function deleteMember(uint _index)
+    auth(DELETE_MEMBER)
+    external
+    returns(bool)
+  {
 
     require(_index < addr.length);
     address _ethAddr = addr[_index];
