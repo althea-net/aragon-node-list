@@ -11,10 +11,11 @@ function getNodesList() {
 }
 
 app.store(async (state, event) => {
-  if (state === null) state = initialState
+  if (state === null) state = getNodesList()
 
   if (event.event) {
     return { state: await getNodesList() }
   }
+  return state
 })
 
