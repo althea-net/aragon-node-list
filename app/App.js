@@ -1,9 +1,9 @@
-import React from "react";
-import { AragonApp, Text, observe, TextInput } from "@aragon/ui";
-// import Aragon, { providers } from "@aragon/client";
-import styled from "styled-components";
+import React from "react"
+import { AragonApp } from "@aragon/ui"
+import styled from "styled-components"
 
 import NewNodeForm from "./NewNodeForm"
+import NodesTables from "./NodesTable"
 
 const AppContainer = styled(AragonApp)`
   display: flex;
@@ -15,14 +15,13 @@ export default class App extends React.Component {
   render() {
     return (
       <AppContainer>
-        <NewNodeForm />
+          <div>
+            <NewNodeForm />
+          </div>
+          <div>
+            <NodesTables />
+          </div>
       </AppContainer>
-    );
+    )
   }
 }
-
-const ObservedCount = observe(state$ => state$, { count: 0 })(({ count }) => (
-  <Text.Block style={{ textAlign: "center" }} size="xxlarge">
-    {count}
-  </Text.Block>
-));

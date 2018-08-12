@@ -1,9 +1,7 @@
 import React from "react"
-import { AragonApp, Button, observe, TextInput } from "@aragon/ui"
+import { AragonApp, Button, TextInput } from "@aragon/ui"
 import Aragon, { providers } from '@aragon/client'
 import styled from "styled-components"
-
-const app = new AragonApp()
 
 const FormContainer = styled(AragonApp)`
   padding: 5% 10px;
@@ -30,11 +28,11 @@ const BasicForm = (props) => {
 
 const SubmitButton = (props) => {
   return(
-    <button
+    <Button
       onClick={props.onClick}
     >
       Submit
-    </button>
+    </Button>
   )
 }
 
@@ -43,7 +41,6 @@ class NewNodeForm extends React.Component {
     super(props)
     this.state = {
         ethAddr: "",
-        ipAddr: ""
     }
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -88,12 +85,12 @@ class NewNodeForm extends React.Component {
           </FormContainer>
           <FormContainer>
             <SubmitButton 
-              onClick={this.handleSubmit}
+              onClick={() => this.handleSubmit()}
             />
           </FormContainer>
         </NewNodeContainer>
       </div>
-    );
+    )
   }
 }
 
