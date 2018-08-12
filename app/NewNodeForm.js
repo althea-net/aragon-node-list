@@ -1,6 +1,9 @@
-import React from "react";
-import { AragonApp, Button, observe, TextInput } from "@aragon/ui";
-import styled from "styled-components";
+import React from "react"
+import { AragonApp, Button, observe, TextInput } from "@aragon/ui"
+import Aragon, { providers } from '@aragon/client'
+import styled from "styled-components"
+
+const app = new AragonApp()
 
 const FormContainer = styled(AragonApp)`
   padding: 5% 10px;
@@ -8,28 +11,30 @@ const FormContainer = styled(AragonApp)`
 
 const NewNodeContainer = styled(AragonApp)`
   display: inline-flex;
-  padding-top: 2%;
+  padding: 2%;
   margin-top: 10px;
 `
 
 const BasicForm = (props) => {
   return(
-    <form onSubmit={props.onSubmit}>
       <TextInput
         name={props.name}
+        onSubmit={props.onSubmit}
         placeholder={props.placeholder}
+        type="text"
         required
         wide
       />
-    </form>
   )
 }
 
 const SubmitButton = (props) => {
   return(
-    <Button>
+    <button
+      onClick={props.onClick}
+    >
       Submit
-    </Button>
+    </button>
   )
 }
 
@@ -40,10 +45,10 @@ class NewNodeForm extends React.Component {
         ethAddr: "",
         ipAddr: ""
     }
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleSubmit() {
-    alert("SUBMITTEDD")
+  handleSubmit(ethAddr, ipAddr) {
   }
 
   renderForm(type, nameInput, value, handleSubmit) {
@@ -82,7 +87,9 @@ class NewNodeForm extends React.Component {
             }
           </FormContainer>
           <FormContainer>
-            <SubmitButton />
+            <SubmitButton 
+              onClick={this.handleSubmit}
+            />
           </FormContainer>
         </NewNodeContainer>
       </div>
