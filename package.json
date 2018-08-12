@@ -34,7 +34,8 @@
     "truffle": "4.0.5"
   },
   "scripts": {
-    "start": "rm -rf .cache && rm -rf dist && aragon run",
+    "start": "aragon run",
+    "clean-start": "rm -rf .cache && rm -rf dist && aragon run",
     "test": "aragon contracts test",
     "compile": "aragon contracts compile",
     "sync-assets": "mkdir -p dist; rsync -rtu \"$(dirname $(node -p 'require.resolve(\"@aragon/ui\")'))/\" dist/aragon-ui",

@@ -25,6 +25,7 @@ contract NodesList is AragonApp {
     addr.push(_ethAddr);
     ip.push(_ip);
     NewMember(_ethAddr, _ip);
+    return true;
   }
 
   function deleteMember(uint _index) auth(DELETE_MEMBER) external returns(bool){
@@ -32,7 +33,7 @@ contract NodesList is AragonApp {
     require(_index < addr.length);
     address _ethAddr = addr[_index];
     
-    for (uint i = _index; i<addr.length-1; i++){
+    for (uint i = _index; i<addr.length-1; i++) {
         addr[i] = addr[i+1];
         ip[i] = ip[i+1];
     }
@@ -45,7 +46,11 @@ contract NodesList is AragonApp {
     return true;
   }
   
-  function getNodeList() public view returns(address[] _addr, bytes4[] _ip) {
+  function getNodeList()
+    public
+    view
+    returns(address[] _addr, bytes4[] _ip)
+  {
       _addr = addr;
       _ip = ip;
   }
