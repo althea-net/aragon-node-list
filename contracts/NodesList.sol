@@ -23,9 +23,7 @@ contract NodesList is AragonApp {
     ip.push(0x00000002);
   }
 
-  function addMember(
-    address _ethAddr,
-    bytes4 _ip)
+  function addMember(address _ethAddr, bytes4 _ip)
     auth(ADD_MEMBER)
     external
     returns(bool)
@@ -57,14 +55,5 @@ contract NodesList is AragonApp {
     ip.length--;
     MemberRemoved(_ethAddr);
     return true;
-  }
-  
-  function getNodeList()
-    public
-    view
-    returns(address[] _addr, bytes4[] _ip)
-  {
-      _addr = addr;
-      _ip = ip;
   }
 }
