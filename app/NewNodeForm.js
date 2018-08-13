@@ -11,6 +11,7 @@ const NewNodeContainer = styled(AragonApp)`
   display: inline-flex;
   padding: 2%;
   margin-top: 10px;
+  align-items: center;
 `
 
 const BasicForm = (props) => {
@@ -40,9 +41,9 @@ class NewNodeForm extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-        ethAddr: "",
+      ethAddr: "",
+      ipAddr: ""
     }
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleSubmit(ethAddr, ipAddr) {
@@ -85,7 +86,7 @@ class NewNodeForm extends React.Component {
           </FormContainer>
           <FormContainer>
             <SubmitButton 
-              onClick={() => this.handleSubmit()}
+              onClick={() => this.props.addMember()}
             />
           </FormContainer>
         </NewNodeContainer>

@@ -2,20 +2,21 @@ import Aragon from '@aragon/client'
 
 const app = new Aragon()
 
-function getNodesList() {
+function getIpAddr() {
+  console.log("BUUUYAAA")
   return new Promise(resolve => {
     app
-      .call('getNodesList')
+      .call('ip')
       .subscribe(resolve)
   })
 }
 
-app.store(async (state, event) => {
-  if (state === null) state = getNodesList()
-
-  if (event.event) {
-    return { state: await getNodesList() }
-  }
-  return state
-})
+function getEthAddr() {
+  console.log("BOWOWOW")
+  return new Promise(resolve => {
+    app
+      .call('addr')
+      .subscribe(resolve)
+  })
+}
 

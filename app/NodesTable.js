@@ -25,9 +25,10 @@ class NodesTable extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      ethArray: [],
+      ipArray: []
     }
   }
-
   singleRow(index, ether, ip) {
     return (
       <div>
@@ -69,9 +70,10 @@ class NodesTable extends React.Component {
           }
         />
         {
-          this.renderRows(
-            transposeArray(this.props.app.getNodesList())
-          )
+          this.renderRows([
+            () => this.props.getEthAddr(),
+            () => this.props.getIpAddr()
+          ])
         }
       </div>
     )

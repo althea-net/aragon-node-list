@@ -40,7 +40,6 @@ contract NodesList is AragonApp {
     external
     returns(bool)
   {
-
     require(_index < addr.length);
     address _ethAddr = addr[_index];
     
@@ -55,5 +54,10 @@ contract NodesList is AragonApp {
     ip.length--;
     MemberRemoved(_ethAddr);
     return true;
+  }
+
+  function getNodeList() public view returns(address[] _addr, bytes4[] _ip) {
+     _addr = addr;
+     _ip = ip;
   }
 }
