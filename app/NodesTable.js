@@ -7,20 +7,13 @@ import {
   TableCell,
   Text
 } from "@aragon/ui"
+import Aragon, { providers } from "@aragon/client"
 import styled from "styled-components"
 
 const TableContainer = styled(AragonApp)`
   align-items: center;
   justify-content: center;
 `
-
-const testValues = [
-  [
-    "0xf0c5c43e3efc5e0e55529e748ec65bbd590511b4",
-    "0xf0c51b8d7868e1bdaa9133d09eda0b0dd6323e1a"
-  ],
-  ["0x00000001", "0x00000002"]
-]
 
 const transposeArray = array => {
   return array[0].map((col, i) => {
@@ -75,7 +68,11 @@ class NodesTable extends React.Component {
             </TableRow>
           }
         />
-        {this.renderRows(transposeArray(testValues))}
+        {
+          this.renderRows(
+            transposeArray(this.props.app.getNodesList())
+          )
+        }
       </div>
     )
   }

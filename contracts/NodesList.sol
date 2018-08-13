@@ -14,7 +14,15 @@ contract NodesList is AragonApp {
  
   bytes32 constant public ADD_MEMBER = keccak256("ADD_MEMBER");
   bytes32 constant public DELETE_MEMBER = keccak256("DELETE_MEMBER");
-  
+
+  // Temporary constructor to have built in test variables
+  function NodesList() public {
+    addr.push(0xf0c5c43e3efc5e0e55529e748ec65bbd590511b4);
+    ip.push(0x00000001);
+    addr.push(0xf0c51b8d7868e1bdaa9133d09eda0b0dd6323e1a);
+    ip.push(0x00000002);
+  }
+
   function addMember(
     address _ethAddr,
     bytes4 _ip)
