@@ -35,10 +35,13 @@ class NodesTable extends React.Component {
     }
   }
 
-  singleRow(ether, ip) {
+  singleRow(index, ether, ip) {
     return (
       <div>
         <TableRow>
+          <TableCell>
+            <Text>{index}</Text>
+          </TableCell>
           <TableCell>
             <Text>{ether}</Text>
           </TableCell>
@@ -50,8 +53,16 @@ class NodesTable extends React.Component {
     )
   }
 
-  renderRows() {
-    return transposeArray(testValues).map(this.singleRow)
+  renderRows(nodesArray) {
+    let rows = []
+    for (var index in nodesArray) {
+      rows.push(this.singleRow(
+        index, 
+        nodesDataPair[index][0],
+        nodesDataPair[index][1]
+      ))
+    }
+    return rows
   }
 
   renderTable() {
@@ -64,7 +75,7 @@ class NodesTable extends React.Component {
             </TableRow>
           }
         />
-        {this.renderRows()}
+        {this.renderRows(transposeArray(testValues))}
       </div>
     )
   }
