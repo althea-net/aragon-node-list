@@ -18,7 +18,6 @@ const BasicForm = (props) => {
   return(
       <TextInput
         name={props.name}
-        onSubmit={props.onSubmit}
         placeholder={props.placeholder}
         type="text"
         required

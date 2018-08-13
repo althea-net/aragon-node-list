@@ -2,9 +2,10 @@ import React from "react"
 import { AragonApp, observe, Button, Text } from "@aragon/ui"
 import Aragon, { providers } from "@aragon/client"
 import styled from "styled-components"
+import { Grid, Row, Col } from 'react-flexbox-grid';
 
-import NewNodeForm from "./NewNodeForm"
-import NodesTables from "./NodesTable"
+import NewNodeForm from "./components/NewNodeForm"
+import NodesTables from "./components/NodesTable"
 
 const AppContainer = styled(AragonApp)`
   display: flex;
@@ -17,18 +18,23 @@ export default class App extends React.Component {
     return (
       <AppContainer>
         <div>
-          <Text>
-          </Text> 
+          APP CONTRACT CALL
+          <Button 
+            onClick={() => this.props.app.addMember(
+              '0xb4124cEB3451635DAcedd11767f004d8a28c6eE7', '0x01020304'
+            )}
+          >
+            Add Member
+          </Button>
         </div>
         <div>
           <NewNodeForm 
-            contractCall={this.props.app.addMember}
+            app={this.props.app}
           />
         </div>
         <div>
           <NodesTables 
-            getEthAddr={this.props.app.getEthAddr}
-            getIpAddr={this.props.app.getIpAddr}
+            app={this.props.app}
           />
         </div>
       </AppContainer>

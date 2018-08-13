@@ -48,6 +48,7 @@ class NodesTable extends React.Component {
   }
 
   renderRows(nodesArray) {
+    console.log("ROOOW ROW ROW", nodesArray)
     let rows = []
     for (var index in nodesArray) {
       rows.push(this.singleRow(
@@ -69,12 +70,7 @@ class NodesTable extends React.Component {
             </TableRow>
           }
         />
-        {
-          this.renderRows([
-            () => this.props.getEthAddr(),
-            () => this.props.getIpAddr()
-          ])
-        }
+          {this.renderRows(() => this.props.app.getNodeList())}
       </div>
     )
   }
