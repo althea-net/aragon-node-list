@@ -10,10 +10,8 @@ import {
 import styled from "styled-components"
 
 const TableContainer = styled(AragonApp)`
-  display: flex;
   align-items: center;
   justify-content: center;
-  padding: 5% 10px;
 `
 
 const testValues = [
@@ -24,6 +22,11 @@ const testValues = [
   ["0x00000001", "0x00000002"]
 ]
 
+const transposeArray = array => {
+  return array[0].map((col, i) => {
+    return array.map(row => row[i])
+  })
+}
 
 class NodesTable extends React.Component {
   constructor(props) {
@@ -32,20 +35,23 @@ class NodesTable extends React.Component {
     }
   }
 
-  renderRows() {
-    const rows = testValues
+  singleRow(ether, ip) {
     return (
       <div>
         <TableRow>
           <TableCell>
-            <Text>HI!</Text>
+            <Text>{ether}</Text>
           </TableCell>
           <TableCell>
-            <Text>Bye!</Text>
+            <Text>{ip}</Text>
           </TableCell>
         </TableRow>
       </div>
     )
+  }
+
+  renderRows() {
+    return transposeArray(testValues).map(this.singleRow)
   }
 
   renderTable() {

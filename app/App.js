@@ -6,7 +6,6 @@ import NewNodeForm from "./NewNodeForm"
 import NodesTables from "./NodesTable"
 
 const AppContainer = styled(AragonApp)`
-  display: flex;
   align-items: center;
   justify-content: center;
 `
