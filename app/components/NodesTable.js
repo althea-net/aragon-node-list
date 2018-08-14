@@ -48,7 +48,7 @@ class NodesTable extends React.Component {
   }
 
   renderRows(nodesArray) {
-    console.log("ROOOW ROW ROW", nodesArray)
+
     let rows = []
     for (var index in nodesArray) {
       rows.push(this.singleRow(

@@ -9,35 +9,28 @@ import NodesTables from "./components/NodesTable"
 
 const AppContainer = styled(AragonApp)`
   display: flex;
-  align-items: center;
   justify-content: center;
 `
 
 export default class App extends React.Component {
   render() {
     return (
-      <AppContainer>
-        <div>
-          APP CONTRACT CALL
-          <Button 
-            onClick={() => this.props.app.addMember(
-              '0xb4124cEB3451635DAcedd11767f004d8a28c6eE7', '0x01020304'
-            )}
-          >
-            Add Member
-          </Button>
-        </div>
-        <div>
-          <NewNodeForm 
-            app={this.props.app}
-          />
-        </div>
-        <div>
-          <NodesTables 
-            app={this.props.app}
-          />
-        </div>
-      </AppContainer>
+      <div>
+        <AppContainer>
+          <Col top>
+            <Row>
+              <NewNodeForm 
+                app={this.props.app}
+              />
+            </Row>
+            <Row>
+              <NodesTables 
+                app={this.props.app}
+              />
+            </Row>
+          </Col>
+        </AppContainer>
+      </div>
     )
   }
 }

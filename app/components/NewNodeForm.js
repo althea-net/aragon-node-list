@@ -1,40 +1,16 @@
 import React from "react"
-import { AragonApp, Button, TextInput } from "@aragon/ui"
-import Aragon, { providers } from '@aragon/client'
+import {
+  AragonApp,
+  Button,
+  TextInput,
+  Field,
+} from "@aragon/ui"
 import styled from "styled-components"
+import { Row, Col } from 'react-flexbox-grid'
 
-const FormContainer = styled(AragonApp)`
-  padding: 5% 10px;
+const Form = styled.form`
+  margin-top: 20px;
 `
-
-const NewNodeContainer = styled(AragonApp)`
-  display: inline-flex;
-  padding: 2%;
-  margin-top: 10px;
-  align-items: center;
-`
-
-const BasicForm = (props) => {
-  return(
-      <TextInput
-        name={props.name}
-        placeholder={props.placeholder}
-        type="text"
-        required
-        wide
-      />
-  )
-}
-
-const SubmitButton = (props) => {
-  return(
-    <Button
-      onClick={props.onClick}
-    >
-      Submit
-    </Button>
-  )
-}
 
 class NewNodeForm extends React.Component {
   constructor(props) {
@@ -45,50 +21,55 @@ class NewNodeForm extends React.Component {
     }
   }
 
-  handleSubmit(ethAddr, ipAddr) {
+  handleEthAddrChange = event => {
+    this.setState = ({ ethAddr: event.target.value })
   }
 
-  renderForm(type, nameInput, value, handleSubmit) {
-    return (
-      <BasicForm
-        name={nameInput}
-        value={value}
-        onSubmit={handleSubmit()}
-        placeholder ={type}
-      />
+  handleIpAddrChange = event => {
+    this.setState = ({ ipAddr: event.target.value })
+  }
+
+  handleSubmit = event => {
+    this.props.app.addMember(
+      this.state.ethAddr,
+      this.state.ipAddr
     )
+    event.preventDefault()
   }
 
   render() {
+    const { ethAddr, ipAddr } = this.state
     return (
       <div>
-        <NewNodeContainer>
-          <FormContainer>
-            {
-              this.renderForm(
-                "ETH",
-                "ethereum",
-                this.state.ethAddr,
-                this.handleSubmit
-              )
-            }
-          </FormContainer>
-          <FormContainer>
-            {
-              this.renderForm(
-                "IP",
-                "ip",
-                this.state.ipAddr,
-                this.handleSubmit
-              )
-            }
-          </FormContainer>
-          <FormContainer>
-            <SubmitButton 
-              onClick={() => this.props.addMember()}
-            />
-          </FormContainer>
-        </NewNodeContainer>
+        <Row >
+          <Form onSubmit={this.handleSubmit}>
+              <Col xs>
+                <Field label="Ethereum address">
+                  <TextInput
+                    innerRef={ethAddr => (this.ethAddr = ethAddr)}
+                    value={ethAddr}
+                    onChange={this.handleEthAddrChange}
+                    required
+                    wide
+                  />
+                </Field>
+              </Col>
+              <Col xs >
+                <Field label="IP address">
+                  <TextInput
+                    innerRef={ipAddr => (this.ipAddr = ipAddr)}
+                    value={ipAddr}
+                    onChange={this.handleIpAddrChange}
+                    required
+                    wide
+                  />
+                </Field>
+              </Col>
+              <Col>
+                <Button mode="strong" type="submit" wide>Submit</Button>
+              </Col>
+          </Form>
+        </Row>
       </div>
     )
   }
