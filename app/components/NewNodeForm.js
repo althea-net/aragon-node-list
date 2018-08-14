@@ -9,8 +9,12 @@ import styled from "styled-components"
 import { Row, Col } from 'react-flexbox-grid'
 
 const Form = styled.form`
-  margin-top: 20px;
+  margin-top: 10mm;
+  margin-bottom: 10mm;
+  padding-top: 10mm;
+  padding-bottom: 10mm;
   display: inline-flex;
+  align-items: center;
 `
 
 class NewNodeForm extends React.Component {
@@ -29,10 +33,7 @@ class NewNodeForm extends React.Component {
   }
 
   handleSubmit = event => {
-    this.props.app.addMember(
-      this.state.ethAddr,
-      this.state.ipAddr
-    )
+    this.props.app.addMember(this.state.ethAddr, this.state.ipAddr)
     event.preventDefault()
   }
 
@@ -42,7 +43,7 @@ class NewNodeForm extends React.Component {
       <div>
         <Row around="xs">
           <Form onSubmit={this.handleSubmit}>
-              <Col xs >
+              <Col lg >
                 <Field label="Ethereum address">
                   <TextInput
                     innerRef={ethAddr => (this.ethAddrInput = ethAddr)}
@@ -50,6 +51,7 @@ class NewNodeForm extends React.Component {
                     onChange={this.handleEthAddrChange}
                     required
                     wide
+                    style={{width: "500px"}}
                   />
                 </Field>
               </Col>
