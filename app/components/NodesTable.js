@@ -13,25 +13,14 @@ import styled from "styled-components"
 const TableContainer = styled(AragonApp)`
   align-items: center;
   justify-content: center;
+  margin-top: 10px;
+  padding-top: 20px;
 `
 
-const transposeArray = array => {
-  return array[0].map((col, i) => {
-    return array.map(row => row[i])
-  })
-}
-
 class NodesTable extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      ethArray: [],
-      ipArray: []
-    }
-  }
+
   singleRow(index, ether, ip) {
     return (
-      <div>
         <TableRow>
           <TableCell>
             <Text>{index}</Text>
@@ -43,44 +32,34 @@ class NodesTable extends React.Component {
             <Text>{ip}</Text>
           </TableCell>
         </TableRow>
-      </div>
-    )
-  }
-
-  renderRows(nodesArray) {
-
-    let rows = []
-    for (var index in nodesArray) {
-      rows.push(this.singleRow(
-        index, 
-        nodesArray[index][0],
-        nodesArray[index][1]
-      ))
-    }
-    return rows
-  }
-
-  renderTable() {
-    return (
-      <div>
-        <Table
-          header={
-            <TableRow>
-              <TableHeader title="Existing Nodes" />
-            </TableRow>
-          }
-        />
-          {this.renderRows(() => this.props.app.getNodeList())}
-      </div>
     )
   }
 
   render() {
+    var nodes = []
+    var rows = []
+    rows.push(this.singleRow(0, "0x22", "0x1"))
+    for (var index in this.props.nodes) {
+      var n = this.props.nodes[index]
+      console.log("NOOOODEE", n)
+      rows.push(this.singleRow(index + 1, n[0], n[1]))
+    }
+    console.log("PROPERTY", this.props)
+    console.log("Roooows", rows)
     return (
-        <TableContainer>
-           {this.renderTable()}
-        </TableContainer
-      >
+      <TableContainer>
+        <Table
+          header={
+            <TableRow>
+              <TableHeader title="Index" />
+              <TableHeader title="Eth Address" />
+              <TableHeader title="IP Address" />
+            </TableRow>
+          }
+        >
+          {rows}
+        </Table>
+      </TableContainer>
     )
   }
 }
