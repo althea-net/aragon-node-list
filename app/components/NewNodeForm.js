@@ -10,21 +10,22 @@ import { Row, Col } from 'react-flexbox-grid'
 
 const Form = styled.form`
   margin-top: 20px;
+  display: inline-flex;
 `
 
 class NewNodeForm extends React.Component {
 
   state = {
-      ethAddr: "0x12ad7a978c59ef063751422e00e36275d3f24daa",
-      ipAddr: "0x01020314"
+      ethAddr: "",
+      ipAddr: ""
     }
 
   handleEthAddrChange = event => {
-    this.setState = ({ ethAddr: event.target.value })
+    this.setState({ ethAddr: event.target.value })
   }
 
   handleIpAddrChange = event => {
-    this.setState = ({ ipAddr: event.target.value })
+    this.setState ({ ipAddr: event.target.value })
   }
 
   handleSubmit = event => {
@@ -44,7 +45,7 @@ class NewNodeForm extends React.Component {
               <Col xs >
                 <Field label="Ethereum address">
                   <TextInput
-                    innerRef={ethAddr => (this.ethAddr = ethAddr)}
+                    innerRef={ethAddr => (this.ethAddrInput = ethAddr)}
                     value={ethAddr}
                     onChange={this.handleEthAddrChange}
                     required
@@ -55,7 +56,7 @@ class NewNodeForm extends React.Component {
               <Col xs >
                 <Field label="IP address">
                   <TextInput
-                    innerRef={ipAddr => (this.ipAddr = ipAddr)}
+                    innerRef={ipAddr => (this.ipAddrInput = ipAddr)}
                     value={ipAddr}
                     onChange={this.handleIpAddrChange}
                     required

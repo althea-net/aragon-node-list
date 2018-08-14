@@ -1,6 +1,6 @@
 {
   "appName": "nodeslist.aragonpm.eth",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "roles": [
     {
       "name": "Add a new ETH address and IP address to list",
