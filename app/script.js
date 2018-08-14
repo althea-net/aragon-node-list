@@ -14,12 +14,15 @@ const initialState = {
 
 app.store(async (state, event) => {
   if (state === null) state = initialState
-  console.log('state', state)
+  let value = await getNodeList()
+  let nodes = transposeArray([value[0], value[1]])
+  console.log("VALUEEEEEEEEEES", nodes[0], nodes[1])
+
   switch (event.event) {
     case "NewMember":
-      return { nodes: await getNodeList() }
+      return { nodes: nodes }
     case "MemberRemoved":
-      return { nodes: await getNodeList() }
+      return { nodes: nodes }
     default:
       return state
   }
@@ -30,9 +33,7 @@ function getNodeList() {
   return new Promise(resolve => {
     app
     .call('getNodeList')
-    .subscribe(value => {
-      return transposeArray([value[0], value[1]])
-    })
+    .subscribe(resolve)
   })
 }
 

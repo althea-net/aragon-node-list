@@ -38,14 +38,10 @@ class NodesTable extends React.Component {
   render() {
     var nodes = []
     var rows = []
-    rows.push(this.singleRow(0, "0x22", "0x1"))
     for (var index in this.props.nodes) {
       var n = this.props.nodes[index]
-      console.log("NOOOODEE", n)
       rows.push(this.singleRow(index + 1, n[0], n[1]))
     }
-    console.log("PROPERTY", this.props)
-    console.log("Roooows", rows)
     return (
       <TableContainer>
         <Table
