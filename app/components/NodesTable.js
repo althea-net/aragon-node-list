@@ -40,7 +40,7 @@ class NodesTable extends React.Component {
     var rows = []
     for (var index in this.props.nodes) {
       var n = this.props.nodes[index]
-      rows.push(this.singleRow(index + 1, n[0], n[1]))
+      rows.push(this.singleRow(index, n[0], n[1]))
     }
     return (
       <TableContainer>
