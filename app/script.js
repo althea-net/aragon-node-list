@@ -2,32 +2,31 @@ import Aragon from '@aragon/client'
 
 const app = new Aragon()
 
-
-function getIpAddr() {
-  console.log("BUUUYAAA")
-  return new Promise(resolve => {
-    app
-      .call('ip')
-      .subscribe(resolve)
+const transposeArray = array => {
+  return array[0].map((col, i) => {
+    return array.map(row => row[i])
   })
 }
 
-function getEthAddr() {
-  console.log("BOWOWOW")
-  return new Promise(resolve => {
-    app
-      .call('addr')
-      .subscribe(resolve)
-  })
+const initialState = {
+  nodes: []
 }
+
+app.store(async (state, event) => {
+  if (state === null) state = initialState
+
+  switch (event.event) {
+    case "NewMember":
+      return { nodes: transposeArray(getNodeList()) }
+    case "MemberRemoved":
+      return { nodes: transposeArray(getNodeList()) }
+    default:
+      return state
+  }
+})
 
 function getNodeList() {
-  console.log("FUUCK")
   return new Promise(resolve => {
-    app
-      .call('getNodeList')
-      .subscribe(resolve)
+    app.call('getNodeList').subscribe(resolve)
   })
 }
-
-export default app
