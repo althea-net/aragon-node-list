@@ -20,8 +20,8 @@ const Form = styled.form`
 class NewNodeForm extends React.Component {
 
   state = {
-      ethAddr: "",
-      ipAddr: ""
+      ethAddr: "0xb4124ceb3451635dacedd11767f004d8a28c6ee7",
+      ipAddr: "0x04be12ec"
     }
 
   handleEthAddrChange = event => {
