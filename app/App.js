@@ -16,7 +16,7 @@ export default class App extends React.Component {
   render() {
     return (
       <div>
-        <AppContainer>
+        <AppContainer className="app">
           <Col top>
             <Row>
               <NewNodeForm 

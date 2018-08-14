@@ -13,13 +13,11 @@ const Form = styled.form`
 `
 
 class NewNodeForm extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      ethAddr: "",
-      ipAddr: ""
+
+  state = {
+      ethAddr: "0x12ad7a978c59ef063751422e00e36275d3f24daa",
+      ipAddr: "0x01020314"
     }
-  }
 
   handleEthAddrChange = event => {
     this.setState = ({ ethAddr: event.target.value })
@@ -41,9 +39,9 @@ class NewNodeForm extends React.Component {
     const { ethAddr, ipAddr } = this.state
     return (
       <div>
-        <Row >
+        <Row around="xs">
           <Form onSubmit={this.handleSubmit}>
-              <Col xs>
+              <Col xs >
                 <Field label="Ethereum address">
                   <TextInput
                     innerRef={ethAddr => (this.ethAddr = ethAddr)}
@@ -65,7 +63,7 @@ class NewNodeForm extends React.Component {
                   />
                 </Field>
               </Col>
-              <Col>
+              <Col xs>
                 <Button mode="strong" type="submit" wide>Submit</Button>
               </Col>
           </Form>
