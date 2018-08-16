@@ -6,11 +6,12 @@ import { Grid, Row, Col } from 'react-flexbox-grid';
 
 import NewNodeForm from "./components/NewNodeForm"
 import NodesTable from "./components/NodesTable"
-import DeteleNode from "./components/DeleteNode"
+import DeleteNode from "./components/DeleteNode"
 
 const AppContainer = styled(AragonApp)`
   display: flex;
   justify-content: center;
+  vertical-align: flex;
 `
 
 export default class App extends React.Component {
@@ -21,9 +22,9 @@ export default class App extends React.Component {
           <Col top>
             <Row><NewNodeForm app={this.props.app} /></Row>
             <Row>
-              <ObservedNodesTable observable={this.props.observable} />
+             <ObservedNodesTable observable={this.props.observable} />
             </Row>
-            <Row><DeleteNode /></Row>
+            <Row ><DeleteNode app={this.props.app}/></Row>
           </Col>
         </AppContainer>
       </AragonApp>

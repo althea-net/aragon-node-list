@@ -16,22 +16,26 @@ const Form = styled.form`
   display: inline-flex;
   align-items: center;
 `
-class NewNodeForm extends React.Component {
-  
+class DeleteNode extends React.Component {
+
   state = {
-    value: 0
+    index: 0
   }
 
   handleIndexChange = event => {
-    this.setState({ value: event.target.value })
+    this.setState({ index: event.target.index })
   }
 
   handleSubmit = event => {
-    this.props.app.deleteMember(this.state.value)
+    console.log("TYPER", typeof this.state.index)
+    console.log("Value", this.state.index)
+    //Integer.parseInt(myString);
+    this.props.app.deleteMember(this.state.index)
+    event.preventDefault()
   }
 
   render() {
-    value = this.value
+    const index = this.state.index
     return (
       <div>
         <Row around="xs">
@@ -39,11 +43,10 @@ class NewNodeForm extends React.Component {
               <Col xs >
                 <Field label="Index">
                   <TextInput
-                    innerRef={value => (this.valueInput= value)}
-                    value={value}
+                    innerRef={index => (this.indexInput= index)}
+                    value={this.state.index}
                     onChange={this.handleIndexChange}
                     required
-                    type="number"
                   />
                 </Field>
               </Col>
@@ -57,4 +60,4 @@ class NewNodeForm extends React.Component {
   }
 }
 
-export default NewNodeForm
+export default DeleteNode

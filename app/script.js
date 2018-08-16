@@ -16,7 +16,6 @@ app.store(async (state, event) => {
   if (state === null) state = initialState
   let value = await getNodeList()
   let nodes = transposeArray([value[0], value[1]])
-  console.log("VALUEEEEEEEEEES", nodes[0], nodes[1])
 
   switch (event.event) {
     case "NewMember":
@@ -29,26 +28,9 @@ app.store(async (state, event) => {
 })
 
 function getNodeList() {
-  console.log("YOOOOOOOOOOOOOO")
   return new Promise(resolve => {
     app
     .call('getNodeList')
-    .subscribe(resolve)
-  })
-}
-
-function getIp() {
-  return new Promise(resolve => {
-    app
-    .call('ip')
-    .subscribe(resolve)
-  })
-}
-
-function getAddr() {
-  return new Promise(resolve => {
-    app
-    .call('addr')
     .subscribe(resolve)
   })
 }

@@ -51,7 +51,7 @@ class NewNodeForm extends React.Component {
                     onChange={this.handleEthAddrChange}
                     required
                     wide
-                    style={{width: "500px"}}
+                    style={{width: "450px"}}
                   />
                 </Field>
               </Col>
