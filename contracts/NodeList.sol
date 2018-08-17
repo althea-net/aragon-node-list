@@ -22,4 +22,8 @@ contract NodeList is AragonApp {
     MemberRemoved(nodeList[_ip], _ip);
     nodeList[_ip] = 0x0000000000000000000000000000000000000000;
   }
+
+  function getMember(bytes16 _ip) public returns(address addr) {
+    addr = nodeList[_ip]; 
+  }
 }
