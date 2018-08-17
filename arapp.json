@@ -13,5 +13,5 @@
       "params": []
     }
   ],
-  "path": "contracts/NodesList.sol"
+  "path": "contracts/NodeList.sol"
 }
