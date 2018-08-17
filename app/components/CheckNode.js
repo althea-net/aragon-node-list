@@ -4,6 +4,8 @@ import {
   Button,
   TextInput,
   Field,
+  Card,
+  theme,
 } from '@aragon/ui'
 import styled from 'styled-components'
 
@@ -12,10 +14,6 @@ const Form = styled.form`
   padding-bottom: 50mm;
   margin-top: 10mm;
   margin-bottom: 10mm;
-`
-
-const ButtonContainer = styled(Button)`
-  width: 150px;
 `
 
 class CheckNode extends React.Component {
@@ -30,7 +28,7 @@ class CheckNode extends React.Component {
   }
 
   handleSubmit = () => {
-    address = this.props.app.nodeList(this.state.query)
+    let address = this.props.app.nodeList(this.state.query)
     if (address !== '0x0000000000000000000000000000000000000000') {
       this.setState({ existingNode: true })
     }
@@ -38,6 +36,7 @@ class CheckNode extends React.Component {
 
   render() {
     return (
+      <div>
       <Form onSubmit={this.handleSubmit}>
         <Field label='Query for an existing node'>
           <TextInput
@@ -50,6 +49,8 @@ class CheckNode extends React.Component {
         </Field>
         <Button mode='strong' type='submit'>Submit</Button>
       </Form>
+      <Card style={{color: theme.gradientEndActive }} />
+      </div>
     )
   }
 }

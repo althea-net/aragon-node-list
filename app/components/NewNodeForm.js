@@ -12,7 +12,7 @@ const Form = styled.form`
   margin-bottom: 10mm;
   display: flex;
   flex-direction: column; 
-  width: 350px;
+  width: 400px;
 `
 const ButtonContainer = styled(Button)`
   margin-top: 10mm;
@@ -21,11 +21,12 @@ const ButtonContainer = styled(Button)`
   flex-direction: column; 
   width: 150px;
 `
+
 class NewNodeForm extends React.Component {
 
   state = {
-      ethAddr: '',
-      ipAddr: ''
+      ethAddr: '0xb4124ceb3451635dacedd11767f004d8a28c6ee7',
+      ipAddr: '0xc0a8010ac0a8010a'
     }
 
   handleEthAddrChange = event => {
@@ -37,8 +38,8 @@ class NewNodeForm extends React.Component {
   }
 
   handleSubmit = event => {
+    console.log("RUSSIA", this.state)
     this.props.app.addMember(this.state.ethAddr, this.state.ipAddr)
-    event.preventDefault()
   }
 
   render() {
@@ -63,9 +64,7 @@ class NewNodeForm extends React.Component {
             wide
           />
         </Field>
-        <ButtonContainer>
           <Button mode='strong' type='submit'>Submit</Button>
-        </ButtonContainer>
       </Form>
     )
   }
