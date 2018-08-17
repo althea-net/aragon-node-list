@@ -14,10 +14,6 @@ const Form = styled.form`
   padding-top: 10mm;
 `
 
-const ButtonContainer = styled(Button)`
-  width: 150px;
-`
-
 class DeleteNode extends React.Component {
 
   state = {
