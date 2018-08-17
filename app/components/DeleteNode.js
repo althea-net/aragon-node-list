@@ -1,61 +1,52 @@
-import React from "react"
+import React from 'react'
 import {
   AragonApp,
   Button,
   TextInput,
   Field,
-} from "@aragon/ui"
-import styled from "styled-components"
-import { Row, Col } from 'react-flexbox-grid'
+} from '@aragon/ui'
+import styled from 'styled-components'
 
 const Form = styled.form`
   margin-top: 10mm;
   margin-bottom: 10mm;
-  padding-top: 10mm;
   padding-bottom: 10mm;
-  display: inline-flex;
-  align-items: center;
+  padding-top: 10mm;
 `
+
+const ButtonContainer = styled(Button)`
+  width: 150px;
+`
+
 class DeleteNode extends React.Component {
 
   state = {
-    index: 0
+    ip: ''
   }
 
   handleIndexChange = event => {
-    this.setState({ index: event.target.index })
+    this.setState({ ip: event.target.ip })
   }
 
   handleSubmit = event => {
-    console.log("TYPER", typeof this.state.index)
-    console.log("Value", this.state.index)
-    //Integer.parseInt(myString);
-    this.props.app.deleteMember(this.state.index)
+    this.props.app.deleteMember(this.state.ip)
     event.preventDefault()
   }
 
   render() {
-    const index = this.state.index
+    const ip = this.state.ip
     return (
-      <div>
-        <Row around="xs">
-          <Form onSubmit={this.handleSubmit}>
-              <Col xs >
-                <Field label="Index">
-                  <TextInput
-                    innerRef={index => (this.indexInput= index)}
-                    value={this.state.index}
-                    onChange={this.handleIndexChange}
-                    required
-                  />
-                </Field>
-              </Col>
-              <Col xs>
-                <Button mode="strong" type="submit" wide>Submit</Button>
-              </Col>
-          </Form>
-        </Row>
-      </div>
+      <Form onSubmit={this.handleSubmit}>
+        <Field label='Delete Node IP Address'>
+          <TextInput
+            innerRef={ip => (this.ipInput= ip)}
+            value={this.state.ip}
+            onChange={this.handleIndexChange}
+            required
+          />
+        </Field>
+        <Button mode='strong' type='submit'>Submit</Button>
+      </Form>
     )
   }
 }

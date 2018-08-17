@@ -3,3 +3,5 @@ build
 .cache
 dist
 package-lock.json
+.tern-port
+.tern-project
