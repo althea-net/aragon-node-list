@@ -10,14 +10,16 @@ import styled from 'styled-components'
 const Form = styled.form`
   margin-top: 10mm;
   margin-bottom: 10mm;
-  display: flex;
   flex-direction: column; 
   width: 400px;
+`
+
+const TextInputContainer = styled(TextInput)`
+  width: 450px;
 `
 const ButtonContainer = styled(Button)`
   margin-top: 10mm;
   margin-bottom: 10mm;
-  display: flex;
   flex-direction: column; 
   width: 150px;
 `
@@ -38,8 +40,8 @@ class NewNodeForm extends React.Component {
   }
 
   handleSubmit = event => {
-    console.log("RUSSIA", this.state)
     this.props.app.addMember(this.state.ethAddr, this.state.ipAddr)
+    event.preventDefault()
   }
 
   render() {
@@ -47,7 +49,7 @@ class NewNodeForm extends React.Component {
     return (
       <Form onSubmit={this.handleSubmit}>
         <Field label='Ethereum address'>
-          <TextInput
+          <TextInputContainer
             innerRef={ethAddr => (this.ethAddrInput = ethAddr)}
             value={ethAddr}
             onChange={this.handleEthAddrChange}
@@ -56,7 +58,7 @@ class NewNodeForm extends React.Component {
           />
         </Field>
         <Field label='IP address'>
-          <TextInput
+          <TextInputContainer
             innerRef={ipAddr => (this.ipAddrInput = ipAddr)}
             value={ipAddr}
             onChange={this.handleIpAddrChange}

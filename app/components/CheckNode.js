@@ -20,7 +20,8 @@ const Form = styled.form`
 
 const CardContainer = styled(Card)`
   display: flex;
-  visibility: ${props => props.visibility}
+  visibility: ${props => props.visibility};
+  background-color: ${props => props.background};
 `
 
 class CheckNode extends React.Component {
@@ -32,11 +33,11 @@ class CheckNode extends React.Component {
   }
 
   handleQueryChange = event => {
-    this.setState({ query: event.target.query })
+    this.setState({ query: event.target.value })
+    console.log("SSSATE", this.state)
   }
 
   renderCard() {
-
     let bg = theme.gradientStart
     if (this.state.existingNode) {
       bg = theme.badgeAppForeground
@@ -44,17 +45,10 @@ class CheckNode extends React.Component {
       bg = theme.negative
     }
 
-    let style={
-      height: "100px",
-      width: "450px",
-      top: "10px",
-      backgroundColor: bg
-    }
-
     return(
       <CardContainer 
-        style={style}
         visibility={this.state.visibility}
+        background={bg}
       >
         <Text>This node exists</Text>
       </CardContainer>
@@ -62,23 +56,23 @@ class CheckNode extends React.Component {
   }
 
   handleSubmit = event => {
-    console.log("CANADA", this.state)
-    let address = this.props.app.nodeList(this.state.query)
-    console.log("MEXICO", address)
+    let address = this.props.app.getNodeList(this.state.query)
+    console.log("MEXICO", Object.keys(this.props.app))
     if (address !== '0x0000000000000000000000000000000000000000') {
       this.setState({ existingNode: true })
     } else {
       this.setState({ existingNode: false })
     }
+    event.preventDefault()
   }
 
   render() {
     return (
       <div>
-        <Form onSubmit={this.handleSubmit}>
+        <Form onSubmit={() => this.handleSubmit()}>
           <Field label='Query for an existing node'>
             <TextInput
-              innerRef={query => (this.queryInput = query )}
+              innerRef={query => (this.queryInput = query)}
               value={this.state.query}
               onChange={this.handleQueryChange}
               required

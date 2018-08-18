@@ -11,7 +11,7 @@ import DeleteNode from './components/DeleteNode'
 const AppContainer = styled(AragonApp)`
   display: flex;
   justify-content: center;
-  align-content: center;
+  align-content: flex-start;
   flex-direction: column;
   text-align: center;
 `
