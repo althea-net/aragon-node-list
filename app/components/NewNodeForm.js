@@ -64,7 +64,9 @@ class NewNodeForm extends React.Component {
             wide
           />
         </Field>
-          <Button mode='strong' type='submit'>Submit</Button>
+          <ButtonContainer mode='strong' type='submit'>
+            Submit
+          </ButtonContainer>
       </Form>
     )
   }

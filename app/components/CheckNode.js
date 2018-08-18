@@ -2,6 +2,7 @@ import React from 'react'
 import {
   AragonApp,
   Button,
+  Text,
   TextInput,
   Field,
   Card,
@@ -17,11 +18,17 @@ const Form = styled.form`
   display: inline-flex;
 `
 
+const CardContainer = styled(Card)`
+  display: flex;
+  visibility: ${props => props.visibility}
+`
+
 class CheckNode extends React.Component {
 
   state = {
     existingNode: false,
-    query: ''
+    query: '',
+    visibility: 'hidden'
   }
 
   handleQueryChange = event => {
@@ -29,19 +36,35 @@ class CheckNode extends React.Component {
   }
 
   renderCard() {
-    let style = { backgroundColor: theme.gradientStart }
+
+    let bg = theme.gradientStart
     if (this.state.existingNode) {
-      style = { backgroundColor: theme.badgeAppForeground }
+      bg = theme.badgeAppForeground
+    } else if(!this.state.existingNode) {
+      bg = theme.negative
     }
-    else if(!this.state.existingNode && this.state.query !== '') {
-      style = { backgroundColor: theme.negative }
+
+    let style={
+      height: "100px",
+      width: "450px",
+      top: "10px",
+      backgroundColor: bg
     }
+
     return(
-      <Card style={style} />
+      <CardContainer 
+        style={style}
+        visibility={this.state.visibility}
+      >
+        <Text>This node exists</Text>
+      </CardContainer>
     )
   }
-  handleSubmit = () => {
+
+  handleSubmit = event => {
+    console.log("CANADA", this.state)
     let address = this.props.app.nodeList(this.state.query)
+    console.log("MEXICO", address)
     if (address !== '0x0000000000000000000000000000000000000000') {
       this.setState({ existingNode: true })
     } else {
