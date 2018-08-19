@@ -1,14 +1,13 @@
 import React from 'react'
 import {
-  AragonApp,
   Button,
   Text,
-  TextInput,
   Field,
-  Card,
-  theme,
+  TextInput,
 } from '@aragon/ui'
 import styled from 'styled-components'
+
+import NodeCard from './NodeCard'
 
 const Form = styled.form`
   padding: 10mm;
@@ -16,60 +15,46 @@ const Form = styled.form`
   margin-top: 10mm;
   margin-bottom: 10mm;
   display: inline-flex;
+  heigh: 100px;
 `
 
-const CardContainer = styled(Card)`
-  display: flex;
-  visibility: ${props => props.visibility};
-  background-color: ${props => props.background};
-`
-
-class CheckNode extends React.Component {
-
-  state = {
-    existingNode: false,
-    query: '',
-    visibility: 'hidden'
+export default class CheckNode extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      existingNode: false,
+      query: ''
+    }
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   handleQueryChange = event => {
     this.setState({ query: event.target.value })
-    console.log("SSSATE", this.state)
   }
 
-  renderCard() {
-    let bg = theme.gradientStart
-    if (this.state.existingNode) {
-      bg = theme.badgeAppForeground
-    } else if(!this.state.existingNode) {
-      bg = theme.negative
-    }
+  handleSubmit(event) {
+    new Promise(resolve => {
+      this.props.app
+      .call('nodeList', this.state.query)
+      .subscribe(address =>  {
+        console.log("ADDRESS", address)
+        console.log("ADDRESS", this.state)
+        address !== '0x0000000000000000000000000000000000000000'
+          ? this.setState({ existingNode: true })
+          : this.setState({ existingNode: false })
+        resolve()
+      })
+    }).then(promise => {
+      console.log("PROMOOOSIE", promise)
+    })
 
-    return(
-      <CardContainer 
-        visibility={this.state.visibility}
-        background={bg}
-      >
-        <Text>This node exists</Text>
-      </CardContainer>
-    )
-  }
-
-  handleSubmit = event => {
-    let address = this.props.app.getNodeList(this.state.query)
-    console.log("MEXICO", Object.keys(this.props.app))
-    if (address !== '0x0000000000000000000000000000000000000000') {
-      this.setState({ existingNode: true })
-    } else {
-      this.setState({ existingNode: false })
-    }
     event.preventDefault()
   }
 
   render() {
     return (
       <div>
-        <Form onSubmit={() => this.handleSubmit()}>
+        <Form onSubmit={this.handleSubmit} >
           <Field label='Query for an existing node'>
             <TextInput
               innerRef={query => (this.queryInput = query)}
@@ -81,10 +66,10 @@ class CheckNode extends React.Component {
           </Field>
           <Button mode='strong' type='submit'>Submit</Button>
         </Form>
-        {this.renderCard()}
+        <NodeCard
+          exsitingNode={this.state.existingNode}
+        />
       </div>
     )
   }
 }
-
-export default CheckNode
