@@ -26,28 +26,29 @@ export default class CheckNode extends React.Component {
       query: ''
     }
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.getMember = this.getMember.bind(this)
   }
 
   handleQueryChange = event => {
     this.setState({ query: event.target.value })
   }
 
-  handleSubmit(event) {
-    new Promise(resolve => {
-      this.props.app
-      .call('nodeList', this.state.query)
-      .subscribe(address =>  {
-        console.log("ADDRESS", address)
-        console.log("ADDRESS", this.state)
-        address !== '0x0000000000000000000000000000000000000000'
-          ? this.setState({ existingNode: true })
-          : this.setState({ existingNode: false })
-        resolve()
-      })
-    }).then(promise => {
-      console.log("PROMOOOSIE", promise)
-    })
+  getMember = async () => {
+    return await new Promise(resolve => {
+      this.props.app.call('nodeList', this.state.query)
+      .subscribe(resolve)
+    }).then(a => {return a})
+  }
 
+  handleSubmit = event => {
+    this.getMember().then(address => {
+      console.log("BOOOOH", address)
+      let node = address !== '0x0000000000000000000000000000000000000000'
+      console.log("NOOODE", node)
+      this.setState({
+        existingNode: node
+      })
+    })
     event.preventDefault()
   }
 
@@ -67,7 +68,7 @@ export default class CheckNode extends React.Component {
           <Button mode='strong' type='submit'>Submit</Button>
         </Form>
         <NodeCard
-          exsitingNode={this.state.existingNode}
+          existingNode={this.state.existingNode}
         />
       </div>
     )

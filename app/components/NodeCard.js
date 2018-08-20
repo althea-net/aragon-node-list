@@ -7,49 +7,45 @@ import {
 } from '@aragon/ui'
 import styled from 'styled-components'
 
-const Form = styled.form`
+const CardContainer = styled(Card)`
+  visibility: ${props => props.visibility};
+  background-color: ${props => props.background};
   padding: 10mm;
   padding-bottom: 50mm;
   margin-top: 10mm;
   margin-bottom: 10mm;
-  display: inline-flex;
   heigh: 100px;
 `
 
-const CardContainer = styled(Card)`
-  display: flex;
-  visibility: ${props => props.visibility};
-  background-color: ${props => props.background};
-`
-
 export default class CardComponent extends React.Component {
-
-  state = {
-    visibility: 'hidden',
+  constructor(props) {
+    super(props)
+    this.state = {
+      visibility: 'hidden',
+      bg: theme.gradientStart
+    }
   }
 
   handleDebugToggle() {
-    console.log("BEEEEEESS", this.state)
     this.setState({
       visibility: this.state.visibility === 'hidden' ? 'visible' : 'hidden'
     })
   }
 
   render() {
-    let bg = theme.gradientStart
     let text = 'This node'
     if (this.props.existingNode) {
-      bg = theme.badgeAppForeground
-      text.concat(' is in list')
+      this.state.bg = theme.badgeAppForeground
+      text.concat('', ' is in list')
     } else {
-      bg = theme.negative
-      text.concat(' is not in list')
+      this.state.bg = theme.negative
+      text.concat('', ' is not in list')
     }
     return(
       <div>
         <CardContainer
-          visibility={this.props.visibility}
-          background={this.props.bg}
+          visibility={this.state.visibility}
+          background={this.state.bg}
         >
           <Text>{text}</Text>
         </CardContainer>
