@@ -1,4 +1,4 @@
 {
-  "loadEagerly": ["**/*.js"],
+  "loadEagerly": ["app/**/*.js"],
   "ecmaVersion": 6
 }
