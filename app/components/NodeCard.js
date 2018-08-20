@@ -24,14 +24,6 @@ export default class CardComponent extends React.Component {
     }
   }
 
-  handleDebug() {
-    this.setState({
-      visibility: this.state.visibility === 'hidden'
-        ? 'visible'
-        : 'hidden'
-    })
-  }
-
   render() {
     let zero = '0x0000000000000000000000000000000000000000'
     let bg
@@ -52,13 +44,6 @@ export default class CardComponent extends React.Component {
         >
           <Text>{text}</Text>
         </CardContainer>
-        <Button
-          mode='strong'
-          onClick={() => this.handleDebug()}
-          type='submit'
-        >
-          Debug
-        </Button>
       </div>
     )
   }
