@@ -8,20 +8,20 @@ import {
 import styled from 'styled-components'
 
 const Form = styled.form`
-  margin-top: 10mm;
-  margin-bottom: 10mm;
-  padding-bottom: 10mm;
-  padding-top: 10mm;
+  margin-top: 5mm;
+  margin-bottom: 5mm;
+  padding-bottom: 5mm;
+  padding-top: 5mm;
 `
 
-class DeleteNode extends React.Component {
+export default class DeleteNode extends React.Component {
 
   state = {
     ip: ''
   }
 
   handleIndexChange = event => {
-    this.setState({ ip: event.target.ip })
+    this.setState({ ip: event.target.value })
   }
 
   handleSubmit = event => {
@@ -46,5 +46,3 @@ class DeleteNode extends React.Component {
     )
   }
 }
-
-export default DeleteNode
