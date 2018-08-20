@@ -19,17 +19,17 @@ const ButtonContainer = styled(Button)`
 const CheckNodeContainer = styled.section`
   justify-content: center;
   align-items: center;
-  heigth: 50%
-  width: 75%
+  heigth: 50%;
+  width: 75%;
 `
-
 export default class CheckNode extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       existingNode: false,
-      cardVisibility: 'hidden',
-      query: ''
+      displayCard: false,
+      query: '',
+      ethAddr: ''
     }
     this.handleSubmit = this.handleSubmit.bind(this)
     this.getMember = this.getMember.bind(this)
@@ -49,12 +49,25 @@ export default class CheckNode extends React.Component {
   handleSubmit = event => {
     var zero = '0x0000000000000000000000000000000000000000'
     this.getMember().then(address => {
-      this.setState({ existingNode: address !== zero })
+      console.log("SPAAACE", address)
+      this.setState({
+        existingNode: address !== zero,
+        ethAddr: address,
+        displayCard: true
+      })
     })
     event.preventDefault()
   }
 
+  handleDebug() {
+    this.setState({
+      displayCard: !this.state.displayCard
+    })
+  }
+
   render() {
+    console.log("EXISTING NODE", this.state.existingNode)
+    console.log("DISPLAAAAAAAY", this.state.displayCard)
     return (
       <CheckNodeContainer>
         <Form onSubmit={this.handleSubmit} >
@@ -72,7 +85,9 @@ export default class CheckNode extends React.Component {
           </ButtonContainer>
         </Form>
         <NodeCard
-          existingNode={this.state.existingNode}
+          visibility={this.state.displayCard ? 'visible' : 'hidden'}
+          ip={this.state.query}
+          ethAddr={this.state.ethAddr}
         />
       </CheckNodeContainer>
     )

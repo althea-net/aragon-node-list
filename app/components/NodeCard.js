@@ -19,43 +19,43 @@ export default class CardComponent extends React.Component {
     super(props)
     this.state = {
       bg: theme.gradientStart,
-      visibility: 'hidden',
-      text: 'This node'
+      text: '',
+      visibility: this.props.visibility
     }
   }
 
-  handleDebugToggle() {
+  handleDebug() {
     this.setState({
-      visibility: this.state.visibility === 'hidden' ? 'visible' : 'hidden'
+      visibility: this.state.visibility === 'hidden'
+        ? 'visible'
+        : 'hidden'
     })
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.existingNode !== prevProps.existingNode) {
-      this.setState({
-        visibility: this.visibility,
-        bg: this.props.existingNode 
-          ? theme.positive
-          : theme.negative,
-        text: this.props.existingNode
-          ? text + ' is on list'
-          : text + ' is not on list'
-      })
-    }
-  }
-
   render() {
+    let zero = '0x0000000000000000000000000000000000000000'
+    let bg
+    let text = 'This node'
+    console.log("EEETHER", this.props.ethAddr)
+    if (this.props.ethAddr !== zero && this.props.ethAddr !== '') {
+      text = text + ' is on list'
+      bg = theme.positive
+    } 
+    else  {
+      text = text + ' is not on list'
+      bg = theme.negative
+    }
     return(
       <div>
         <CardContainer
           visibility={this.state.visibility}
-          background={this.state.bg}
+          background={bg}
         >
-          <Text>{this.state.text}</Text>
+          <Text>{text}</Text>
         </CardContainer>
-        <Button 
+        <Button
           mode='strong'
-          onClick={() => this.handleDebugToggle()}
+          onClick={() => this.handleDebug()}
           type='submit'
         >
           Debug
