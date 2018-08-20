@@ -41,13 +41,9 @@ export default class CheckNode extends React.Component {
   }
 
   handleSubmit = event => {
+    var zero = '0x0000000000000000000000000000000000000000'
     this.getMember().then(address => {
-      console.log("BOOOOH", address)
-      let node = address !== '0x0000000000000000000000000000000000000000'
-      console.log("NOOODE", node)
-      this.setState({
-        existingNode: node
-      })
+      this.setState({ existingNode: address !== zero })
     })
     event.preventDefault()
   }
