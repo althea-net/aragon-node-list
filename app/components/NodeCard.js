@@ -18,7 +18,9 @@ export default class CardComponent extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      bg: theme.gradientStart
+      bg: theme.gradientStart,
+      visibility: 'hidden',
+      text: 'This node'
     }
   }
 
@@ -28,22 +30,28 @@ export default class CardComponent extends React.Component {
     })
   }
 
-  render() {
-    let text = 'This node'
-    if (this.props.existingNode) {
-      this.state.bg = theme.badgeAppForeground
-      text.concat('', ' is in list')
-    } else {
-      this.state.bg = theme.negative
-      text.concat('', ' is not in list')
+  componentDidUpdate(prevProps) {
+    if (this.props.existingNode !== prevProps.existingNode) {
+      this.setState({
+        visibility: this.visibility,
+        bg: this.props.existingNode 
+          ? theme.positive
+          : theme.negative,
+        text: this.props.existingNode
+          ? text + ' is on list'
+          : text + ' is not on list'
+      })
     }
+  }
+
+  render() {
     return(
       <div>
         <CardContainer
-          visibility={this.props.visibility}
+          visibility={this.state.visibility}
           background={this.state.bg}
         >
-          <Text>{text}</Text>
+          <Text>{this.state.text}</Text>
         </CardContainer>
         <Button 
           mode='strong'

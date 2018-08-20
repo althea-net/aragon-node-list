@@ -11,7 +11,16 @@ import NodeCard from './NodeCard'
 
 const Form = styled.form`
   display: inline-flex;
-  height: 200px;
+  align-items: center;
+`
+const ButtonContainer = styled(Button)`
+  height: 50px;
+`
+const CheckNodeContainer = styled.section`
+  justify-content: center;
+  align-items: center;
+  heigth: 50%
+  width: 75%
 `
 
 export default class CheckNode extends React.Component {
@@ -47,7 +56,7 @@ export default class CheckNode extends React.Component {
 
   render() {
     return (
-      <div>
+      <CheckNodeContainer>
         <Form onSubmit={this.handleSubmit} >
           <Field label='Query for an existing node'>
             <TextInput
@@ -58,13 +67,14 @@ export default class CheckNode extends React.Component {
               wide
             />
           </Field>
-          <Button mode='strong' type='submit'>Submit</Button>
+          <ButtonContainer mode='strong' type='submit'>
+            Submit
+          </ButtonContainer>
         </Form>
         <NodeCard
           existingNode={this.state.existingNode}
-          visibility={this.state.cardVisibility}
         />
-      </div>
+      </CheckNodeContainer>
     )
   }
 }
