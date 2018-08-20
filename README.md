@@ -15,7 +15,8 @@ npm start
 
 
 ### Deploying with infura
+Current NodeList address in Rinkeby: `0x44e3f46d37318d6b608756f48d7a9d86934be624q
 
 ```
-apm publish 0x0000000000000000000000000000000000000000 --network infura --apm.ens-registry "0xfbae32d1cde62858bc45f51efc8cc4fa1415447e" --no-ipfs-check --apm.ipfs.rpc "http://ipfs.aragon.network:5001" --files build
+apm publish 0x44e3f46d37318d6b608756f48d7a9d86934be624 --network infura --apm.ens-registry "0xfbae32d1cde62858bc45f51efc8cc4fa1415447e" --no-ipfs-check --apm.ipfs.rpc "http://ipfs.aragon.network:5001" --files build
 ```

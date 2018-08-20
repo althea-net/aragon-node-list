@@ -17,7 +17,7 @@ module.exports = {
     },
     infura: {
       provider: new PrivateKeyProvider(pk, "https://rinkeby.infura.io/" + process.env.INFURA_API),
-      network_id: '4',
+      network_id: '4'
     }
   }
 }
