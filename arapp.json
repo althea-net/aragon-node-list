@@ -9,7 +9,7 @@
     },
     {
       "name": "Remove an IP address from list",
-      "id": "MemberRemoved",
+      "id": "DELETE_MEMBER",
       "params": []
     }
   ],
