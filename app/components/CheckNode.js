@@ -59,12 +59,6 @@ export default class CheckNode extends React.Component {
     event.preventDefault()
   }
 
-  handleDebug() {
-    this.setState({
-      displayCard: !this.state.displayCard
-    })
-  }
-
   render() {
     console.log("EXISTING NODE", this.state.existingNode)
     console.log("DISPLAAAAAAAY", this.state.displayCard)

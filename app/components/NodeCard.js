@@ -45,10 +45,11 @@ export default class CardComponent extends React.Component {
       text = text + ' is not on list'
       bg = theme.negative
     }
+    console.log("VISBILITY", this.props.visibility)
     return(
       <div>
         <CardContainer
-          visibility={this.state.visibility}
+          visibility={this.props.visibility}
           background={bg}
         >
           <Text>{text}</Text>
