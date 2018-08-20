@@ -36,7 +36,6 @@ export default class CardComponent extends React.Component {
     let zero = '0x0000000000000000000000000000000000000000'
     let bg
     let text = 'This node'
-    console.log("EEETHER", this.props.ethAddr)
     if (this.props.ethAddr !== zero && this.props.ethAddr !== '') {
       text = text + ' is on list'
       bg = theme.positive
@@ -45,7 +44,6 @@ export default class CardComponent extends React.Component {
       text = text + ' is not on list'
       bg = theme.negative
     }
-    console.log("VISBILITY", this.props.visibility)
     return(
       <div>
         <CardContainer

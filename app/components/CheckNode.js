@@ -49,7 +49,6 @@ export default class CheckNode extends React.Component {
   handleSubmit = event => {
     var zero = '0x0000000000000000000000000000000000000000'
     this.getMember().then(address => {
-      console.log("SPAAACE", address)
       this.setState({
         existingNode: address !== zero,
         ethAddr: address,
@@ -60,8 +59,6 @@ export default class CheckNode extends React.Component {
   }
 
   render() {
-    console.log("EXISTING NODE", this.state.existingNode)
-    console.log("DISPLAAAAAAAY", this.state.displayCard)
     return (
       <CheckNodeContainer>
         <Form onSubmit={this.handleSubmit} >
