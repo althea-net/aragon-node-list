@@ -18,7 +18,7 @@ contract NodeList is AragonApp {
     NewMember(_ethAddr, _ip);
   }
 
-  function deleteMember(bytes16 _ip) auth(ADD_MEMBER) external {
+  function deleteMember(bytes16 _ip) auth(DELETE_MEMBER) external {
     MemberRemoved(nodeList[_ip], _ip);
     nodeList[_ip] = 0x0000000000000000000000000000000000000000;
   }
