@@ -10,12 +10,8 @@ import styled from 'styled-components'
 import NodeCard from './NodeCard'
 
 const Form = styled.form`
-  padding: 10mm;
-  padding-bottom: 50mm;
-  margin-top: 10mm;
-  margin-bottom: 10mm;
   display: inline-flex;
-  heigh: 100px;
+  height: 200px;
 `
 
 export default class CheckNode extends React.Component {
@@ -23,6 +19,7 @@ export default class CheckNode extends React.Component {
     super(props)
     this.state = {
       existingNode: false,
+      cardVisibility: 'hidden',
       query: ''
     }
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -65,6 +62,7 @@ export default class CheckNode extends React.Component {
         </Form>
         <NodeCard
           existingNode={this.state.existingNode}
+          visibility={this.state.cardVisibility}
         />
       </div>
     )

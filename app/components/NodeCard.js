@@ -10,18 +10,14 @@ import styled from 'styled-components'
 const CardContainer = styled(Card)`
   visibility: ${props => props.visibility};
   background-color: ${props => props.background};
-  padding: 10mm;
-  padding-bottom: 50mm;
-  margin-top: 10mm;
-  margin-bottom: 10mm;
-  heigh: 100px;
+  height: 50px;
+  width: 500px;
 `
 
 export default class CardComponent extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      visibility: 'hidden',
       bg: theme.gradientStart
     }
   }
@@ -44,7 +40,7 @@ export default class CardComponent extends React.Component {
     return(
       <div>
         <CardContainer
-          visibility={this.state.visibility}
+          visibility={this.props.visibility}
           background={this.state.bg}
         >
           <Text>{text}</Text>
