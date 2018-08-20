@@ -15,11 +15,11 @@ contract NodeList is AragonApp {
   function addMember(address _ethAddr, bytes16 _ip) auth(ADD_MEMBER) external {
     require(nodeList[_ip] == 0x0000000000000000000000000000000000000000);
     nodeList[_ip] = _ethAddr;
-    emit NewMember(_ethAddr, _ip);
+    NewMember(_ethAddr, _ip);
   }
 
   function deleteMember(bytes16 _ip) auth(DELETE_MEMBER) external {
-    emit MemberRemoved(nodeList[_ip], _ip);
+    MemberRemoved(nodeList[_ip], _ip);
     nodeList[_ip] = 0x0000000000000000000000000000000000000000;
   }
 
