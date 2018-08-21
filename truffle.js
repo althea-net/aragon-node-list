@@ -8,8 +8,8 @@ module.exports = {
       network_id: '*'
     },
     rinkeby: {
-      host: 'http://sasquatch.network',
-      port: 9545,
+      host: 'sasquatch.network',
+      port: 9546,
       network_id: '4',
       from: "0x7e57506cb56d8c862466fc1bd5efdd82a3c9ad41"
     },
