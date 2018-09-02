@@ -3,7 +3,7 @@
 Global tools:
 
 ```
-npm i -g truffle@beta
+npm i -g truffle@beta //@5.0.0 because it is using web3 @1.0.28 which is awesome
 npm i -g ganache-cli
 npm i -g @aragon/cli
 
