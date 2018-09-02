@@ -1,6 +1,6 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.4.18;
 
-import "openzeppelin-solidity/contracts/math/SafeMath.sol";
+import "@aragon/os/contracts/lib/zeppelin/math/SafeMath.sol";
 
 
 contract RenewalFeeEscrow {
@@ -25,21 +25,19 @@ contract RenewalFeeEscrow {
   subnetDAOs. This will get queried like subnetDAO.getMemberList
   */
   address public subnetDAO;
-  constructor (address _subnetDaoManager) public {
+  function RenewalFeeEscrow (address _subnetDaoManager) public {
     subnetDAO = _subnetDaoManager;
   }
 
   function addBill (address _payableTo, uint _price) public payable {
 
     require(msg.value.mul(_price) > 1);
-    require(
-      billMapping[msg.sender][_payableTo].lastUpdated == 0, "Bill already exists"
-    );
+    require(billMapping[msg.sender][_payableTo].lastUpdated == 0);
 
     billMapping[msg.sender][_payableTo] = Bill(msg.value, _price, block.number);
     subscribersOfPayee[_payableTo].push(msg.sender);
     collectorsOfPayer[msg.sender].push(_payableTo);
-    emit NewBill(msg.sender, _payableTo);
+    NewBill(msg.sender, _payableTo);
   }
 
   function getCountOfSubscribers(address _payee) public view returns (uint) {
@@ -52,9 +50,7 @@ contract RenewalFeeEscrow {
 
   function topOffBill(address _payee) public payable {
     require(msg.value != 0);
-    require(
-      billMapping[msg.sender][_payee].lastUpdated != 0, "Bill needs to be added first"
-    );
+    require(billMapping[msg.sender][_payee].lastUpdated != 0);
     uint newValue = billMapping[msg.sender][_payee].account.add(msg.value);
     billMapping[msg.sender][_payee].account = newValue;
   }
