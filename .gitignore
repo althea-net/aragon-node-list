@@ -7,3 +7,4 @@ package-lock.json
 .tern-project
 .eth-mutants
 rinkeby
+yarn-error.log
