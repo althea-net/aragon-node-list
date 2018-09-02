@@ -1,6 +1,6 @@
 {
-  "name": "app-name",
-  "version": "1.0.0",
+  "name": "subnet-controller",
+  "version": "0.1.0",
   "description": "",
   "dependencies": {
     "@aragon/client": "^1.0.0-beta.9",
@@ -32,13 +32,11 @@
   "scripts": {
     "start": "aragon run",
     "clean-start": "rm -rf .cache && rm -rf dist && DEBUG=true aragon run dev",
-    "test": "aragon contracts test",
     "compile": "aragon contracts compile",
     "sync-assets": "mkdir -p dist; rsync -rtu \"$(dirname $(node -p 'require.resolve(\"@aragon/ui\")'))/\" dist/aragon-ui",
     "build:app": "parcel build app/index.html -d dist/ --public-url '.'",
     "build:script": "parcel build app/script.js -d dist/",
-    "build": "npm run compile && npm run sync-assets && npm run build:app && npm run build:script",
-    "publish:rinkeby": "aragon publish --files build/ --no-contract=true 0x0000000000000000000000000000000000000000"
+    "build": "npm run compile && npm run sync-assets && npm run build:app && npm run build:script"
   },
   "keywords": [],
   "license": "GPL-3.0"
