@@ -6,6 +6,7 @@ require('chai').should()
 
 const expectEvent = require('./helpers/expectEvent.js')
 const { assertRevert } = require('./helpers/assertRevert.js')
+const { summation } = require('./helpers/summation.js')
 
 contract('RenewalFeeEscrow', (accounts) => {
 
@@ -187,20 +188,13 @@ contract('RenewalFeeEscrow', (accounts) => {
             from: accounts[i], value: accountOne
         })
       }
-      // Helper function that determines the amount
-      // of block dues for accounts since adding a new bill
-      // adds a new transaction
-      const recursiveSum = count => {
-        if (count === 1) return 1
-        return recursiveSum(count - 1) + count
-      }
 
       let previousBalance = new BN(await web3.eth.getBalance(subnetDAO))
 
       const txn = await contract.collectSubnetFees({from: subnetDAO})
 
       const txnCost = new BN(txn.receipt.gasUsed*(await web3.eth.getGasPrice()))
-      const billCount = new BN(recursiveSum(subscribersCount))
+      const billCount = new BN(summation(subscribersCount))
       let expectedNewBalance = new BN(perBlockFee).mul(billCount)
         .add(previousBalance).sub(txnCost)
 
