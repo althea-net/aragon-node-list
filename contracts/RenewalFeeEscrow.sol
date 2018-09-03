@@ -71,7 +71,7 @@ contract RenewalFeeEscrow {
     address(msg.sender).transfer(transferValue);
   }
 
-  function payMyBills () public {
+  function payMyBills() public {
 
     for (uint i = 0; i < collectorsOfPayer[msg.sender].length; i++) {
       address collector = collectorsOfPayer[msg.sender][i];
@@ -83,6 +83,24 @@ contract RenewalFeeEscrow {
 
       collector.transfer(transferValue);
     }
+  }
+
+  function withdrawFromBill() public {
+
+    payMyBills();
+
+    uint totalBalance;
+    address collector;
+
+    for (uint i = 0; i < collectorsOfPayer[msg.sender].length; i++) {
+      
+      totalBalance = totalBalance.add(
+        billMapping[msg.sender][collectorsOfPayer[msg.sender][i]].account
+      );
+
+    }
+    require(totalBalance > 0);
+    address(msg.sender).transfer(totalBalance);
   }
 
   function updateBills(
