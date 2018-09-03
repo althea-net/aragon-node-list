@@ -285,6 +285,60 @@ contract('RenewalFeeEscrow', (accounts) => {
       bill.account.toString().should.eql('0')
 
     })
-
   })
+
+  describe.only('withdrawFromBill', async () => {
+
+    beforeEach(async() => {
+      contract = await RenewalFeeEscrow.new(subnetDAO)
+    })
+
+    it.only('Increases the balance of the subscriber', async () => {
+      let accountOne = 1*(10**10)
+      let perBlockFee = 1*(10**9)
+
+      await contract.addBill(subnetDAO, perBlockFee, {
+        from: accounts[1], value: accountOne
+      })
+
+      await contract.addBill(subnetDAOTwo, perBlockFee, {
+        from: accounts[1], value: accountOne
+      })
+
+      const oldBalance = await web3.eth.getBalance(accounts[1])
+
+      const txn = await contract.withdrawFromBill({from: accounts[1]})
+      let txnCost = txn.receipt.gasUsed*(await web3.eth.getGasPrice())
+
+      console.log('HI', accountOne/perBlockFee)
+      console.log('Total txns', summation(2))
+      let leftOverAccount = 2*accountOne - perBlockFee*summation(2)
+      let expectedNewBalance = leftOverAccount + oldBalance - txnCost 
+      expectedNewBalance.should.eql(await web3.eth.getBalance(accounts[1]))
+    })
+    
+    it('It reverts (saves gas) when the account has 0', async () => {
+      let accountOne = 1*(10**10)
+      let perBlockFee = 1*(10**9)
+
+      await contract.addBill(subnetDAO, perBlockFee, {
+        from: accounts[1], value: accountOne
+      })
+
+      await contract.addBill(subnetDAOTwo, perBlockFee, {
+        from: accounts[1], value: accountOne
+      })
+      // extra txns to run up the counter
+      for (var i = 0; i < 10; i++) {
+        await  web3.eth.sendTransaction({
+          from: accounts[1],
+          to: '0x0000000000000000000000000000000000000000',
+          value: 1
+        })
+      }
+      assertRevert(contract.withdrawFromBill({from: accounts[1]}))
+    })
+  
+  })
+
 })
