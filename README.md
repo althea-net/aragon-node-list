@@ -1,3 +1,10 @@
+# Subnet-controller
+
+This repo contains the contracts and Aragon app used by Althea for managing SubnetDAOs.
+
+For more information please read: [https://altheamesh.com/governance-paper](https://altheamesh.com/governance-paper)
+
+
 ## Usage
 
 Global tools:
