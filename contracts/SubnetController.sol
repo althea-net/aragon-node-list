@@ -10,7 +10,7 @@ import "./RenewalFeeEscrow.sol";
 contract SubnetController is AragonApp {
 
   // This role whill probably be determined by the TCR
-  bytes32 contact public SUBNET_OWNER = keccack256("SUBNET_OWNERS");
+  bytes32 constant public SUBNET_OWNER = keccak256("SUBNET_OWNERS");
 
   function acceptBill() auth(SUBNET_OWNER){
   }
