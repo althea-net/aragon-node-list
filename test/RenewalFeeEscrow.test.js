@@ -287,13 +287,13 @@ contract('RenewalFeeEscrow', (accounts) => {
     })
   })
 
-  describe.only('withdrawFromBill', async () => {
+  describe('withdrawFromBill', async () => {
 
     beforeEach(async() => {
       contract = await RenewalFeeEscrow.new(subnetDAO)
     })
 
-    it.only('Increases the balance of the subscriber', async () => {
+    it('Increases the balance of the subscriber', async () => {
       let accountOne = 1*(10**10)
       let perBlockFee = 1*(10**9)
 
@@ -305,16 +305,14 @@ contract('RenewalFeeEscrow', (accounts) => {
         from: accounts[1], value: accountOne
       })
 
-      const oldBalance = await web3.eth.getBalance(accounts[1])
+      const oldBalance = new BN(await web3.eth.getBalance(accounts[1]))
 
       const txn = await contract.withdrawFromBill({from: accounts[1]})
-      let txnCost = txn.receipt.gasUsed*(await web3.eth.getGasPrice())
+      let txnCost = new BN(txn.receipt.gasUsed*(await web3.eth.getGasPrice()))
 
-      console.log('HI', accountOne/perBlockFee)
-      console.log('Total txns', summation(2))
-      let leftOverAccount = 2*accountOne - perBlockFee*summation(2)
-      let expectedNewBalance = leftOverAccount + oldBalance - txnCost 
-      expectedNewBalance.should.eql(await web3.eth.getBalance(accounts[1]))
+      let leftOverAccount = new BN(2*accountOne - perBlockFee*summation(2))
+      let expectedNewBalance = leftOverAccount.add(oldBalance).sub(txnCost)
+      expectedNewBalance.toString().should.eql(await web3.eth.getBalance(accounts[1]))
     })
     
     it('It reverts (saves gas) when the account has 0', async () => {
