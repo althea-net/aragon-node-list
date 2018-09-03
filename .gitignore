@@ -2,3 +2,9 @@ node_modules
 build
 .cache
 dist
+package-lock.json
+.tern-port
+.tern-project
+.eth-mutants
+rinkeby
+yarn-error.log

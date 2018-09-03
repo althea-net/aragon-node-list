@@ -1,97 +1,39 @@
-import React from "react";
-import { AragonApp, Text, observe, TextInput } from "@aragon/ui";
-// import Aragon, { providers } from "@aragon/client";
-import styled from "styled-components";
+import React from 'react'
+import { AragonApp, observe, Button, Text } from '@aragon/ui'
+import Aragon, { providers } from '@aragon/client'
+import styled from 'styled-components'
+import { Grid, Row, Col } from 'react-flexbox-grid'
+
+import NewNodeForm from './components/NewNodeForm'
+import CheckNode from './components/CheckNode'
+import DeleteNode from './components/DeleteNode'
 
 const AppContainer = styled(AragonApp)`
   display: flex;
-  align-items: center;
   justify-content: center;
-`;
-
-class FormData {
-  constructor(validators, that) {
-    this.validators = validators;
-    this.that = that;
-  }
-
-  onFieldChange = e => {
-    const { name, value } = e.target;
-
-    this.that.setState({
-      fields: {
-        ...this.that.state.fields,
-        [name]: value
-      },
-
-      valid: {
-        ...this.that.state.valid,
-        [name]: this.validators[name] && this.validators[name](value)
-      }
-    });
-  };
-
-  isFieldValid = name => {
-    return this.that.state.fields && this.that.state.fields[name]
-      ? this.that.state.valid && this.that.state.valid[name]
-      : undefined;
-  };
-}
-
-class NewNodeForm extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      fields: {
-        eth_addr: "ope"
-      }
-    };
-    this.formData = new FormData(
-      {
-        eth_addr: value => {
-          return value.length > 8;
-        }
-      },
-      this
-    );
-  }
-
-  render() {
-    console.log("shit");
-    return (
-      <form onSubmit={this.onSubmit}>
-        fuck
-        <TextInput
-          name="eth_addr"
-          style={
-            this.formData.isFieldValid("eth_addr") === false
-              ? { background: "red" }
-              : {}
-          }
-          onChange={this.formData.onFieldChange}
-          value={this.state.fields.eth_addr || ""}
-          placeholder="Node Ethereum address"
-          required
-          wide
-        />
-      </form>
-    );
-  }
-}
+  align-content: flex-start;
+  flex-direction: column;
+  text-align: center;
+`
 
 export default class App extends React.Component {
   render() {
     return (
       <AppContainer>
-        <div>fuck that</div>
-        <NewNodeForm />
+        <Row center='xs' top>
+          <Col>
+            <CheckNode app={this.props.app} />
+          </Col>
+        </Row>
+        <Row center='xs' around='xs'>
+          <Col xs={6} md={6} sm={6} lg={6}>
+            <NewNodeForm app={this.props.app} />
+          </Col>
+          <Col xs={6} md={6} sm={6} lg={6}>
+            <DeleteNode app={this.props.app} />
+          </Col>
+        </Row>
       </AppContainer>
-    );
+    )
   }
 }
-
-const ObservedCount = observe(state$ => state$, { count: 0 })(({ count }) => (
-  <Text.Block style={{ textAlign: "center" }} size="xxlarge">
-    {count}
-  </Text.Block>
-));

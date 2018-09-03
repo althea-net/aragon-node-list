@@ -1,6 +1,49 @@
+
 {
-  "extends": ["plugin:react-app/recommended"],
-  "rules": {
-    "no-loop-func": "off"
-  }
+    "env": {
+        "browser" : true,
+        "node"    : true,
+        "mocha"   : true,
+        "browser": true,
+        "commonjs": true,
+        "es6": true
+    },
+    "globals" : {
+      "artifacts": false,
+      "contract": false,
+      "assert": false,
+      "web3": false
+    },
+    "extends": [
+      "plugin:react/recommended",
+      "standard",
+      "plugin:promise/recommended"
+    ],
+    "parserOptions": {
+        "ecmaFeatures": {
+            "experimentalObjectRestSpread": true,
+            "jsx": true
+        },
+        "sourceType": "module"
+    },
+    "plugins": [
+        "react",
+        "promise"
+    ],
+    "rules": {
+        "semi": ["error", "always"],
+        "indent": [
+            "error",
+            2,
+            {
+            "SwitchCase": 1
+            }
+        ],
+        "no-loop-func": "off",
+        "linebreak-style": [
+            "error",
+            "unix"
+        ]
+    }
 }
+ 

@@ -1,17 +1,17 @@
 {
-  "appName": "bao.aragonpm.eth",
-  "version": "1.0.0",
+  "appName": "nodelist.aragonpm.eth",
+  "version": "0.0.1",
   "roles": [
     {
-      "name": "Increment the counter",
-      "id": "INCREMENT_ROLE",
+      "name": "Add a new ETH address and IP address to list",
+      "id": "ADD_MEMBER",
       "params": []
     },
     {
-      "name": "Decrement the counter",
-      "id": "DECREMENT_ROLE",
+      "name": "Remove an IP address from list",
+      "id": "DELETE_MEMBER",
       "params": []
     }
   ],
-  "path": "contracts/CounterApp.sol"
+  "path": "contracts/NodeList.sol"
 }
