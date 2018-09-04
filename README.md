@@ -16,6 +16,8 @@ npm i -g @aragon/cli
 
 ```
 
+If you need to run truffle compatible with aragon-cli use: `aragon contracts <what ever truffle command>`
+
 Repo deps:
 
 ```
