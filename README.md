@@ -24,7 +24,9 @@ Repo deps:
 yarn install
 ```
 
-Running test, `aragon devchain` doesn't work because it doesn't have enough accounts:
+### Running tests
+
+Use the global `truffle` and `ganache-cli` instead of the `aragon contracts` truffle wrapper. Like so:
 
 ```
 ganache-cli
