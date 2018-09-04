@@ -8,10 +8,13 @@ module.exports = {
       network_id: '*'
     },
     rinkeby: {
-      host: 'sasquatch.network',
-      port: 9546,
-      network_id: '4',
-      from: "0x7e57506cb56d8c862466fc1bd5efdd82a3c9ad41"
+      provider: function() {
+        return new HDWalletProvider(
+          process.env.MNEMONIC,
+          "http://sasquatch.network:9545"
+        )
+      },
+      network_id: '4'
     },
     infura: {
       provider: function() {
