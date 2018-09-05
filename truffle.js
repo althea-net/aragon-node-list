@@ -7,6 +7,11 @@ module.exports = {
       port: 8545,
       network_id: '*'
     },
+    sasquatch: {
+      host: 'sasquatch.network',
+      port: 19546,
+      network_id: '4'
+    },
     rinkeby: {
       provider: function() {
         return new HDWalletProvider(

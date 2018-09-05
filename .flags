@@ -1,0 +1,1 @@
+export RINKEBY='--apm.ens-registry "0xfbae32d1cde62858bc45f51efc8cc4fa1415447e" --no-ipfs-check --apm.ipfs.rpc "http://ipfs.aragon.network:5001" --eth-rpc "http://sasquatch.network:9546" --network rinkeby'

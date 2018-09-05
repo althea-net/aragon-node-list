@@ -46,3 +46,12 @@ truffle test
 Current NodeList address in Rinkeby: `0x44e3f46d37318d6b608756f48d7a9d86934be624`
 
 `aragon apm publish [CONTRACT ADDRESS DEPLOYED ON RINKEBY] --network rinkeby --apm.ens-registry "0xfbae32d1cde62858bc45f51efc8cc4fa1415447e" --no-ipfs-check --apm.ipfs.rpc "http://ipfs.aragon.network:5001" --files build --only-content` 
+
+
+Steps:
+
+    npm run build
+    aragon dao new
+    aragon apm publish
+    aragon contracts deploy
+    aragon dao install <> daocontroller.aragonpm.eth
