@@ -31,8 +31,8 @@
   },
   "scripts": {
     "start": "aragon run",
-    "clean": "rm -rf .cache && rm -rf dist",
-    "clean-start": "rm -rf .cache && rm -rf dist && DEBUG=true aragon run dev",
+    "clean": "rm -rf .cache && rm -rf dist && rm -rf build",
+    "clean-start": "npm run clean && aragon run dev",
     "compile": "aragon contracts compile",
     "sync-assets": "mkdir -p dist; rsync -rtu \"$(dirname $(node -p 'require.resolve(\"@aragon/ui\")'))/\" dist/aragon-ui",
     "build:app": "parcel build app/index.html -d dist/ --public-url '.'",
