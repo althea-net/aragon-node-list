@@ -7,7 +7,12 @@ module.exports = {
       port: 8545,
       network_id: '*'
     },
-    sasquatch: {
+    sasquatch_rpc: {
+      host: 'sasquatch.network',
+      port: 19545,
+      network_id: '4'
+    },
+    sasquatch_ws: {
       host: 'sasquatch.network',
       port: 19546,
       network_id: '4'
