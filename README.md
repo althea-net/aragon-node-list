@@ -50,8 +50,10 @@ Current NodeList address in Rinkeby: `0x44e3f46d37318d6b608756f48d7a9d86934be624
 
 Steps:
 
+    npm run clean
     npm run build
-    aragon dao new
-    aragon apm publish
     aragon contracts deploy
-    aragon dao install <> daocontroller.aragonpm.eth
+    ADDRESS=$(cat build/contracts/NodeList.json| jq .networks | grep address | cut -d: -f2 | tr -d \" | tr -d \\n)
+    aragon apm publish $ADDRESS
+    DAO=$(aragon dao new | grep Created | cut -d' ' -f5)
+    aragon dao install $DAO <pacakge name>.aragonpm.eth
