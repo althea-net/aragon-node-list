@@ -57,3 +57,10 @@ Steps:
     aragon apm publish $ADDRESS
     DAO=$(aragon dao new | grep Created | cut -d' ' -f5)
     aragon dao install $DAO <pacakge name>.aragonpm.eth
+
+### Successful commands
+
+apm: `seabass.open.aragonapm.eth`
+```
+nogara apm publish `ADDRESS` --network sasquatch_ws --apm.ens-registry "0xfbae32d1cde62858bc45f51efc8cc4fa1415447e" --no-ipfs-check --apm.ipfs.rpc "http://ipfs.aragon.network:5001" --files build --only-content
+```
