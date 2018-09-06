@@ -3,6 +3,7 @@ pragma solidity ^0.4.18;
 import "@aragon/os/contracts/apps/AragonApp.sol";
 
 import "./RenewalFeeEscrow.sol";
+import "./NodeList.sol";
 
 /*
 @notice Privides an interface for Subnet owners to admistrate their subnet
@@ -11,6 +12,11 @@ contract SubnetController is AragonApp {
 
   // This role whill probably be determined by the TCR
   bytes32 constant public SUBNET_OWNER = keccak256("SUBNET_OWNERS");
+
+  RenewalFeeEscrow renewalFeeEscrow;
+  function SubnetController() {
+    renewalFeeEscrow = new RenewalFeeEscrow();
+  }
 
   function acceptBill() auth(SUBNET_OWNER){
   }
