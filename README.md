@@ -12,13 +12,15 @@ Global tools:
 ```
 npm i -g truffle@beta //@5.0.0 because it is using web3 @1.0.28 which is awesome
 npm i -g ganache-cli
-npm i -g @aragon/cli
 
+// This package is using truffle@beta
+npm i -g git+https://github.com/Sebohe/aragon-cli.git
+
+// You will also now need a docker solc compiler
+docker pull ethereum/solc:0.4.18
 ```
 
-If you need to run truffle compatible with aragon-cli use: `aragon contracts <what ever truffle command>`
-
-Repo deps:
+Repo install:
 
 ```
 yarn install

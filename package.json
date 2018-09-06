@@ -12,6 +12,7 @@
     "styled-components": "^3.2.6"
   },
   "devDependencies": {
+    "@aragon/aragen": "^2.0.0-beta.1",
     "babel-eslint": "^7.2.3",
     "babel-plugin-styled-components": "^1.5.1",
     "babel-plugin-transform-runtime": "^6.23.0",
@@ -38,7 +39,8 @@
     "build:app": "parcel build app/index.html -d dist/ --public-url '.'",
     "build:script": "parcel build app/script.js -d dist/",
     "build": "npm run compile && npm run sync-assets && npm run build:app && npm run build:script",
-    "abi": "mkdir -p contracts/abi && for i in contracts/*.sol; do x=$(echo $i | sed 's/.sol//' | sed 's|contracts/||'); jq .abi build/contracts/$x.json > contracts/abi/$x.json; done"
+    "abi": "mkdir -p contracts/abi && for i in contracts/*.sol; do x=$(echo $i | sed 's/.sol//' | sed 's|contracts/||'); jq .abi build/contracts/$x.json > contracts/abi/$x.json; done",
+    "devchain": "ganache-cli --db node_modules/@aragon/aragen/aragon-ganache -m \"explain tackle mirror kit van hammer degree position ginger unfair soup bonus\" -i 15 -l 100000000"
   },
   "keywords": [],
   "license": "GPL-3.0"
