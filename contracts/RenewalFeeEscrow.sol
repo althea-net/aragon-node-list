@@ -40,6 +40,7 @@ contract RenewalFeeEscrow {
     NewBill(msg.sender, subnetDAO);
   }
 
+
   function topOffBill() public payable {
     require(msg.value != 0);
     require(billMapping[msg.sender].lastUpdated != 0);
@@ -54,22 +55,25 @@ contract RenewalFeeEscrow {
   function collectMyBills() public {
     uint transferValue = 0;
     for (uint i = 0; i < subnetSubscribers.length; i++) {
-      transferValue = transferValue.add(updateBills(subnetSubscribers[i]));
+      transferValue = transferValue.add(processBills(subnetSubscribers[i]));
     }
-    address(msg.sender).transfer(transferValue);
+    address(subnetDAO).transfer(transferValue);
   }
 
   function payMyBills() public {
-    transferValue = updateBills();
-    address(subnetDAO).transfer(transferValue);
+    processBills(msg.sender);
   }
 
   function withdrawFromBill() public {
     payMyBills();
-    address(msg.sender).transfer(billMapping[msg.sender].account);
+    
+    uint amount = billMapping[msg.sender].account;
+    require(amount > 0);
+    billMapping[msg.sender].account = 0;
+    address(msg.sender).transfer(amount);
   }
 
-  function updateBills(address _subscriber) internal returns(uint) {
+  function processBills(address _subscriber) internal returns(uint) {
     uint transferValue;
     Bill memory bill = billMapping[_subscriber];
     uint amountOwed = block.number.sub(bill.lastUpdated).mul(bill.perBlock);
@@ -79,13 +83,13 @@ contract RenewalFeeEscrow {
       transferValue = amountOwed;
     } else {
       transferValue = bill.account;
-      billMapping[subscriber].account = 0;
+      billMapping[_subscriber].account = 0;
     }
-    billMapping[subscriber].lastUpdated = block.number;
+    billMapping[_subscriber].lastUpdated = block.number;
     return transferValue;
   }
 
-  function setPerBlockFee(uint _newFee) internal {
+  function setPerBlockFee(uint _newFee) public {
     perBlockFee = _newFee;
   }
 }
