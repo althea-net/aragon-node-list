@@ -64,7 +64,7 @@ Steps:
 
 apm: `seabass.open.aragonapm.eth`
 
-`nogara` is just a custom `aragon` I have built. (github.com/Sebohe/aragon-cli)[github.com/Sebohe/aragon-cli]
+`nogara` is just a custom `aragon` I have built. [github.com/Sebohe/aragon-cli](github.com/Sebohe/aragon-cli)
 
 ```
 nogara apm publish `ADDRESS` --network sasquatch_ws --apm.ens-registry "0xfbae32d1cde62858bc45f51efc8cc4fa1415447e" --no-ipfs-check --apm.ipfs.rpc "http://ipfs.aragon.network:5001" --files build --only-content
