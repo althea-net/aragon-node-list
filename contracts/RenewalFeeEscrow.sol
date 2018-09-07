@@ -11,9 +11,9 @@ contract RenewalFeeEscrow {
   event DebugInt(string msg, uint i);
   event DebugAddress(address msg);
 
-  mapping (address => mapping (address => Bill)) public billMapping;
-  mapping (address => address[]) public subscribersOfPayee;
-  mapping (address => address[]) public collectorsOfPayer;
+  uint public perBlockFee;
+  mapping (address => Bill) public billMapping;
+  address[] public subnetSubscribers;
 
   struct Bill {
     uint account;
@@ -21,108 +21,61 @@ contract RenewalFeeEscrow {
     uint lastUpdated;
   }
 
-  /*
-  @notice subnetDAO is going to be the smart contract that has the list of 
-  subnetDAOs. This will get queried like subnetDAO.getMemberList
-  */
-  address public subnetDAO;
-  function RenewalFeeEscrow() public {
-    subnetDAO = msg.sender;
-    DebugAddress(subnetDAO);
+  function getCountOfSubscribers() public view returns (uint) {
+    return subnetSubscribers.length;
   }
 
-  function addBill (address _payableTo, uint _price) public payable {
+  function addBill() public payable {
 
-    require(msg.value.mul(_price) > 1);
-    require(billMapping[msg.sender][_payableTo].lastUpdated == 0);
+    require(msg.value.mul(perBlockFee) > 1);
+    require(billMapping[msg.sender].lastUpdated == 0);
 
-    billMapping[msg.sender][_payableTo] = Bill(msg.value, _price, block.number);
-    subscribersOfPayee[_payableTo].push(msg.sender);
-    collectorsOfPayer[msg.sender].push(_payableTo);
-    NewBill(msg.sender, _payableTo);
+    billMapping[msg.sender] = Bill(msg.value, perBlockFee, block.number);
+    subnetSubscribers.push(msg.sender);
+    NewBill(msg.sender, subnetDAO);
   }
 
-  function getCountOfSubscribers(address _payee) public view returns (uint) {
-    return subscribersOfPayee[_payee].length;
-  }
-
-  function getCountOfCollectors(address _payer) public view returns (uint) {
-    return collectorsOfPayer[_payer].length;
-  }
-
-  function topOffBill(address _payee) public payable {
+  function topOffBill() public payable {
     require(msg.value != 0);
-    require(billMapping[msg.sender][_payee].lastUpdated != 0);
-    uint newValue = billMapping[msg.sender][_payee].account.add(msg.value);
-    billMapping[msg.sender][_payee].account = newValue;
+    require(billMapping[msg.sender].lastUpdated != 0);
+    billMapping[msg.sender].account = billMapping[msg.sender].account.add(msg.value);
   }
 
-  function collectSubnetFees() public {
-
-    require(subscribersOfPayee[msg.sender].length > 0);
+  function collectMyBills() public {
     uint transferValue = 0;
-
-    for (uint i = 0; i < subscribersOfPayee[msg.sender].length; i++) {
-
-      transferValue = transferValue.add(updateBills(
-        msg.sender, 
-        subscribersOfPayee[msg.sender][i]
-      ));
+    for (uint i = 0; i < subnetSubscribers.length; i++) {
+      transferValue = transferValue.add(updateBills(subnetSubscribers[i]));
     }
-
     address(msg.sender).transfer(transferValue);
   }
 
   function payMyBills() public {
-
-    for (uint i = 0; i < collectorsOfPayer[msg.sender].length; i++) {
-      address collector = collectorsOfPayer[msg.sender][i];
-
-      uint transferValue = updateBills(
-        collector, 
-        msg.sender
-      );
-
-      collector.transfer(transferValue);
-    }
+    transferValue = updateBills();
+    address(subnetDAO).transfer(transferValue);
   }
 
   function withdrawFromBill() public {
-
     payMyBills();
-
-    uint totalBalance;
-    address collector;
-
-    for (uint i = 0; i < collectorsOfPayer[msg.sender].length; i++) {
-      
-      totalBalance = totalBalance.add(
-        billMapping[msg.sender][collectorsOfPayer[msg.sender][i]].account
-      );
-
-    }
-    require(totalBalance > 0);
-    address(msg.sender).transfer(totalBalance);
+    address(msg.sender).transfer(billMapping[msg.sender].account);
   }
 
-  function updateBills(
-    address collector,
-    address subscriber
-  )
-    internal returns(uint) 
-  {
+  function updateBills(address _subscriber) internal returns(uint) {
     uint transferValue;
-    Bill memory bill = billMapping[subscriber][collector];
+    Bill memory bill = billMapping[_subscriber];
     uint amountOwed = block.number.sub(bill.lastUpdated).mul(bill.perBlock);
 
     if (amountOwed <= bill.account) {
-      billMapping[subscriber][collector].account = bill.account.sub(amountOwed);
+      billMapping[_subscriber].account = bill.account.sub(amountOwed);
       transferValue = amountOwed;
     } else {
       transferValue = bill.account;
-      billMapping[subscriber][collector].account = 0;
+      billMapping[subscriber].account = 0;
     }
-    billMapping[subscriber][collector].lastUpdated = block.number;
+    billMapping[subscriber].lastUpdated = block.number;
     return transferValue;
+  }
+
+  function setPerBlockFee(uint _newFee) internal {
+    perBlockFee = _newFee;
   }
 }
