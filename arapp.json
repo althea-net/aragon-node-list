@@ -11,6 +11,11 @@
       "name": "Remove an IP address from list",
       "id": "DELETE_MEMBER",
       "params": []
+    },
+    {
+      "name": "Subnet Owners",
+      "id": "SUBNET_OWNERS",
+      "params": []
     }
   ],
   "path": "contracts/AltheaDAO.sol"

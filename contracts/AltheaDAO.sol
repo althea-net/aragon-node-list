@@ -18,7 +18,7 @@ contract AltheaDAO is AragonApp {
 
   bytes32 constant public ADD_MEMBER = keccak256("ADD_MEMBER");
   bytes32 constant public DELETE_MEMBER = keccak256("DELETE_MEMBER");
-  bytes32 constant public SUBNET_OWNER = keccak256("SUBNET_OWNERS");
+  bytes32 constant public SUBNET_OWNERS = keccak256("SUBNET_OWNERS");
 
   RenewalFeeEscrow renewalFeeEscrow;
 
@@ -41,7 +41,7 @@ contract AltheaDAO is AragonApp {
     addr = nodeList[_ip]; 
   }
 
-  function setBillPerBlockRate(uint _newFee) public auth(SUBNET_OWNER) {
+  function setBillPerBlockRate(uint _newFee) public auth(SUBNET_OWNERS) {
     renewalFeeEscrow.setPerBlockFee(_newFee);
   }
 
