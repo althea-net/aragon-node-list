@@ -12,6 +12,7 @@ contract RenewalFeeEscrow {
   event DebugAddress(address msg);
 
   uint public perBlockFee;
+  address public subnetDAO;
   mapping (address => Bill) public billMapping;
   address[] public subnetSubscribers;
 
@@ -19,6 +20,10 @@ contract RenewalFeeEscrow {
     uint account;
     uint perBlock;
     uint lastUpdated;
+  }
+
+  function RenewalFeeEscrow() public {
+    subnetDAO = msg.sender;
   }
 
   function getCountOfSubscribers() public view returns (uint) {
@@ -39,6 +44,11 @@ contract RenewalFeeEscrow {
     require(msg.value != 0);
     require(billMapping[msg.sender].lastUpdated != 0);
     billMapping[msg.sender].account = billMapping[msg.sender].account.add(msg.value);
+  }
+
+  // fallback
+  function() public payable {
+    revert();
   }
 
   function collectMyBills() public {
