@@ -9,7 +9,6 @@ contract RenewalFeeEscrow {
   event NewBill(address payer, address collector);
   event Debug(string msg);
   event DebugInt(string msg, uint i);
-  event DebugAddress(address msg);
 
   mapping (address => mapping (address => Bill)) public billMapping;
   mapping (address => address[]) public subscribersOfPayee;
@@ -26,9 +25,8 @@ contract RenewalFeeEscrow {
   subnetDAOs. This will get queried like subnetDAO.getMemberList
   */
   address public subnetDAO;
-  function RenewalFeeEscrow() public {
-    subnetDAO = msg.sender;
-    DebugAddress(subnetDAO);
+  function RenewalFeeEscrow (address _subnetDaoManager) public {
+    subnetDAO = _subnetDaoManager;
   }
 
   function addBill (address _payableTo, uint _price) public payable {
@@ -126,3 +124,4 @@ contract RenewalFeeEscrow {
     return transferValue;
   }
 }
+

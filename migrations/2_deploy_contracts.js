@@ -4,6 +4,6 @@ var SubnetController = artifacts.require('./SubnetController.sol')
 
 module.exports = function (deployer, network, accounts) {
   deployer.deploy(NodeList)
-  deployer.deploy(RenewalFeeEscrow)
+  deployer.deploy(RenewalFeeEscrow, accounts[9])
   deployer.deploy(SubnetController)
 }
