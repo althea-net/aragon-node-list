@@ -11,7 +11,7 @@ contract RenewalFeeEscrow {
   event DebugInt(string msg, uint i);
   event DebugAddress(address msg);
 
-  uint public perBlockFee;
+  uint public perBlockFee = 1;
   address public subnetDAO;
   mapping (address => Bill) public billMapping;
   address[] public subnetSubscribers;
@@ -44,6 +44,7 @@ contract RenewalFeeEscrow {
   function topOffBill() public payable {
     require(msg.value != 0);
     require(billMapping[msg.sender].lastUpdated != 0);
+    Debug("Here");
     billMapping[msg.sender].account = billMapping[msg.sender].account.add(msg.value);
   }
 
