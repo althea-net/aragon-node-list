@@ -9,7 +9,6 @@ contract RenewalFeeEscrow {
   event NewBill(address payer, address collector);
   event Debug(string msg);
   event DebugInt(string msg, uint i);
-  event DebugAddress(address msg);
 
   uint public perBlockFee = 1;
   address public subnetDAO;
@@ -94,3 +93,4 @@ contract RenewalFeeEscrow {
     perBlockFee = _newFee;
   }
 }
+
