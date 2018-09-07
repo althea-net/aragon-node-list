@@ -1,6 +1,6 @@
 {
-  "appName": "someothername.open.aragonpm.eth",
-  "version": "1.0.0",
+  "appName": "asoltys.aragonpm.eth",
+  "version": "2.0.1",
   "roles": [
     {
       "name": "Add a new ETH address and IP address to list",

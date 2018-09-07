@@ -7,6 +7,7 @@ import { Grid, Row, Col } from 'react-flexbox-grid'
 import NewNodeForm from './components/NewNodeForm'
 import CheckNode from './components/CheckNode'
 import DeleteNode from './components/DeleteNode'
+import NodeList from './components/NodeList'
 
 const AppContainer = styled(AragonApp)`
   display: flex;
@@ -20,7 +21,8 @@ export default class App extends React.Component {
   render() {
     return (
       <AppContainer>
-        <Row center='xs' top>
+        <NodeList />
+        <Row center='xs'>
           <Col>
             <CheckNode app={this.props.app} />
           </Col>
