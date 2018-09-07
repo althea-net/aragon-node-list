@@ -52,7 +52,7 @@ contract RenewalFeeEscrow {
     revert();
   }
 
-  function collectMyBills() public {
+  function collectBills() public {
     uint transferValue = 0;
     for (uint i = 0; i < subnetSubscribers.length; i++) {
       transferValue = transferValue.add(processBills(subnetSubscribers[i]));
@@ -61,7 +61,7 @@ contract RenewalFeeEscrow {
   }
 
   function payMyBills() public {
-    processBills(msg.sender);
+    address(subnetDAO).transfer(processBills(msg.sender));
   }
 
   function withdrawFromBill() public {
