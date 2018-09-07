@@ -1,15 +1,15 @@
-const NodeList = artifacts.require('./NodeList.sol')
+const AltheaDAO = artifacts.require('./AltheaDAO.sol')
 
 const { assertRevert } = require('./helpers/assertRevert.js')
 
 const ZERO = '0x0000000000000000000000000000000000000000'
 
-contract('NodeList', (accounts) => {
+contract('AltheaDAO', (accounts) => {
   let contract
   let ipv6 = '0xc0a8010ac0a8010a'
 
   beforeEach(async function() {
-    contract = await NodeList.new()
+    contract = await AltheaDAO.new()
   })
 
   it('Adds a new member to the list', async function() {
