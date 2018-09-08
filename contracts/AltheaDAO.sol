@@ -17,16 +17,16 @@ contract AltheaDAO is AragonApp {
   RenewalFeeEscrow renewalFeeEscrow;
 
   function AltheaDAO() public {
-    renewalFeeEscrow = new RenewalFeeEscrow();
+    renewalFeeEscrow = new RenewalFeeEscrow(1*(10^10));
   }
 
-  function addMember(address _ethAddr, bytes16 _ip) auth(ADD_MEMBER) external {
+  function addMember(address _ethAddr, bytes16 _ip) public auth(ADD_MEMBER) {
     require(nodeList[_ip] == 0x0000000000000000000000000000000000000000);
     nodeList[_ip] = _ethAddr;
     NewMember(_ethAddr, _ip);
   }
 
-  function deleteMember(bytes16 _ip) auth(DELETE_MEMBER) external {
+  function deleteMember(bytes16 _ip) public auth(DELETE_MEMBER) {
     MemberRemoved(nodeList[_ip], _ip);
     nodeList[_ip] = 0x0000000000000000000000000000000000000000;
   }

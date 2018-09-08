@@ -12,11 +12,13 @@ contract('RenewalFeeEscrow', (accounts) => {
 
   let subnetDAO = accounts[accounts.length-1]
   let contract
+  let perBlockFee
 
   describe('addBill', async () => {
 
     beforeEach(async () => {
-      contract = await RenewalFeeEscrow.new({from: subnetDAO})
+      perBlockFee = 1*(10**15)
+      contract = await RenewalFeeEscrow.new(perBlockFee, {from: subnetDAO})
     })
 
     it('Revert when no value is sent', async () => {
@@ -57,7 +59,8 @@ contract('RenewalFeeEscrow', (accounts) => {
     let subnetDAOUsers = Math.floor(Math.random() * (max - min)) + min
 
     beforeEach(async () => {
-      contract = await RenewalFeeEscrow.new({from: subnetDAO})
+      perBlockFee = 1*(10**15)
+      contract = await RenewalFeeEscrow.new(perBlockFee, {from: subnetDAO})
     })
 
     it('Should have the right length', async () => {
@@ -72,7 +75,8 @@ contract('RenewalFeeEscrow', (accounts) => {
 
   describe('topOffBill', async () => {
     beforeEach(async () => {
-      contract = await RenewalFeeEscrow.new({from: subnetDAO})
+      perBlockFee = 1*(10**15)
+      contract = await RenewalFeeEscrow.new(perBlockFee, {from: subnetDAO})
     })
 
     it('Revert when value is zero', async () => {
@@ -98,10 +102,11 @@ contract('RenewalFeeEscrow', (accounts) => {
 
   })
 
-  describe('collectBills', async () => {
+  describe.only('collectBills', async () => {
 
     beforeEach(async () => {
-      contract = await RenewalFeeEscrow.new({from: subnetDAO})
+      perBlockFee = 1*(10**15)
+      contract = await RenewalFeeEscrow.new(perBlockFee, {from: subnetDAO})
     })
 
     it('Revert when caller is not subnetDAO', async () => {
@@ -187,10 +192,11 @@ contract('RenewalFeeEscrow', (accounts) => {
     })
   })
 
-  describe('payMyBills', async () => {
+  describe.only('payMyBills', async () => {
 
     beforeEach(async() => {
-      contract = await RenewalFeeEscrow.new({from: subnetDAO})
+      perBlockFee = 1*(10**15)
+      contract = await RenewalFeeEscrow.new(perBlockFee, {from: subnetDAO})
     })
 
     it('Bill should have lastUpdated with same blockNumber', async () => {
@@ -227,10 +233,9 @@ contract('RenewalFeeEscrow', (accounts) => {
       new BN(await web3.eth.getBalance(subnetDAO)).eq(expectedNewBalance).should.eql(true)
     })
 
-    it('Account of bill should be zero when it cant afford payment', async () => {
+    it.only('Account of bill should be zero when it cant afford payment', async () => {
 
       let accountOne = 2*(10**10)
-      let perBlockFee = 1*(10**10)
       await contract.addBill({value: accountOne})
 
       // extra txns to run up the counter
@@ -249,10 +254,11 @@ contract('RenewalFeeEscrow', (accounts) => {
     })
   })
 
-  describe('withdrawFromBill', async () => {
+  describe.only('withdrawFromBill', async () => {
 
     beforeEach(async() => {
-      contract = await RenewalFeeEscrow.new({from: subnetDAO})
+      perBlockFee = 1*(10**15)
+      contract = await RenewalFeeEscrow.new(perBlockFee, {from: subnetDAO})
     })
 
     it('Increases the balance of the subscriber', async () => {

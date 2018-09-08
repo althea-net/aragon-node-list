@@ -10,7 +10,7 @@ contract RenewalFeeEscrow {
   event Debug(string msg);
   event DebugInt(string msg, uint i);
 
-  uint public perBlockFee = 1;
+  uint public perBlockFee;
   address public subnetDAO;
   mapping (address => Bill) public billMapping;
   address[] public subnetSubscribers;
@@ -21,7 +21,8 @@ contract RenewalFeeEscrow {
     uint lastUpdated;
   }
 
-  function RenewalFeeEscrow() public {
+  function RenewalFeeEscrow(uint _perBlockFee) public {
+    perBlockFee = _perBlockFee;
     subnetDAO = msg.sender;
   }
 
