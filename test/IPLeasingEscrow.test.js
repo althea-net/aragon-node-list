@@ -1,5 +1,5 @@
-const RenewalFeeEscrow = artifacts.require('./RenewalFeeEscrow.sol')
-RenewalFeeEscrow.numberFormat = 'BN'
+const IPLeasingEscrow = artifacts.require('./IPLeasingEscrow.sol')
+IPLeasingEscrow.numberFormat = 'BN'
 const BN = web3.utils.BN
 
 require('chai').should()
@@ -8,7 +8,7 @@ const expectEvent = require('./helpers/expectEvent.js')
 const { assertRevert } = require('./helpers/assertRevert.js')
 const { summation } = require('./helpers/summation.js')
 
-contract('RenewalFeeEscrow', (accounts) => {
+contract('IPLeasingEscrow', (accounts) => {
 
   let subnetDAO = accounts[accounts.length-1]
   let contract
@@ -18,7 +18,7 @@ contract('RenewalFeeEscrow', (accounts) => {
 
     beforeEach(async () => {
       perBlockFee = 1*(10**15)
-      contract = await RenewalFeeEscrow.new(perBlockFee, {from: subnetDAO})
+      contract = await IPLeasingEscrow.new(perBlockFee, {from: subnetDAO})
     })
 
     it('Revert when no value is sent', async () => {
@@ -60,7 +60,7 @@ contract('RenewalFeeEscrow', (accounts) => {
 
     beforeEach(async () => {
       perBlockFee = 1*(10**15)
-      contract = await RenewalFeeEscrow.new(perBlockFee, {from: subnetDAO})
+      contract = await IPLeasingEscrow.new(perBlockFee, {from: subnetDAO})
     })
 
     it('Should have the right length', async () => {
@@ -76,7 +76,7 @@ contract('RenewalFeeEscrow', (accounts) => {
   describe('topOffBill', async () => {
     beforeEach(async () => {
       perBlockFee = 1*(10**15)
-      contract = await RenewalFeeEscrow.new(perBlockFee, {from: subnetDAO})
+      contract = await IPLeasingEscrow.new(perBlockFee, {from: subnetDAO})
     })
 
     it('Revert when value is zero', async () => {
@@ -106,7 +106,7 @@ contract('RenewalFeeEscrow', (accounts) => {
 
     beforeEach(async () => {
       perBlockFee = 1*(10**15)
-      contract = await RenewalFeeEscrow.new(perBlockFee, {from: subnetDAO})
+      contract = await IPLeasingEscrow.new(perBlockFee, {from: subnetDAO})
     })
 
     it('Revert when caller is not subnetDAO', async () => {
@@ -196,7 +196,7 @@ contract('RenewalFeeEscrow', (accounts) => {
 
     beforeEach(async() => {
       perBlockFee = 1*(10**15)
-      contract = await RenewalFeeEscrow.new(perBlockFee, {from: subnetDAO})
+      contract = await IPLeasingEscrow.new(perBlockFee, {from: subnetDAO})
     })
 
     it('Bill should have lastUpdated with same blockNumber', async () => {
@@ -258,7 +258,7 @@ contract('RenewalFeeEscrow', (accounts) => {
 
     beforeEach(async() => {
       perBlockFee = 1*(10**15)
-      contract = await RenewalFeeEscrow.new(perBlockFee, {from: subnetDAO})
+      contract = await IPLeasingEscrow.new(perBlockFee, {from: subnetDAO})
     })
 
     it('Increases the balance of the subscriber', async () => {

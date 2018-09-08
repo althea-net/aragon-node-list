@@ -2,7 +2,7 @@ pragma solidity ^0.4.18;
 
 import "@aragon/os/contracts/apps/AragonApp.sol";
 
-import "./RenewalFeeEscrow.sol";
+import "./IPLeasingEscrow.sol";
 
 contract AltheaDAO is AragonApp {
 
@@ -14,10 +14,10 @@ contract AltheaDAO is AragonApp {
 
   mapping(bytes16 => address) public nodeList;
 
-  RenewalFeeEscrow renewalFeeEscrow;
+  IPLeasingEscrow ipLeasingEscrow;
 
   function AltheaDAO() public {
-    renewalFeeEscrow = new RenewalFeeEscrow(1*(10^10));
+    ipLeasingEscrow = new IPLeasingEscrow(1*(10^10));
   }
 
   function addMember(address _ethAddr, bytes16 _ip) public auth(ADD_MEMBER) {
@@ -36,10 +36,10 @@ contract AltheaDAO is AragonApp {
   }
 
   function SetBillPerBlockRate(uint _newFee) public {
-    renewalFeeEscrow.setPerBlockFee(_newFee);
+    ipLeasingEscrow.setPerBlockFee(_newFee);
   }
 
   function getPerBlockFee() public returns(uint) {
-    return renewalFeeEscrow.perBlockFee();
+    return ipLeasingEscrow.perBlockFee();
   }
 }

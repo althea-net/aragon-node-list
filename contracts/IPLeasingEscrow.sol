@@ -3,7 +3,7 @@ pragma solidity ^0.4.18;
 import "@aragon/os/contracts/lib/zeppelin/math/SafeMath.sol";
 
 
-contract RenewalFeeEscrow {
+contract IPLeasingEscrow {
   using SafeMath for uint;
 
   event NewBill(address payer, address collector);
@@ -21,7 +21,7 @@ contract RenewalFeeEscrow {
     uint lastUpdated;
   }
 
-  function RenewalFeeEscrow(uint _perBlockFee) public {
+  function IPLeasingEscrow(uint _perBlockFee) public {
     perBlockFee = _perBlockFee;
     subnetDAO = msg.sender;
   }
