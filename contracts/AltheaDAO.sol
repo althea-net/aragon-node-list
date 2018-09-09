@@ -39,7 +39,7 @@ contract AltheaDAO is AragonApp {
     ipLeasingEscrow.setPerBlockFee(_newFee);
   }
 
-  function getPerBlockFee() public returns(uint) {
+  function getPerBlockFee() public view returns(uint) {
     return ipLeasingEscrow.perBlockFee();
   }
 }

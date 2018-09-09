@@ -17,7 +17,7 @@ contract('IPLeasingEscrow', (accounts) => {
   describe('addBill', async () => {
 
     beforeEach(async () => {
-      perBlockFee = 1*(10**15)
+      perBlockFee = 1*(10**8)
       contract = await IPLeasingEscrow.new(perBlockFee, {from: subnetDAO})
     })
 
@@ -59,7 +59,7 @@ contract('IPLeasingEscrow', (accounts) => {
     let subnetDAOUsers = Math.floor(Math.random() * (max - min)) + min
 
     beforeEach(async () => {
-      perBlockFee = 1*(10**15)
+      perBlockFee = 1*(10**8)
       contract = await IPLeasingEscrow.new(perBlockFee, {from: subnetDAO})
     })
 
@@ -75,7 +75,7 @@ contract('IPLeasingEscrow', (accounts) => {
 
   describe('topOffBill', async () => {
     beforeEach(async () => {
-      perBlockFee = 1*(10**15)
+      perBlockFee = 1*(10**8)
       contract = await IPLeasingEscrow.new(perBlockFee, {from: subnetDAO})
     })
 
@@ -102,10 +102,10 @@ contract('IPLeasingEscrow', (accounts) => {
 
   })
 
-  describe.only('collectBills', async () => {
+  describe('collectBills', async () => {
 
     beforeEach(async () => {
-      perBlockFee = 1*(10**15)
+      perBlockFee = 1*(10**8)
       contract = await IPLeasingEscrow.new(perBlockFee, {from: subnetDAO})
     })
 
@@ -149,7 +149,6 @@ contract('IPLeasingEscrow', (accounts) => {
     it('Collect from multiple bills', async () => {
 
       let accountOne = 1*(10**17)
-      let perBlockFee = 1*(10**15)
       let subscribersCount = 6
       for (var i = 0; i < subscribersCount; i++) {
         await contract.addBill({from: accounts[i], value: accountOne})
@@ -159,22 +158,19 @@ contract('IPLeasingEscrow', (accounts) => {
 
       const txn = await contract.collectBills({from: subnetDAO})
 
-      const txnCost = new BN(txn.receipt.gasUsed*(await web3.eth.getGasPrice()))
+      const txnCost = new BN(
+        txn.receipt.gasUsed*(await web3.eth.getGasPrice())
+      )
       const billCount = new BN(summation(subscribersCount))
       let expectedNewBalance = new BN(perBlockFee).mul(billCount)
         .add(previousBalance).sub(txnCost)
-
-      console.log('Expted Balance ', expectedNewBalance.toString())
       let balance = new BN(await web3.eth.getBalance(subnetDAO))
-      console.log('Current Balance', balance.toString())
-
       balance.eq(expectedNewBalance).should.eql(true)
     })
 
     it('Set bill account to zero', async () => {
 
       let accountOne = 2*(10**10)
-      let perBlockFee = 1*(10**10)
       await contract.addBill({value: accountOne})
 
       // extra txns to run up the counter
@@ -192,16 +188,16 @@ contract('IPLeasingEscrow', (accounts) => {
     })
   })
 
-  describe.only('payMyBills', async () => {
+  describe('payMyBills', async () => {
 
     beforeEach(async() => {
-      perBlockFee = 1*(10**15)
+      perBlockFee = 1*(10**8)
       contract = await IPLeasingEscrow.new(perBlockFee, {from: subnetDAO})
     })
 
     it('Bill should have lastUpdated with same blockNumber', async () => {
+
       let accountOne = 1*(10**10)
-      let perBlockFee = 1*(10**9)
       await contract.addBill({value: accountOne})
       await contract.payMyBills()
       let bill = await contract.billMapping(accounts[0])
@@ -209,9 +205,9 @@ contract('IPLeasingEscrow', (accounts) => {
       assert(bill.lastUpdated.eq(new BN(await web3.eth.getBlockNumber())))
     })
 
-    it('Collectors should have increased balance', async () => {
+    it('DAO should have increased balance', async () => {
+
       let accountOne = 1*(10**10)
-      let perBlockFee = 1*(10**9)
       await contract.addBill({value: accountOne})
 
       // extra txns to run up the counter
@@ -226,16 +222,18 @@ contract('IPLeasingEscrow', (accounts) => {
 
       let previousBalance = new BN(await web3.eth.getBalance(subnetDAO))
       // the +1 is for the payMyBills txn block number
-      let expectedNewBalance = new BN(perBlockFee).mul(new BN(blockCount + 1))
+      let expectedNewBalance = 
+        new BN(perBlockFee).mul(new BN(blockCount + 1))
       // the i prefix is for inplace
       expectedNewBalance.iadd(previousBalance)
       await contract.payMyBills()
-      new BN(await web3.eth.getBalance(subnetDAO)).eq(expectedNewBalance).should.eql(true)
+      let currentBalance = new BN(await web3.eth.getBalance(subnetDAO))
+      currentBalance.eq(expectedNewBalance).should.eql(true)
     })
 
-    it.only('Account of bill should be zero when it cant afford payment', async () => {
+    it('Account of bill should be zero when it runs out', async () => {
 
-      let accountOne = 2*(10**10)
+      let accountOne = 2*(10**8)
       await contract.addBill({value: accountOne})
 
       // extra txns to run up the counter
@@ -249,27 +247,26 @@ contract('IPLeasingEscrow', (accounts) => {
 
       await contract.payMyBills()
       let bill = await contract.billMapping(accounts[0])
+      console.log('bill', bill.account.toString())
       bill.account.toString().should.eql('0')
 
     })
   })
 
-  describe.only('withdrawFromBill', async () => {
+  describe('withdrawFromBill', async () => {
 
     beforeEach(async() => {
-      perBlockFee = 1*(10**15)
+      perBlockFee = 1*(10**8)
       contract = await IPLeasingEscrow.new(perBlockFee, {from: subnetDAO})
     })
 
-    it('Increases the balance of the subscriber', async () => {
-      let accountOne = 1*(10**10)
-      let perBlockFee = 1*(10**9)
+    it.only('Increases the balance of the subscriber', async () => {
 
+      let accountOne = 1*(10**16)
       await contract.addBill({from: accounts[1], value: accountOne})
 
-
-      const blockCount = 5
       // extra txns to run up the counter
+      const blockCount = 5
       for (var i = 0; i < blockCount; i++) {
         await  web3.eth.sendTransaction({
           from: accounts[1],
@@ -277,19 +274,24 @@ contract('IPLeasingEscrow', (accounts) => {
           value: 1
         })
       }
+
       const oldBalance = new BN(await web3.eth.getBalance(accounts[1]))
 
       const txn = await contract.withdrawFromBill({from: accounts[1]})
-      let txnCost = new BN(txn.receipt.gasUsed*(await web3.eth.getGasPrice()))
 
-      let leftOverAccount = new BN(accountOne - perBlockFee*summation(blockCount))
+      let txnCost = new BN(txn.receipt.gasUsed*(await web3.eth.getGasPrice()))
+      let leftOverAccount = new BN(accountOne - perBlockFee*blockCount)
+
       let expectedNewBalance = leftOverAccount.add(oldBalance).sub(txnCost)
-      expectedNewBalance.toString().should.eql(await web3.eth.getBalance(accounts[1]))
+      console.log('Expected', expectedNewBalance)
+      const current = new BN(await web3.eth.getbalance(accounts[1]))
+      console.log('Current', current)
+
+      //expectedNewBalance.eq(current).should.eql(true)
     })
     
     it('It reverts (saves gas) when the account has 0', async () => {
       let accountOne = 1*(10**10)
-      let perBlockFee = 1*(10**9)
 
       await contract.addBill({from: accounts[1], value: accountOne})
 
