@@ -21,21 +21,21 @@ contract AltheaDAO is AragonApp {
   }
 
   function addMember(address _ethAddr, bytes16 _ip) public auth(ADD_MEMBER) {
-    require(nodeList[_ip] == 0x0000000000000000000000000000000000000000);
+    require(nodeList[_ip] == address(0));
     nodeList[_ip] = _ethAddr;
     NewMember(_ethAddr, _ip);
   }
 
   function deleteMember(bytes16 _ip) public auth(DELETE_MEMBER) {
     MemberRemoved(nodeList[_ip], _ip);
-    nodeList[_ip] = 0x0000000000000000000000000000000000000000;
+    nodeList[_ip] = address(0);
   }
 
   function getMember(bytes16 _ip) public view returns(address addr) {
     addr = nodeList[_ip]; 
   }
 
-  function SetBillPerBlockRate(uint _newFee) public {
+  function setBillPerBlockRate(uint _newFee) public {
     ipLeasingEscrow.setPerBlockFee(_newFee);
   }
 

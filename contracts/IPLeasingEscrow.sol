@@ -7,8 +7,6 @@ contract IPLeasingEscrow {
   using SafeMath for uint;
 
   event NewBill(address payer, address collector);
-  event Debug(string msg);
-  event DebugInt(string msg, uint i);
 
   uint public perBlockFee;
   address public subnetDAO;
@@ -44,7 +42,6 @@ contract IPLeasingEscrow {
   function topOffBill() public payable {
     require(msg.value != 0);
     require(billMapping[msg.sender].lastUpdated != 0);
-    Debug("Here");
     billMapping[msg.sender].account = billMapping[msg.sender].account.add(msg.value);
   }
 
