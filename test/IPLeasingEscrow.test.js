@@ -13,7 +13,7 @@ contract('IPLeasingEscrow', (accounts) => {
   let subnetDAO
   let contract
   let perBlockFee = 1*(10**8)
-
+  let subnetDAOBalance = 2*(10**18)
 
   describe('addBill', async () => {
 
@@ -23,7 +23,7 @@ contract('IPLeasingEscrow', (accounts) => {
       await  web3.eth.sendTransaction({
         from: accounts[1],
         to: subnetDAO,
-        value: 1*10**18
+        value: subnetDAOBalance
       })
       contract = await IPLeasingEscrow.new(perBlockFee, {from: subnetDAO})
     })
@@ -71,7 +71,7 @@ contract('IPLeasingEscrow', (accounts) => {
       await  web3.eth.sendTransaction({
         from: accounts[1],
         to: subnetDAO,
-        value: 1*10**18
+        value: subnetDAOBalance
       })
       contract = await IPLeasingEscrow.new(perBlockFee, {from: subnetDAO})
     })
@@ -88,12 +88,13 @@ contract('IPLeasingEscrow', (accounts) => {
 
   describe('topOffBill', async () => {
     beforeEach(async () => {
+
       subnetDAO = await web3.eth.personal.newAccount()
       await web3.eth.personal.unlockAccount(subnetDAO)
       await  web3.eth.sendTransaction({
         from: accounts[1],
         to: subnetDAO,
-        value: 1*10**18
+        value: subnetDAOBalance
       })
       contract = await IPLeasingEscrow.new(perBlockFee, {from: subnetDAO})
     })
@@ -127,27 +128,21 @@ contract('IPLeasingEscrow', (accounts) => {
       subnetDAO = await web3.eth.personal.newAccount()
       await web3.eth.personal.unlockAccount(subnetDAO)
       await  web3.eth.sendTransaction({
-        from: accounts[1],
+        from: accounts[2],
         to: subnetDAO,
-        value: 1*10**18
+        value: subnetDAOBalance
       })
-      contract = await IPLeasingEscrow.new(perBlockFee, {from: subnetDAO})
-    })
 
-    it('Revert when caller is not subnetDAO', async () => {
-      await contract.addBill({value: 1*(10**18)})
-			assertRevert(contract.collectBills({from: accounts[3]}))
+      contract = await IPLeasingEscrow.new(perBlockFee, {from: subnetDAO})
     })
 
     it('Bill lastUpdated should equal current block number', async () => {
       
       await contract.addBill({value: 1*(10**18)})
-
       await contract.collectBills({from: subnetDAO})
       let bill = await contract.billMapping(accounts[0])
       let blockNumber = new BN(await web3.eth.getBlockNumber())
       bill.lastUpdated.toString().should.eql(blockNumber.toString())
-
     })
 
     it('Subnet should have an expected balance for single account', async () => {
@@ -219,9 +214,9 @@ contract('IPLeasingEscrow', (accounts) => {
       subnetDAO = await web3.eth.personal.newAccount()
       await web3.eth.personal.unlockAccount(subnetDAO)
       await  web3.eth.sendTransaction({
-        from: accounts[1],
+        from: accounts[2],
         to: subnetDAO,
-        value: 1*10**18
+        value: subnetDAOBalance
       })
       contract = await IPLeasingEscrow.new(perBlockFee, {from: subnetDAO})
     })
@@ -278,9 +273,7 @@ contract('IPLeasingEscrow', (accounts) => {
 
       await contract.payMyBills()
       let bill = await contract.billMapping(accounts[0])
-      console.log('bill', bill.account.toString())
       bill.account.toString().should.eql('0')
-
     })
   })
 
@@ -292,7 +285,7 @@ contract('IPLeasingEscrow', (accounts) => {
       await  web3.eth.sendTransaction({
         from: accounts[1],
         to: subnetDAO,
-        value: 1*10**18
+        value: subnetDAOBalance
       })
       contract = await IPLeasingEscrow.new(perBlockFee, {from: subnetDAO})
     })
