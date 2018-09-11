@@ -5,5 +5,6 @@ module.exports = function (deployer, network, accounts) {
   let perBlockFee = 1*(10**10)
   let paymentAddress = accounts[1]
   deployer.deploy(IPLeasingEscrow, perBlockFee, paymentAddress)
-  deployer.deploy(AltheaDAO, perBlockFee, paymentAddress)
+  //deployer.deploy(AltheaDAO, perBlockFee, paymentAddress)
+  deployer.deploy(AltheaDAO)
 }

@@ -11,6 +11,11 @@
       "name": "Remove an IP address from list",
       "id": "DELETE_MEMBER",
       "params": []
+    },
+    {
+      "name": "Manages escrow contract parameters",
+      "id": "MANAGE_ESCROW",
+      "params": []
     }
   ],
   "path": "contracts/AltheaDAO.sol"
