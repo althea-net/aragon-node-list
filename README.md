@@ -60,8 +60,9 @@ Steps:
     DAO=$(aragon dao new | grep Created | cut -d' ' -f5)
     aragon dao install $DAO <pacakge name>.aragonpm.eth
 
-### Successful commands
+### Live deployments
 
+DAO:  [sasquatch.aragonid.eth](http://aragon.aragonpm.com/#/sasquatch.aragonid.eth/)
 apm: `seabass.open.aragonapm.eth`
 
 `nogara` is just a custom `aragon` I have built. [github.com/Sebohe/aragon-cli](github.com/Sebohe/aragon-cli)

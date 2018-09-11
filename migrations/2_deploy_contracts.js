@@ -1,9 +1,10 @@
-var NodeList = artifacts.require('./NodeList.sol')
-var RenewalFeeEscrow = artifacts.require('./RenewalFeeEscrow.sol')
-var SubnetController = artifacts.require('./SubnetController.sol')
+var IPLeasingEscrow = artifacts.require('./IPLeasingEscrow.sol')
+var AltheaDAO = artifacts.require('./AltheaDAO.sol')
 
 module.exports = function (deployer, network, accounts) {
-  deployer.deploy(NodeList)
-  deployer.deploy(RenewalFeeEscrow)
-  deployer.deploy(SubnetController)
+  let perBlockFee = 1*(10**10)
+  let paymentAddress = accounts[1]
+  deployer.deploy(IPLeasingEscrow, perBlockFee, paymentAddress)
+  //deployer.deploy(AltheaDAO, perBlockFee, paymentAddress)
+  deployer.deploy(AltheaDAO)
 }

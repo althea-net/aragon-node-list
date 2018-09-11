@@ -1,5 +1,5 @@
 {
-  "appName": "someothername.open.aragonpm.eth",
+  "appName": "altheadao.aragonpm.eth",
   "version": "1.0.0",
   "roles": [
     {
@@ -11,7 +11,12 @@
       "name": "Remove an IP address from list",
       "id": "DELETE_MEMBER",
       "params": []
+    },
+    {
+      "name": "Manages escrow contract parameters",
+      "id": "MANAGE_ESCROW",
+      "params": []
     }
   ],
-  "path": "contracts/NodeList.sol"
+  "path": "contracts/AltheaDAO.sol"
 }
