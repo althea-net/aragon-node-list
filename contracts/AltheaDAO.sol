@@ -11,12 +11,14 @@ contract AltheaDAO is AragonApp {
  
   bytes32 constant public ADD_MEMBER = keccak256("ADD_MEMBER");
   bytes32 constant public DELETE_MEMBER = keccak256("DELETE_MEMBER");
+  bytes32 constant public MANAGE_ESCROW = keccak256("MANAGE_ESCROW");
 
   mapping(bytes16 => address) public nodeList;
 
   IPLeasingEscrow ipLeasingEscrow;
 
   function AltheaDAO() public {
+    // param is the perBlockFee
     ipLeasingEscrow = new IPLeasingEscrow(1*(10^10));
   }
 
@@ -35,7 +37,9 @@ contract AltheaDAO is AragonApp {
     addr = nodeList[_ip]; 
   }
 
-  function setBillPerBlockRate(uint _newFee) public {
+
+  // IpLeasing Contract calls
+  function setBillPerBlockFee(uint _newFee) public auth(MANAGE_ESCROW) {
     ipLeasingEscrow.setPerBlockFee(_newFee);
   }
 

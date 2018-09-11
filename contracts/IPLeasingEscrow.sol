@@ -3,7 +3,10 @@ pragma solidity ^0.4.18;
 import "@aragon/os/contracts/lib/zeppelin/math/SafeMath.sol";
 
 
-contract IPLeasingEscrow {
+import "./Ownable.sol";
+
+
+contract IPLeasingEscrow is Ownable {
   using SafeMath for uint;
 
   event NewBill(address payer, address collector);
@@ -50,7 +53,7 @@ contract IPLeasingEscrow {
     revert();
   }
 
-  function collectBills() public {
+  function collectBills() public onlyOwner() {
     uint transferValue = 0;
     for (uint i = 0; i < subnetSubscribers.length; i++) {
       transferValue = transferValue.add(processBills(subnetSubscribers[i]));
@@ -87,7 +90,7 @@ contract IPLeasingEscrow {
     return transferValue;
   }
 
-  function setPerBlockFee(uint _newFee) public {
+  function setPerBlockFee(uint _newFee) public onlyOwner {
     perBlockFee = _newFee;
   }
 }
