@@ -25,7 +25,7 @@ contract('IPLeasingEscrow', (accounts) => {
         to: subnetDAO,
         value: subnetDAOBalance
       })
-      contract = await IPLeasingEscrow.new(perBlockFee, {from: subnetDAO})
+      contract = await IPLeasingEscrow.new(perBlockFee, subnetDAO, {from: subnetDAO})
     })
 
     it('Revert when no value is sent', async () => {
@@ -73,7 +73,7 @@ contract('IPLeasingEscrow', (accounts) => {
         to: subnetDAO,
         value: subnetDAOBalance
       })
-      contract = await IPLeasingEscrow.new(perBlockFee, {from: subnetDAO})
+      contract = await IPLeasingEscrow.new(perBlockFee, subnetDAO, {from: subnetDAO})
     })
 
     it('Should have the right length', async () => {
@@ -96,7 +96,7 @@ contract('IPLeasingEscrow', (accounts) => {
         to: subnetDAO,
         value: subnetDAOBalance
       })
-      contract = await IPLeasingEscrow.new(perBlockFee, {from: subnetDAO})
+      contract = await IPLeasingEscrow.new(perBlockFee, subnetDAO, {from: subnetDAO})
     })
 
     it('Revert when value is zero', async () => {
@@ -133,7 +133,7 @@ contract('IPLeasingEscrow', (accounts) => {
         value: subnetDAOBalance
       })
 
-      contract = await IPLeasingEscrow.new(perBlockFee, {from: subnetDAO})
+      contract = await IPLeasingEscrow.new(perBlockFee, subnetDAO, {from: subnetDAO})
     })
 
     it('Bill lastUpdated should equal current block number', async () => {
@@ -218,7 +218,7 @@ contract('IPLeasingEscrow', (accounts) => {
         to: subnetDAO,
         value: subnetDAOBalance
       })
-      contract = await IPLeasingEscrow.new(perBlockFee, {from: subnetDAO})
+      contract = await IPLeasingEscrow.new(perBlockFee, subnetDAO, {from: subnetDAO})
     })
 
     it('Bill should have lastUpdated with same blockNumber', async () => {
@@ -287,7 +287,7 @@ contract('IPLeasingEscrow', (accounts) => {
         to: subnetDAO,
         value: subnetDAOBalance
       })
-      contract = await IPLeasingEscrow.new(perBlockFee, {from: subnetDAO})
+      contract = await IPLeasingEscrow.new(perBlockFee, subnetDAO, {from: subnetDAO})
     })
 
     it('Increases the balance of the subscriber', async () => {

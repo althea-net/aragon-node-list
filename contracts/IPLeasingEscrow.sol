@@ -12,7 +12,7 @@ contract IPLeasingEscrow is Ownable {
   event NewBill(address payer, address collector);
 
   uint public perBlockFee;
-  address public subnetDAO;
+  address public paymentAddress;
   mapping (address => Bill) public billMapping;
   address[] public subnetSubscribers;
 
@@ -22,9 +22,9 @@ contract IPLeasingEscrow is Ownable {
     uint lastUpdated;
   }
 
-  function IPLeasingEscrow(uint _perBlockFee) public {
+  function IPLeasingEscrow(uint _perBlockFee, address _addr) public {
     perBlockFee = _perBlockFee;
-    subnetDAO = msg.sender;
+    paymentAddress = _addr;
   }
 
   function getCountOfSubscribers() public view returns (uint) {
@@ -38,7 +38,7 @@ contract IPLeasingEscrow is Ownable {
 
     billMapping[msg.sender] = Bill(msg.value, perBlockFee, block.number);
     subnetSubscribers.push(msg.sender);
-    NewBill(msg.sender, subnetDAO);
+    NewBill(msg.sender, paymentAddress);
   }
 
 
@@ -58,11 +58,11 @@ contract IPLeasingEscrow is Ownable {
     for (uint i = 0; i < subnetSubscribers.length; i++) {
       transferValue = transferValue.add(processBills(subnetSubscribers[i]));
     }
-    address(subnetDAO).transfer(transferValue);
+    address(paymentAddress).transfer(transferValue);
   }
 
   function payMyBills() public {
-    address(subnetDAO).transfer(processBills(msg.sender));
+    address(paymentAddress).transfer(processBills(msg.sender));
   }
 
   function withdrawFromBill() public {
@@ -93,5 +93,6 @@ contract IPLeasingEscrow is Ownable {
   function setPerBlockFee(uint _newFee) public onlyOwner {
     perBlockFee = _newFee;
   }
+
 }
 

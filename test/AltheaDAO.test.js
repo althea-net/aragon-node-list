@@ -9,7 +9,7 @@ contract('AltheaDAO', (accounts) => {
   let ipv6 = '0xc0a8010ac0a8010a'
 
   beforeEach(async () => {
-    contract = await AltheaDAO.new()
+    contract = await AltheaDAO.new(1*10**10, accounts[1])
   })
 
   describe('addMember', async () => {

@@ -2,6 +2,8 @@ var IPLeasingEscrow = artifacts.require('./IPLeasingEscrow.sol')
 var AltheaDAO = artifacts.require('./AltheaDAO.sol')
 
 module.exports = function (deployer, network, accounts) {
-  deployer.deploy(IPLeasingEscrow, 1*(10**10))
-  deployer.deploy(AltheaDAO)
+  let perBlockFee = 1*(10**10)
+  let paymentAddress = accounts[1]
+  deployer.deploy(IPLeasingEscrow, perBlockFee, paymentAddress)
+  deployer.deploy(AltheaDAO, perBlockFee, paymentAddress)
 }

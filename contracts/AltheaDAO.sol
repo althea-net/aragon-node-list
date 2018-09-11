@@ -17,9 +17,8 @@ contract AltheaDAO is AragonApp {
 
   IPLeasingEscrow ipLeasingEscrow;
 
-  function AltheaDAO() public {
-    // param is the perBlockFee
-    ipLeasingEscrow = new IPLeasingEscrow(1*(10^10));
+  function AltheaDAO(uint _perBlockFee, address _addr) public {
+    ipLeasingEscrow = new IPLeasingEscrow(_perBlockFee, _addr);
   }
 
   function addMember(address _ethAddr, bytes16 _ip) public auth(ADD_MEMBER) {
@@ -38,7 +37,7 @@ contract AltheaDAO is AragonApp {
   }
 
 
-  // IpLeasing Contract calls
+  // IpLeasingEscrow Contract calls
   function setBillPerBlockFee(uint _newFee) public auth(MANAGE_ESCROW) {
     ipLeasingEscrow.setPerBlockFee(_newFee);
   }
@@ -49,6 +48,11 @@ contract AltheaDAO is AragonApp {
 
   function getEscrowAddress() public view returns(address) {
     return address(ipLeasingEscrow);
+  }
+
+  //fallback
+  function () public payable {
+    revert();
   }
 
 }
