@@ -13,7 +13,6 @@ const ZERO = '0x0000000000000000000000000000000000000000'
 contract('Althea', accounts => {
 
   let contract
-  let ipv6 = '0xc0a8010ac0a8010a'
   let paymentAddress
 
   beforeEach(async () => {
@@ -21,9 +20,10 @@ contract('Althea', accounts => {
   })
 
   context('Node List', () => {
+    let ipv6 = '0xc0a8010ac0a8010a'
     beforeEach(async () => {
       contract = await Althea.new()
-      await contract.initialize(paymentAddress)
+      await contract.initialize(paymentAddress, 10**10)
     })
 
     it('Adds a new member to the list', async () => {
@@ -49,7 +49,7 @@ contract('Althea', accounts => {
 
     beforeEach(async () => {
       contract = await Althea.new()
-      await contract.initialize(paymentAddress)
+      await contract.initialize(paymentAddress, 10**10)
     })
 
     it('Revert when no value is sent', async () => {
@@ -87,7 +87,7 @@ contract('Althea', accounts => {
 
     beforeEach(async () => {
       contract = await Althea.new()
-      await contract.initialize(paymentAddress)
+      await contract.initialize(paymentAddress, 10**10)
     })
 
     it('Should have the right length', async () => {
@@ -104,11 +104,40 @@ contract('Althea', accounts => {
     })
   })
 
+  describe('setPerBlockFee', async () => {
+
+    beforeEach(async () => {
+      contract = await Althea.new()
+      await contract.initialize(paymentAddress, 10**10)
+    })
+
+    it('Should set a new perBlockFee', async() => {
+      let newFee = 10**7
+      await contract.setPerBlockFee(newFee)
+      let nn = await contract.perBlockFee()
+      nn.toNumber().should.eql(newFee)
+    })
+  })
+
+  describe('setPaymentAddress', async () => {
+    beforeEach(async () => {
+      contract = await Althea.new()
+      await contract.initialize(paymentAddress, 10**10)
+    })
+
+    it('Should set a new paymentAddress', async() => {
+      let newAddress = await web3.eth.personal.newAccount()
+      await contract.setPaymentAddress(newAddress)
+      let addr = await contract.paymentAddress()
+      addr.should.eql(newAddress)
+    })
+  })
+
   describe('topOffBill', async () => {
 
     beforeEach(async () => {
       contract = await Althea.new()
-      await contract.initialize(paymentAddress)
+      await contract.initialize(paymentAddress, 10**10)
     })
 
     it('Revert when value is zero', async () => {
@@ -138,7 +167,7 @@ contract('Althea', accounts => {
 
     beforeEach(async () => {
       contract = await Althea.new()
-      await contract.initialize(paymentAddress)
+      await contract.initialize(paymentAddress, 10**10)
     })
 
     it('Bill lastUpdated should equal current block number', async () => {
@@ -208,7 +237,7 @@ contract('Althea', accounts => {
 
     beforeEach(async () => {
       contract = await Althea.new()
-      await contract.initialize(paymentAddress)
+      await contract.initialize(paymentAddress, 10**10)
     })
 
     it('Bill should have lastUpdated with same blockNumber', async () => {
@@ -269,7 +298,7 @@ contract('Althea', accounts => {
 111
     beforeEach(async () => {
       contract = await Althea.new()
-      await contract.initialize(paymentAddress)
+      await contract.initialize(paymentAddress, 10**10)
     })
 
     it('Increases the balance of the subscriber', async () => {

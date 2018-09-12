@@ -21,13 +21,14 @@ contract Althea is AragonApp {
     uint lastUpdated;
   }
 
-  uint public perBlockFee = 1e10;
+  uint public perBlockFee;
   address public paymentAddress;
   address[] public subnetSubscribers;
   mapping(bytes16 => address) public nodeList;
   mapping (address => Bill) public billMapping;
 
-  function initialize(address _addr) external onlyInit {
+  function initialize(address _addr, uint _fee) external onlyInit {
+    perBlockFee = _fee;
     paymentAddress = _addr;
     initialized();
   }
@@ -47,8 +48,12 @@ contract Althea is AragonApp {
     addr = nodeList[_ip]; 
   }
 
-  function setBillPerBlockFee(uint _newFee) public auth(MANAGE_ESCROW) {
+  function setPerBlockFee(uint _newFee) public auth(MANAGE_ESCROW) {
     perBlockFee = _newFee;
+  }
+
+  function setPaymentAddress(address _addr) public auth(MANAGE_ESCROW) {
+    paymentAddress = _addr;
   }
 
   function getCountOfSubscribers() public view returns (uint) {
@@ -107,9 +112,5 @@ contract Althea is AragonApp {
     return transferValue;
   }
 
-  function setPerBlockFee(uint _newFee) public auth(MANAGE_ESCROW) {
-
-    perBlockFee = _newFee;
-  }
 }
 
