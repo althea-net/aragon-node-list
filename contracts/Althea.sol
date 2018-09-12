@@ -9,6 +9,7 @@ contract Althea is AragonApp {
   event NewMember(address indexed ethNodeAddress, bytes16 ipAddress);
   event MemberRemoved(address indexed ethNodeAddress, bytes16 ipAddress);
   event NewBill(address payer, address collector);
+  event DebugInt(string msg, uint u);
  
   bytes32 constant public ADD_MEMBER = keccak256("ADD_MEMBER");
   bytes32 constant public DELETE_MEMBER = keccak256("DELETE_MEMBER");
@@ -20,14 +21,14 @@ contract Althea is AragonApp {
     uint lastUpdated;
   }
 
-  uint public perBlockFee;
+  uint public perBlockFee = 1e10;
   address public paymentAddress;
   address[] public subnetSubscribers;
   mapping(bytes16 => address) public nodeList;
   mapping (address => Bill) public billMapping;
 
-  function Althea() public {
-    initialized();
+  function Althea(address _addr) public {
+    paymentAddress = _addr;
   }
 
   function addMember(address _ethAddr, bytes16 _ip) public auth(ADD_MEMBER) {
@@ -55,7 +56,7 @@ contract Althea is AragonApp {
 
   function addBill() public payable {
 
-    require(msg.value.mul(perBlockFee) > 1);
+    require(msg.value > perBlockFee);
     require(billMapping[msg.sender].lastUpdated == 0);
 
     billMapping[msg.sender] = Bill(msg.value, perBlockFee, block.number);
