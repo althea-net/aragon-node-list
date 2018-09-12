@@ -2,6 +2,7 @@ import React from 'react'
 import { Card, TextInput, Field, Button, Text } from '@aragon/ui'
 import { Row, Col } from 'react-flexbox-grid'
 import styled from 'styled-components'
+import { translate } from 'react-i18next'
 
 const StyledCard = styled(Card)`
   width: 100%;
@@ -12,68 +13,68 @@ const StyledCard = styled(Card)`
   padding: 20px;
 `
 
-export default () => {
+export default translate()(({ t }) => {
   return (
     <Row>
       <Col xs="6">
         <StyledCard>
-          <Text size="xlarge">Add node</Text>
-          <Field label="Node nickname">
+          <Text size="xlarge">{t('addNode')}</Text>
+          <Field label={t('nodeNickname')}>
             <TextInput wide
               type="text"
               name="nickname"
-              placeholder="Who owns this node?"
+              placeholder={t('whoOwns')}
             />
           </Field>
           <Button>Scan node QR code</Button>
-          <Field label="Ethereum address">
+          <Field label={t('ethAddress')}>
             <TextInput wide
               type="text"
               name="address"
-              placeholder="Enter node's Ethereum address"
+              placeholder={t('enterEthAddress')}
             />
           </Field>
-          <Field label="IP address">
+          <Field label={t('ipAddress')}>
             <TextInput wide
               type="text"
               name="ip"
-              placeholder="Enter node's IP address"
+              placeholder={t('enterIpAddress')}
             />
           </Field>
           <Field>
-            <Button>Add node</Button>
+            <Button>{t('addNode')}</Button>
           </Field>
         </StyledCard>
         <StyledCard>
-          <Text size="xlarge">Collect bills</Text>
-          <p>You have $123.34 in bills to collect right now</p>
-          <Button>Collect bills</Button>
+          <Text size="xlarge">{t('collectBills')}</Text>
+          <p>{t('youHave', { bills: 123.34 })}</p>
+          <Button>{t('collectBills')}</Button>
         </StyledCard>
       </Col>
       <Col xs="6">
         <StyledCard>
-          <Text size="xlarge">Check node</Text>
-          <Field label="Ethereum address">
+          <Text size="xlarge">{t('checkNode')}</Text>
+          <Field label={t('ethAddress')}>
             <TextInput wide
               type="text"
               name="address"
-              placeholder="Enter node's Ethereum address"
+              placeholder={t('enterEthAddress')}
             />
           </Field>
-          <Button>Check if node is in subnet DAO</Button>
+          <Button>{t('checkNodeInSubnetDAO')}</Button>
         </StyledCard>
         <StyledCard>
-          <Text size="xlarge">Remove node</Text>
-          <Field label="Ethereum address">
+          <Text size="xlarge">{t('removeNode')}</Text>
+          <Field label={t('ethAddress')}>
             <TextInput wide
               type="text"
               name="address"
-              placeholder="Enter node's Ethereum address"
+              placeholder={t('enterEthAddress')}
             />
           </Field>
-          <Button>Remove node from subnet DAO</Button>
+          <Button>{t('removeNodeFromSubnetDAO')}</Button>
         </StyledCard>
       </Col>
     </Row>
   );
-}
+})

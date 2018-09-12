@@ -1,19 +1,20 @@
 import React from 'react'
 import { Button, Table, TableHeader, TableRow, TableCell, Text } from '@aragon/ui'
 import data from '../MockData'
+import { translate } from 'react-i18next'
 
-export default () => {
+export default translate()(({ t }) => {
   let fundsColor = funds => (funds > 0) ? "green" : "red"
 
   return (
     <Table
       header={
         <TableRow>
-          <TableHeader title="Nickname" />
-          <TableHeader title="Funds Remaining" />
-          <TableHeader title="Ethereum Address" />
-          <TableHeader title="IP Address" />
-          <TableHeader title="Remove Node" />
+          <TableHeader title={t("nickname")} />
+          <TableHeader title={t("fundsRemaining")} />
+          <TableHeader title={t("ethAddress")} />
+          <TableHeader title={t("ipAddress")} />
+          <TableHeader title={t("removeNode")} />
         </TableRow>
       }
     >
@@ -38,10 +39,10 @@ export default () => {
               <Text>{ip}</Text>
             </TableCell>
             <TableCell>
-              <Button emphasis="negative">Remove</Button>
+              <Button emphasis="negative">{t("remove")}</Button>
             </TableCell>
           </TableRow>
         )})}
     </Table>
   );
-} 
+}) 

@@ -3,6 +3,7 @@ import { AragonApp, AppBar } from '@aragon/ui'
 import Aragon, { providers } from '@aragon/client'
 import styled from 'styled-components'
 import { Grid } from 'react-flexbox-grid'
+import { translate } from 'react-i18next'
 
 import NewNodeForm from './components/NewNodeForm'
 import CheckNode from './components/CheckNode'
@@ -27,7 +28,7 @@ const AltheaAppBar = styled(AppBar)`
   height: 100%;
 `
 
-export default class App extends React.Component {
+class App extends React.Component {
   constructor() {
     super();
     this.state = { page: NodeList };
@@ -37,14 +38,17 @@ export default class App extends React.Component {
 
   render() {
     const Page = this.state.page;
+    const { t } = this.props;
 
     return (
       <AppContainer>
         <Grid fluid>
-          <AltheaAppBar title="Althea Subnet DAO" endContent={<Nav setPage={this.setPage} />} />
+          <AltheaAppBar title={t('altheaSubnetDAO')} endContent={<Nav setPage={this.setPage} />} />
           {this.state.page && <Page />}
         </Grid>
       </AppContainer>
     )
   }
 }
+
+export default translate()(App)
