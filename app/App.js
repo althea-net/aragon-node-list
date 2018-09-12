@@ -7,6 +7,7 @@ import { Grid, Row, Col } from 'react-flexbox-grid'
 import NewNodeForm from './components/NewNodeForm'
 import CheckNode from './components/CheckNode'
 import DeleteNode from './components/DeleteNode'
+import BillManagement from './components/BillManagement'
 import NodeList from './components/NodeList'
 import SubnetAdmin from './components/SubnetAdmin'
 import Nav from './components/Nav'
@@ -27,6 +28,7 @@ export default class App extends React.Component {
           <AppBar style={{background: "#efefef", border: "3px solid #ddd"}} title="Althea Subnet DAO" endContent={<Nav />} />
           <NodeList />
           <SubnetAdmin />
+          <BillManagement />
           <Row center='xs'>
             <Col>
               <CheckNode app={this.props.app} />

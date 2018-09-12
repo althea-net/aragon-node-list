@@ -16,7 +16,7 @@ export default () => {
   return (
     <Row>
       <Col xs="6">
-        <StyledCard width="100%" height="auto">
+        <StyledCard>
           <Text size="xlarge">Add node</Text>
           <Field label="Node nickname">
             <TextInput wide
@@ -44,14 +44,14 @@ export default () => {
             <Button mode="strong">Add node</Button>
           </Field>
         </StyledCard>
-        <StyledCard width="100%" height="auto">
+        <StyledCard>
           <Text size="xlarge">Collect bills</Text>
           <p>You have $123.34 in bills to collect right now</p>
           <Button mode="strong">Collect bills</Button>
         </StyledCard>
       </Col>
       <Col xs="6">
-        <StyledCard width="100%" height="auto">
+        <StyledCard>
           <Text size="xlarge">Check node</Text>
           <Field label="Ethereum address">
             <TextInput wide
@@ -62,7 +62,7 @@ export default () => {
           </Field>
           <Button mode="strong">Check if node is in subnet DAO</Button>
         </StyledCard>
-        <StyledCard width="100%" height="auto">
+        <StyledCard>
           <Text size="xlarge">Remove node</Text>
           <Field label="Ethereum address">
             <TextInput wide
