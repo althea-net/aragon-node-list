@@ -15,10 +15,10 @@ export default () => {
         </TableRow>
       }
     >
-      {data.map(d => {
+      {data.map((d, i) => {
         let {nickname, funds, address, ip} = d;
         return (
-          <TableRow>
+          <TableRow key={i}>
             <TableCell>
               <Text>{nickname}</Text>
             </TableCell>

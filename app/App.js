@@ -2,15 +2,13 @@ import React from 'react'
 import { AragonApp, AppBar } from '@aragon/ui'
 import Aragon, { providers } from '@aragon/client'
 import styled from 'styled-components'
-import { Grid, Row, Col } from 'react-flexbox-grid'
+import { Grid } from 'react-flexbox-grid'
 
 import NewNodeForm from './components/NewNodeForm'
 import CheckNode from './components/CheckNode'
 import DeleteNode from './components/DeleteNode'
-import BillManagement from './components/BillManagement'
-import NodeList from './components/NodeList'
-import SubnetAdmin from './components/SubnetAdmin'
 import Nav from './components/Nav'
+import NodeList from './components/NodeList'
 
 const AppContainer = styled(AragonApp)`
   display: flex;
@@ -20,28 +18,31 @@ const AppContainer = styled(AragonApp)`
   text-align: center;
 `
 
+const AltheaAppBar = styled(AppBar)`
+  background: #efefef;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  padding: 0;
+  margin: 0;
+  height: 100%;
+`
+
 export default class App extends React.Component {
+  constructor() {
+    super();
+    this.state = { page: NodeList };
+  } 
+
+  setPage = page => this.setState({ page })  
+
   render() {
+    const Page = this.state.page;
+
     return (
       <AppContainer>
         <Grid fluid>
-          <AppBar style={{background: "#efefef", border: "3px solid #ddd"}} title="Althea Subnet DAO" endContent={<Nav />} />
-          <NodeList />
-          <SubnetAdmin />
-          <BillManagement />
-          <Row center='xs'>
-            <Col>
-              <CheckNode app={this.props.app} />
-            </Col>
-          </Row>
-          <Row center='xs' around='xs'>
-            <Col xs={6} md={6} sm={6} lg={6}>
-              <NewNodeForm app={this.props.app} />
-            </Col>
-            <Col xs={6} md={6} sm={6} lg={6}>
-              <DeleteNode app={this.props.app} />
-            </Col>
-          </Row>
+          <AltheaAppBar title="Althea Subnet DAO" endContent={<Nav setPage={this.setPage} />} />
+          {this.state.page && <Page />}
         </Grid>
       </AppContainer>
     )

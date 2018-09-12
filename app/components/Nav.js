@@ -1,12 +1,25 @@
 import React from 'react'
 import { Button } from '@aragon/ui'
+import styled from 'styled-components'
 
-export default () => {
+import BillManagement from './BillManagement'
+import NodeList from './NodeList'
+import SubnetAdmin from './SubnetAdmin'
+
+const NavButton = styled(Button)`
+  border-left: none;
+  border-right: none;
+  border-radius: 0;
+`
+
+NavButton.defaultProps = { mode: 'outline' }
+
+export default ({ setPage }) => {
   return (
     <div>
-      <Button style={{borderLeft: "none", borderRight: "none", borderRadius: 0, background: "#ccc" }} mode="outline">Node list</Button>
-      <Button style={{borderLeft: "none", borderRight: "none", borderRadius: 0 }} mode="outline">Subnet admin</Button>
-      <Button style={{borderLeft: "none", borderRight: "none", borderRadius: 0 }} mode="outline">Bill management</Button>
+      <NavButton onClick={() => setPage(NodeList)}>Node list</NavButton>
+      <NavButton onClick={() => setPage(SubnetAdmin)}>Subnet admin</NavButton>
+      <NavButton onClick={() => setPage(BillManagement)}>Bill management</NavButton>
     </div>
   );
 } 
