@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+"@aragon/aragen@^2.0.0-beta.1":
+  version "2.0.0-beta.1"
+  resolved "https://registry.yarnpkg.com/@aragon/aragen/-/aragen-2.0.0-beta.1.tgz#0a951242cd08c174249f89be91b447e2cee0eb45"
+
 "@aragon/client@^1.0.0-beta.9":
   version "1.0.0-beta.9"
   resolved "https://registry.yarnpkg.com/@aragon/client/-/client-1.0.0-beta.9.tgz#a829d849b80f02fd014f59753713b5d18bd4ee80"
@@ -2274,6 +2278,10 @@ eslint-plugin-jsx-a11y@^5.1.1:
     damerau-levenshtein "^1.0.0"
     emoji-regex "^6.1.0"
     jsx-ast-utils "^1.4.0"
+
+eslint-plugin-promise@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-promise/-/eslint-plugin-promise-4.0.1.tgz#2d074b653f35a23d1ba89d8e976a985117d1c6a2"
 
 eslint-plugin-react@^7.9.1:
   version "7.11.1"

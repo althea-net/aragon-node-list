@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table, TableHeader, TableRow, TableCell, Text } from '@aragon/ui'
+import { Button, Table, TableHeader, TableRow, TableCell, Text } from '@aragon/ui'
 import data from '../MockData'
 
 export default () => {
@@ -32,7 +32,7 @@ export default () => {
               <Text>{ip}</Text>
             </TableCell>
             <TableCell>
-              <Text>Remove</Text>
+              <Button emphasis="negative">Remove</Button>
             </TableCell>
           </TableRow>
         )})}

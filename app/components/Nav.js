@@ -12,9 +12,11 @@ const NavButton = styled(Button)`
   border-radius: 0;
 `
 
-NavButton.defaultProps = { mode: 'outline' }
+NavButton.defaultProps = { 
+  mode: 'outline'
+}
 
-export default ({ setPage }) => {
+export default ({ currentPage, setPage }) => {
   return (
     <div>
       <NavButton onClick={() => setPage(NodeList)}>Node list</NavButton>

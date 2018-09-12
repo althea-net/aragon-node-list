@@ -25,13 +25,13 @@ export default () => {
               placeholder="Enter amount to add"
             />
           </Field>
-          <Button mode="strong">Add funds</Button>
+          <Button>Add funds</Button>
         </StyledCard>
       </Col>
       <Col xs="6">
         <StyledCard>
           <Text.Block size="xlarge">Withdraw all funds</Text.Block>
-          <Button mode="strong">Withdraw</Button>
+          <Button>Withdraw</Button>
         </StyledCard>
       </Col>
     </Row>

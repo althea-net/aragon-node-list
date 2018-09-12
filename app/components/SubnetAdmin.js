@@ -25,7 +25,7 @@ export default () => {
               placeholder="Who owns this node?"
             />
           </Field>
-          <Button mode="strong">Scan node QR code</Button>
+          <Button>Scan node QR code</Button>
           <Field label="Ethereum address">
             <TextInput wide
               type="text"
@@ -41,13 +41,13 @@ export default () => {
             />
           </Field>
           <Field>
-            <Button mode="strong">Add node</Button>
+            <Button>Add node</Button>
           </Field>
         </StyledCard>
         <StyledCard>
           <Text size="xlarge">Collect bills</Text>
           <p>You have $123.34 in bills to collect right now</p>
-          <Button mode="strong">Collect bills</Button>
+          <Button>Collect bills</Button>
         </StyledCard>
       </Col>
       <Col xs="6">
@@ -60,7 +60,7 @@ export default () => {
               placeholder="Enter node's Ethereum address"
             />
           </Field>
-          <Button mode="strong">Check if node is in subnet DAO</Button>
+          <Button>Check if node is in subnet DAO</Button>
         </StyledCard>
         <StyledCard>
           <Text size="xlarge">Remove node</Text>
@@ -71,7 +71,7 @@ export default () => {
               placeholder="Enter node's Ethereum address"
             />
           </Field>
-          <Button mode="strong">Remove node from subnet DAO</Button>
+          <Button>Remove node from subnet DAO</Button>
         </StyledCard>
       </Col>
     </Row>
