@@ -22,7 +22,8 @@ contract('Althea', accounts => {
 
   context('Node List', () => {
     beforeEach(async () => {
-      contract = await Althea.new(paymentAddress)
+      contract = await Althea.new()
+      await contract.initialize(paymentAddress)
     })
 
     it('Adds a new member to the list', async () => {
@@ -47,7 +48,8 @@ contract('Althea', accounts => {
   describe('addBill', async () => {
 
     beforeEach(async () => {
-      contract = await Althea.new(paymentAddress)
+      contract = await Althea.new()
+      await contract.initialize(paymentAddress)
     })
 
     it('Revert when no value is sent', async () => {
@@ -84,7 +86,8 @@ contract('Althea', accounts => {
   describe('getCountOfSubscribers', async () => {
 
     beforeEach(async () => {
-      contract = await Althea.new(paymentAddress)
+      contract = await Althea.new()
+      await contract.initialize(paymentAddress)
     })
 
     it('Should have the right length', async () => {
@@ -104,7 +107,8 @@ contract('Althea', accounts => {
   describe('topOffBill', async () => {
 
     beforeEach(async () => {
-      contract = await Althea.new(paymentAddress)
+      contract = await Althea.new()
+      await contract.initialize(paymentAddress)
     })
 
     it('Revert when value is zero', async () => {
@@ -133,7 +137,8 @@ contract('Althea', accounts => {
   describe('collectBills', async () => {
 
     beforeEach(async () => {
-      contract = await Althea.new(paymentAddress)
+      contract = await Althea.new()
+      await contract.initialize(paymentAddress)
     })
 
     it('Bill lastUpdated should equal current block number', async () => {
@@ -173,15 +178,11 @@ contract('Althea', accounts => {
       await contract.collectBills()
 
       const billCount = new BN(summation(subscribersCount))
-
       const perBlockFee = await contract.perBlockFee()
       let expectedBalance = perBlockFee.mul(billCount).add(new BN(0))
 
-      let balance = new BN(await web3.eth.getBalance(paymentAddress))
-
-      console.log('balance  ', balance.toString())
-      console.log('Expected ', expectedBalance.toString())
-      balance.eq(expectedBalance).should.eql(true)
+      new BN(await web3.eth.getBalance(paymentAddress))
+        .eq(expectedBalance).should.eql(true)
     })
 
     it('Set bill account to zero', async () => {
@@ -200,14 +201,14 @@ contract('Althea', accounts => {
 
       await contract.collectBills()
       let bill = await contract.billMapping(accounts[0])
-
     })
   })
 
   describe('payMyBills', async () => {
 
     beforeEach(async () => {
-      contract = await Althea.new(paymentAddress)
+      contract = await Althea.new()
+      await contract.initialize(paymentAddress)
     })
 
     it('Bill should have lastUpdated with same blockNumber', async () => {
@@ -267,7 +268,8 @@ contract('Althea', accounts => {
   describe('withdrawFromBill', async () => {
 111
     beforeEach(async () => {
-      contract = await Althea.new(paymentAddress)
+      contract = await Althea.new()
+      await contract.initialize(paymentAddress)
     })
 
     it('Increases the balance of the subscriber', async () => {

@@ -27,8 +27,9 @@ contract Althea is AragonApp {
   mapping(bytes16 => address) public nodeList;
   mapping (address => Bill) public billMapping;
 
-  function Althea(address _addr) public {
+  function initialize(address _addr) external onlyInit {
     paymentAddress = _addr;
+    initialized();
   }
 
   function addMember(address _ethAddr, bytes16 _ip) public auth(ADD_MEMBER) {
