@@ -28,7 +28,6 @@ contract Althea is AragonApp {
   uint public perBlockFee;
   address public paymentAddress;
   address[] public subnetSubscribers;
-  mapping(bytes16 => address) public nodeList;
   mapping (address => Bill) public billMapping;
 
   function initialize(address _addr, uint _fee) external onlyInit {
@@ -41,7 +40,7 @@ contract Althea is AragonApp {
     return vault.getRecoveryVault();
   }
 
-  // Node list funtionality 
+  // Node list funtionality from here till next comment
   function addMember(address _ethAddr, bytes16 _ip) public auth(ADD_MEMBER) {
     require(nodeList[_ip] == address(0));
     nodeList[_ip] = _ethAddr;
@@ -58,7 +57,7 @@ contract Althea is AragonApp {
   }
 
 
-  // Escrow leasing functionality
+  // Escrow leasing functionality till EOF
   function setPerBlockFee(uint _newFee) public auth(MANAGE_ESCROW) {
     perBlockFee = _newFee;
   }
