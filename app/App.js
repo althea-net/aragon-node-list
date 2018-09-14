@@ -37,3 +37,9 @@ export default class App extends React.Component {
     )
   }
 }
+
+/*
+
+const ObservedNodesTable = observe((state$) => state$, { nodes: [] })
+(NodesTable)
+*/
