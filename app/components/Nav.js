@@ -17,17 +17,33 @@ NavButton.defaultProps = {
   mode: 'outline'
 }
 
-export default translate()(({ i18n, setPage, t }) => {
-  let locales = ['EN', 'ES'];
-  let setLocale = i => i18n.changeLanguage(locales[i].toLowerCase())
-  let active = locales.findIndex(e => e === i18n.language.toUpperCase())
+class Nav extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { locale: 'EN' }
+    this.locales = ['EN', 'ES']
+  } 
 
-  return (
-    <div>
-      <NavButton onClick={() => setPage(NodeList)}>{t('nodeList')}</NavButton>
-      <NavButton onClick={() => setPage(SubnetAdmin)}>{t('subnetAdmin')}</NavButton>
-      <NavButton onClick={() => setPage(BillManagement)}>{t('billManagement')}</NavButton>
-      <DropDown items={locales} onChange={setLocale} active={active} />
-    </div>
-  );
-})
+  setLocale = i => {
+    let locale = this.locales[i]
+    this.props.i18n.changeLanguage(locale.toLowerCase())
+    this.setState({ locale })
+  }
+
+  active = () => this.locales.findIndex(e => e === this.state.locale)
+
+  render() {
+    let { setPage, t } = this.props;
+
+    return (
+      <div>
+        <NavButton onClick={() => setPage(NodeList)}>{t('nodeList')}</NavButton>
+        <NavButton onClick={() => setPage(SubnetAdmin)}>{t('subnetAdmin')}</NavButton>
+        <NavButton onClick={() => setPage(BillManagement)}>{t('billManagement')}</NavButton>
+        <DropDown items={this.locales} onChange={this.setLocale} active={this.active()} />
+      </div>
+    );
+  }
+}
+
+export default translate()(Nav)
