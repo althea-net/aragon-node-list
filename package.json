@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "",
   "dependencies": {
+    "@aragon/apps-vault": "^3.0.0-alpha.1",
     "@aragon/client": "^1.0.0-beta.9",
     "@aragon/os": "3.1.12",
     "@aragon/ui": "^0.16.0",
@@ -31,9 +32,9 @@
     "truffle-hdwallet-provider": "0.0.6"
   },
   "scripts": {
-    "start": "aragon run",
+    "start": "aragon run --app-init-args 0xe743212601fFDF381d6cD68af1C4D6E8355e205D 1000000000",
     "clean": "rm -rf .cache && rm -rf dist && rm -rf build",
-    "clean-start": "npm run clean && aragon run dev",
+    "clean-start": "npm run clean && npm run start",
     "compile": "aragon contracts compile",
     "sync-assets": "mkdir -p dist; rsync -rtu \"$(dirname $(node -p 'require.resolve(\"@aragon/ui\")'))/\" dist/aragon-ui",
     "build:app": "parcel build app/index.html -d dist/ --public-url '.'",

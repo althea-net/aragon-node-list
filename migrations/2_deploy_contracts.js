@@ -1,9 +1,6 @@
-var NodeList = artifacts.require('./NodeList.sol')
-var RenewalFeeEscrow = artifacts.require('./RenewalFeeEscrow.sol')
-var SubnetController = artifacts.require('./SubnetController.sol')
+var Althea = artifacts.require('./Althea.sol')
 
-module.exports = function (deployer, network, accounts) {
-  deployer.deploy(NodeList)
-  deployer.deploy(RenewalFeeEscrow)
-  deployer.deploy(SubnetController)
+module.exports = async (deployer, network, accounts) => {
+  paymentAddress = await web3.eth.personal.newAccount()
+  deployer.deploy(Althea, paymentAddress)
 }
