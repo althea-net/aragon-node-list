@@ -32,7 +32,7 @@
     "truffle-hdwallet-provider": "0.0.6"
   },
   "scripts": {
-    "start": "aragon run --app-init-args 0x6E89785af4E897373a040Fe241C780C43aC553B5 1000000000",
+    "start": "aragon run --app-init-args 0xe743212601fFDF381d6cD68af1C4D6E8355e205D 1000000000",
     "clean": "rm -rf .cache && rm -rf dist && rm -rf build",
     "clean-start": "npm run clean && npm run start",
     "compile": "aragon contracts compile",
