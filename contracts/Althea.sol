@@ -1,8 +1,10 @@
 pragma solidity ^0.4.18;
 
 import "@aragon/os/contracts/apps/AragonApp.sol";
-import "@aragon/os/contracts/kernel/Kernel.sol";
 import "@aragon/os/contracts/lib/zeppelin/math/SafeMath.sol";
+
+import "@aragon/os/contracts/common/IVaultRecoverable.sol";
+import "@aragon/os/contracts/apm/APMNamehash.sol";
 
 contract Althea is AragonApp {
   using SafeMath for uint;
@@ -10,7 +12,6 @@ contract Althea is AragonApp {
   event NewMember(address indexed ethNodeAddress, bytes16 ipAddress);
   event MemberRemoved(address indexed ethNodeAddress, bytes16 ipAddress);
   event NewBill(address payer, address collector);
-  event DebugInt(string msg, uint u);
  
   bytes32 constant public ADD_MEMBER = keccak256("ADD_MEMBER");
   bytes32 constant public DELETE_MEMBER = keccak256("DELETE_MEMBER");
@@ -22,6 +23,8 @@ contract Althea is AragonApp {
     uint lastUpdated;
   }
 
+  IVaultRecoverable public vault;
+
   uint public perBlockFee;
   address public paymentAddress;
   address[] public subnetSubscribers;
@@ -32,6 +35,10 @@ contract Althea is AragonApp {
     perBlockFee = _fee;
     paymentAddress = _addr;
     initialized();
+  }
+
+  function vaultAddress() public returns (address) {
+    return vault.getRecoveryVault();
   }
 
   function addMember(address _ethAddr, bytes16 _ip) public auth(ADD_MEMBER) {
