@@ -22,6 +22,15 @@ class Nav extends React.Component {
     super(props);
     this.state = { locale: 'EN' }
     this.locales = ['EN', 'ES']
+    this.pages = {
+      nodeList: NodeList,
+      subnetAdmin: SubnetAdmin, 
+      billManagement: BillManagement 
+    } 
+  } 
+
+  componentDidMount() {
+    this.props.setPage(this.pages['nodeList'])
   } 
 
   setLocale = i => {
@@ -34,12 +43,13 @@ class Nav extends React.Component {
 
   render() {
     let { setPage, t } = this.props;
+    let pages = Object.keys(this.pages);
 
     return (
       <div>
-        <NavButton onClick={() => setPage(NodeList)}>{t('nodeList')}</NavButton>
-        <NavButton onClick={() => setPage(SubnetAdmin)}>{t('subnetAdmin')}</NavButton>
-        <NavButton onClick={() => setPage(BillManagement)}>{t('billManagement')}</NavButton>
+        {pages.map((p, i) => {
+          return <NavButton onClick={() => setPage(this.pages[p])} key={i}>{t(p)}</NavButton>
+        })}
         <DropDown items={this.locales} onChange={this.setLocale} active={this.active()} />
       </div>
     );

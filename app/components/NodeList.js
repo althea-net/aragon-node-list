@@ -1,12 +1,13 @@
 import React from 'react'
 import { Button, Table, TableHeader, TableRow, TableCell, Text } from '@aragon/ui'
-import data from '../MockData'
 import { translate } from 'react-i18next'
 
-export default translate()(({ t }) => {
+export default translate()(({ app, subscribers, t }) => {
   let fundsColor = funds => (funds > 0) ? "green" : "red"
+  if (!subscribers) return null
 
   return (
+    <div>
     <Table
       header={
         <TableRow>
@@ -18,7 +19,7 @@ export default translate()(({ t }) => {
         </TableRow>
       }
     >
-      {data.map((d, i) => {
+      {subscribers.map((d, i) => {
         let {nickname, funds, address, ip} = d;
         let trunc = (s, n) => `${s.substr(0,n)}...${s.substr(-n)}`
         address = trunc(address, 6)
@@ -44,5 +45,6 @@ export default translate()(({ t }) => {
           </TableRow>
         )})}
     </Table>
+  </div>
   );
 }) 

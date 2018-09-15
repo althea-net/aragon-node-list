@@ -1,5 +1,5 @@
 import React from 'react'
-import { AragonApp, AppBar } from '@aragon/ui'
+import { AragonApp, AppBar, observe } from '@aragon/ui'
 import Aragon, { providers } from '@aragon/client'
 import styled from 'styled-components'
 import { Grid } from 'react-flexbox-grid'
@@ -9,7 +9,6 @@ import NewNodeForm from './components/NewNodeForm'
 import CheckNode from './components/CheckNode'
 import DeleteNode from './components/DeleteNode'
 import Nav from './components/Nav'
-import NodeList from './components/NodeList'
 
 const AppContainer = styled(AragonApp)`
   display: flex;
@@ -31,7 +30,7 @@ const AltheaAppBar = styled(AppBar)`
 class App extends React.Component {
   constructor() {
     super();
-    this.state = { page: NodeList };
+    this.state = { page: null }
   } 
 
   setPage = page => this.setState({ page })  
@@ -44,16 +43,14 @@ class App extends React.Component {
       <AppContainer>
         <Grid fluid>
           <AltheaAppBar title={t('altheaSubnetDAO')} endContent={<Nav setPage={this.setPage} />} />
-          {this.state.page && <Page />}
+          {this.state.page && <Page app={this.props.app} subscribers={this.props.subscribers} />}
         </Grid>
       </AppContainer>
     )
   }
 }
 
-/*
-
-const ObservedNodesTable = observe((state$) => state$, { nodes: [] })
-(NodesTable)
-*/
-export default translate()(App)
+export default translate()(observe(
+  observable => observable.map(state => ({ ...state })),
+  {}
+)(App))
