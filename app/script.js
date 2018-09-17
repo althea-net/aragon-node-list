@@ -41,12 +41,31 @@ const initialState = {
   ]
 }
 
-app.store(async (state, event) => {
+app.store(async (state, { event }) => {
+  console.log('hi', state, event)
   if (state === null) state = initialState
+
   switch (event) {
     case INITIALIZATION_TRIGGER:
-      let count = await getCountOfSubscribers()
-      Array(count).fill().map(a => await av
+      // TODO: get subscribers and node list here
+      state = initialState;
+    break;
+    case 'NewMember':
+      let nodes = await getNodeList()
+      state = { ...state, nodes }
+      // Array(count).fill().map(a => await av
+    break;
   } 
-  return initialState 
-}, [of({ event: INITIALIZATION_TRIGGER })])
+
+  return state
+}, [of({ event: INITIALIZATION_TRIGGER }), app.events()])
+
+
+function getNodeList() {
+  console.log("YOOOOOOOOOOOOOO")
+  return new Promise(resolve => {
+    app
+    .call('getNodeList')
+    .subscribe(resolve)
+  })
+}
