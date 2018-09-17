@@ -41,6 +41,7 @@ contract Althea is AragonApp {
     return vault.getRecoveryVault();
   }
 
+  // Node list funtionality from here till next comment
   function addMember(address _ethAddr, bytes16 _ip) public auth(ADD_MEMBER) {
     require(nodeList[_ip] == address(0));
     nodeList[_ip] = _ethAddr;
@@ -56,6 +57,8 @@ contract Althea is AragonApp {
     addr = nodeList[_ip]; 
   }
 
+
+  // Escrow leasing functionality till EOF
   function setPerBlockFee(uint _newFee) public auth(MANAGE_ESCROW) {
     perBlockFee = _newFee;
   }
