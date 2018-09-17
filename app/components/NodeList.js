@@ -7,7 +7,6 @@ export default translate()(({ app, subscribers, t }) => {
   if (!subscribers) return null
 
   return (
-    <div>
     <Table
       header={
         <TableRow>
@@ -43,8 +42,8 @@ export default translate()(({ app, subscribers, t }) => {
               <Button emphasis="negative">{t("remove")}</Button>
             </TableCell>
           </TableRow>
-        )})}
+        )}
+      )}
     </Table>
-  </div>
   );
 }) 

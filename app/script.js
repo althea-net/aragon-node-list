@@ -43,5 +43,10 @@ const initialState = {
 
 app.store(async (state, event) => {
   if (state === null) state = initialState
+  switch (event) {
+    case INITIALIZATION_TRIGGER:
+      let count = await getCountOfSubscribers()
+      Array(count).fill().map(a => await av
+  } 
   return initialState 
 }, [of({ event: INITIALIZATION_TRIGGER })])
