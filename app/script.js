@@ -48,17 +48,17 @@ app.store(async (state, { event }) => {
   switch (event) {
     case INITIALIZATION_TRIGGER:
       // TODO: get subscribers and node list here
+      // Array(count).fill().map(a => await 
       state = initialState;
     break;
     case 'NewMember':
       let nodes = await getNodeList()
       state = { ...state, nodes }
-      // Array(count).fill().map(a => await av
     break;
   } 
 
   return state
-}, [of({ event: INITIALIZATION_TRIGGER }), app.events()])
+}, [of({ event: INITIALIZATION_TRIGGER })])
 
 
 function getNodeList() {
