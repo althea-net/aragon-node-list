@@ -28,6 +28,7 @@ contract Althea is AragonApp {
   uint public perBlockFee;
   address public paymentAddress;
   address[] public subnetSubscribers;
+  mapping(bytes16 => address) public nodeList;
   mapping (address => Bill) public billMapping;
 
   function initialize(address _addr, uint _fee) external onlyInit {
