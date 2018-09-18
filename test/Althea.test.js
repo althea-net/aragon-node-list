@@ -113,18 +113,21 @@ contract('Althea', accounts => {
       event.args.collector.should.eql(paymentAddress)
     })
 
-    it('Will not replace an exsting bill', async () => {
-      await contract.addBill({value: 2*(10**10)})
-      assertRevert(contract.addBill({value: 4*(10**10)}))
-    })
-
     it('Contract ether balance should increase', async () => {
       let balance = 2*(10**10)
       await contract.addBill({value: balance})
 
       let contractBalance = await web3.eth.getBalance(contract.address)
       contractBalance.should.eql(web3.utils.toBN(balance).toString())
+    })
 
+    it('Increase bill by corresponding amount', async () => {
+      let account =  2*(10**10)
+      await contract.addBill({value: account})
+      await contract.addBill({value: account})
+      let total = new BN(account*2)
+      let bill = await contract.billMapping(accounts[0])
+      assert(bill.account.eq(total))
     })
   })
 
@@ -176,35 +179,6 @@ contract('Althea', accounts => {
       await contract.setPaymentAddress(newAddress)
       let addr = await contract.paymentAddress()
       addr.should.eql(newAddress)
-    })
-  })
-
-  describe('topOffBill', async () => {
-
-    beforeEach(async () => {
-      contract = await Althea.new()
-      await contract.initialize(paymentAddress, 10**10)
-    })
-
-    it('Revert when value is zero', async () => {
-      await contract.addBill({value: 2*(10**10)})
-      assertRevert(contract.topOffBill())
-    })
-
-    it('Revert if bill does not exist', async () => {
-      await contract.addBill({value: 2*(10**10)})
-      assertRevert(contract.topOffBill({from: accounts[1], value: 1*(10**10)}))
-    })
-
-    it('Increase bill by corresponding amount', async () => {
-      let account =  2*(10**10)
-      await contract.addBill({value: account})
-      await contract.topOffBill({value: account})
-
-      let total = new BN(account*2)
-
-      let bill = await contract.billMapping(accounts[0])
-      assert(bill.account.eq(total))
     })
 
   })
