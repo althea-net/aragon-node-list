@@ -72,13 +72,13 @@ contract Althea is AragonApp {
   }
 
   function addBill() public payable {
-
     require(msg.value > perBlockFee);
     require(billMapping[msg.sender].lastUpdated == 0);
 
-    billMapping[msg.sender] = Bill(msg.value, perBlockFee, block.number);
-    subnetSubscribers.push(msg.sender);
-    NewBill(msg.sender, paymentAddress);
+    address sender = msg.sender;
+    billMapping[sender] = Bill(msg.value, perBlockFee, block.number);
+    subnetSubscribers.push(sender);
+    NewBill(sender, paymentAddress);
   }
 
   function topOffBill() public payable {

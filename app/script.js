@@ -53,6 +53,7 @@ app.store(async (state, { event }) => {
     break;
     case 'NewMember':
       let nodes = await getNodeList()
+      console.log('got some nodes', nodes)
       state = { ...state, nodes }
     break;
   } 
@@ -65,7 +66,7 @@ function getNodeList() {
   console.log("YOOOOOOOOOOOOOO")
   return new Promise(resolve => {
     app
-    .call('getNodeList')
+    .call('nodeList')
     .subscribe(resolve)
   })
 }

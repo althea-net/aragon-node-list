@@ -19,7 +19,7 @@ class SubnetAdmin extends React.Component {
     this.state = {
       nickname: '',
       ethAddress: '0x09c4d1f918d3c02b390765c7eb9849842c8f7997',
-      ipAddress: 'fddc:ff4c:201e:54cb:bfd1:4b9b:a059:2308'
+      ipAddress: '0xc0a8010ac0a8010a'
     } 
   } 
 
@@ -38,13 +38,11 @@ class SubnetAdmin extends React.Component {
     this.setState({ ipAddress })
   }
 
-  addNode = () => {
+  addNode = async () => {
     this.props.app.addMember(
       this.state.ethAddress,
       this.state.ipAddress
     )
-
-    console.log('adding member', this.state.ethAddress, this.state.ipAddress)
   } 
 
   render() {

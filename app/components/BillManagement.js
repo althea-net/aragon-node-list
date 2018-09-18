@@ -16,11 +16,12 @@ const StyledCard = styled(Card)`
 class BillManagement extends React.Component {
   constructor() {
     super()
-    this.state = { amount: '' }
+    this.state = { amount: 1000000001 }
   } 
 
   addBill = () => {
-    this.props.app.call('addBill', { value: 1000000001 })
+    this.props.app.addBill({ value: this.state.amount })
+    // this.props.app.topOffBill({ value: this.state.amount })
   } 
 
   setAmount = (e) => {
