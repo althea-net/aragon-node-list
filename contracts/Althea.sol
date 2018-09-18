@@ -65,31 +65,31 @@ contract Althea is AragonApp {
     NewMember(_ethAddr, _ip, _nick);
   }
 
-  function deleteMember(bytes16 _ip) public auth(DELETE_MEMBER) {
+  function deleteMember(bytes16 _ip) external auth(DELETE_MEMBER) {
     MemberRemoved(nodeList[_ip], _ip, nickName[_ip]);
     nodeList[_ip] = address(0);
     nickName[_ip] = bytes16(0);
   }
 
-  function getMember(bytes16 _ip) public view returns(address addr) {
+  function getMember(bytes16 _ip) external view returns(address addr) {
     addr = nodeList[_ip]; 
   }
 
 
   // Escrow leasing functionality till EOF
-  function setPerBlockFee(uint _newFee) public auth(MANAGE_ESCROW) {
+  function setPerBlockFee(uint _newFee) external auth(MANAGE_ESCROW) {
     perBlockFee = _newFee;
   }
 
-  function setPaymentAddress(address _addr) public auth(MANAGE_ESCROW) {
+  function setPaymentAddress(address _addr) external auth(MANAGE_ESCROW) {
     paymentAddress = _addr;
   }
 
-  function getCountOfSubscribers() public view returns (uint) {
+  function getCountOfSubscribers() external view returns (uint) {
     return subnetSubscribers.length;
   }
 
-  function addBill() public payable {
+  function addBill() external payable {
 
     require(msg.value > perBlockFee);
     require(billMapping[msg.sender].lastUpdated == 0);
@@ -99,13 +99,13 @@ contract Althea is AragonApp {
     NewBill(msg.sender, paymentAddress);
   }
 
-  function topOffBill() public payable {
+  function topOffBill() external payable {
     require(msg.value != 0);
     require(billMapping[msg.sender].lastUpdated != 0);
     billMapping[msg.sender].account = billMapping[msg.sender].account.add(msg.value);
   }
 
-  function collectBills() public auth(MANAGE_ESCROW) {
+  function collectBills() external auth(MANAGE_ESCROW) {
     uint transferValue = 0;
     for (uint i = 0; i < subnetSubscribers.length; i++) {
       transferValue = transferValue.add(processBills(subnetSubscribers[i]));
@@ -117,7 +117,7 @@ contract Althea is AragonApp {
     address(paymentAddress).transfer(processBills(msg.sender));
   }
 
-  function withdrawFromBill() public {
+  function withdrawFromBill() external {
     payMyBills();
     uint amount = billMapping[msg.sender].account;
     require(amount > 0);
