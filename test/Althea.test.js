@@ -20,29 +20,75 @@ contract('Althea', accounts => {
   })
 
   context('Node List', () => {
-    let ipv6 = '0xc0a8010ac0a8010a'
+    let ipv6 = web3.utils.padRight('0xc0a8010ac0a8010a', 32)
+    let nick = web3.utils.padRight(web3.utils.toHex('Nick Hoggle'), 32)
     beforeEach(async () => {
       contract = await Althea.new()
       await contract.initialize(paymentAddress, 10**10)
     })
 
     it('Adds a new member to the list', async () => {
-      await contract.addMember(accounts[1], ipv6)
+      await contract.addMember(accounts[1], ipv6, nick)
       let address = await contract.nodeList(ipv6)
-      assert(contract.nodeList(ipv6), address)
+      assert.equal(await contract.nodeList(ipv6), address)
     })
 
     it('Reverts when adding an existing member to the list', async () => {
-      await contract.addMember(accounts[1], ipv6)
-      assertRevert(contract.addMember(accounts[1], ipv6))
+      await contract.addMember(accounts[1], ipv6, nick)
+      assertRevert(contract.addMember(accounts[1], ipv6, nick))
     })
 
     it('Removes member from list', async () => {
-      await contract.addMember(accounts[1], ipv6)
-      assert(await contract.nodeList(ipv6), accounts[1])
+      await contract.addMember(accounts[1], ipv6, nick)
+      let value = await contract.nodeList(ipv6)
+      assert.equal(value, accounts[1])
+
       await contract.deleteMember(ipv6)
-      assert(await contract.nodeList(ipv6), ZERO)
+      let value2 = await contract.nodeList(ipv6)
+      assert.equal(value2, ZERO)
     })
+
+    it('Saves the proper nick name', async () => {
+      await contract.addMember(accounts[1], ipv6, nick)
+      let value = await contract.nickName(ipv6)
+      assert.equal(value, nick)
+    })
+
+    it('Deletes nick name from mapping', async () => {
+      await contract.addMember(accounts[1], ipv6, nick)
+      let value = await contract.nickName(ipv6)
+      assert.equal(value, nick)
+
+      await contract.deleteMember(ipv6)
+      let value2 = await contract.nickName(ipv6)
+      assert.equal(value2, web3.utils.padRight('0x', 32))
+    })
+
+    it('Should have a NewMember event', async () => {
+      const receipt = await contract.addMember(accounts[1], ipv6, nick)
+      const event = await expectEvent.inLogs(receipt.logs, 'NewMember', {
+        ethNodeAddress: accounts[1],
+        ipAddress: ipv6,
+        nickName: nick
+      })
+      event.args.ethNodeAddress.should.eql(accounts[1])
+      event.args.ipAddress.should.eql(ipv6)
+      event.args.nickName.should.eql(nick)
+    })
+
+    it('Should have a MemberRemoved event', async () => {
+      await contract.addMember(accounts[1], ipv6, nick)
+      const receipt = await contract.deleteMember(ipv6)
+      const event = await expectEvent.inLogs(receipt.logs, 'MemberRemoved', {
+        ethNodeAddress: accounts[1],
+        ipAddress: ipv6,
+        nickName: nick
+      })
+      event.args.ethNodeAddress.should.eql(accounts[1])
+      event.args.ipAddress.should.eql(ipv6)
+      event.args.nickName.should.eql(nick)
+    })
+
   })
 
   describe('addBill', async () => {

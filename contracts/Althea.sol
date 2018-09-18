@@ -9,8 +9,16 @@ import "@aragon/os/contracts/apm/APMNamehash.sol";
 contract Althea is AragonApp {
   using SafeMath for uint;
 
-  event NewMember(address indexed ethNodeAddress, bytes16 ipAddress);
-  event MemberRemoved(address indexed ethNodeAddress, bytes16 ipAddress);
+  event NewMember(
+    address indexed ethNodeAddress,
+    bytes16 ipAddress,
+    bytes16 nickName
+  );
+  event MemberRemoved(
+    address indexed ethNodeAddress,
+    bytes16 ipAddress,
+    bytes16 nickName
+  );
   event NewBill(address payer, address collector);
  
   bytes32 constant public ADD_MEMBER = keccak256("ADD_MEMBER");
@@ -29,6 +37,7 @@ contract Althea is AragonApp {
   address public paymentAddress;
   address[] public subnetSubscribers;
   mapping(bytes16 => address) public nodeList;
+  mapping(bytes16 => bytes16) public nickName;
   mapping (address => Bill) public billMapping;
 
   function initialize(address _addr, uint _fee) external onlyInit {
@@ -42,15 +51,24 @@ contract Althea is AragonApp {
   }
 
   // Node list funtionality from here till next comment
-  function addMember(address _ethAddr, bytes16 _ip) public auth(ADD_MEMBER) {
+  function addMember(
+    address _ethAddr,
+    bytes16 _ip,
+    bytes16 _nick
+  )
+    public
+    auth(ADD_MEMBER)
+  {
     require(nodeList[_ip] == address(0));
     nodeList[_ip] = _ethAddr;
-    NewMember(_ethAddr, _ip);
+    nickName[_ip] = _nick;
+    NewMember(_ethAddr, _ip, _nick);
   }
 
   function deleteMember(bytes16 _ip) public auth(DELETE_MEMBER) {
-    MemberRemoved(nodeList[_ip], _ip);
+    MemberRemoved(nodeList[_ip], _ip, nickName[_ip]);
     nodeList[_ip] = address(0);
+    nickName[_ip] = bytes16(0);
   }
 
   function getMember(bytes16 _ip) public view returns(address addr) {
