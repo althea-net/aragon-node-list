@@ -89,7 +89,7 @@ contract Althea is AragonApp {
     return subnetSubscribers.length;
   }
 
-  function addBill() public payable {
+  function addBill() external payable {
 
     require(msg.value > perBlockFee);
 
@@ -99,7 +99,6 @@ contract Althea is AragonApp {
       NewBill(msg.sender, paymentAddress);
     } else {
       billMapping[msg.sender].account = billMapping[msg.sender].account.add(msg.value);
-      billMapping[msg.sender].lastUpdated = block.number;
     }
   }
 
