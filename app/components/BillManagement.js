@@ -21,7 +21,6 @@ class BillManagement extends React.Component {
 
   addBill = () => {
     this.props.app.addBill({ value: this.state.amount })
-    // this.props.app.topOffBill({ value: this.state.amount })
   } 
 
   setAmount = (e) => {

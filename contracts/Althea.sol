@@ -62,6 +62,7 @@ contract Althea is AragonApp {
     require(nodeList[_ip] == address(0));
     nodeList[_ip] = _ethAddr;
     nickName[_ip] = _nick;
+    subnetSubscribers.push(_ethAddr);
     NewMember(_ethAddr, _ip, _nick);
   }
 

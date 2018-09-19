@@ -2,9 +2,9 @@ import React from 'react'
 import { Button, Table, TableHeader, TableRow, TableCell, Text } from '@aragon/ui'
 import { translate } from 'react-i18next'
 
-export default translate()(({ app, nodes, subscribers, t }) => {
+export default translate()(({ app, nodes, t }) => {
   let fundsColor = funds => (funds > 0) ? "green" : "red"
-  if (!subscribers) return null
+  if (!nodes) return null
 
   return (
     <div>
@@ -20,7 +20,7 @@ export default translate()(({ app, nodes, subscribers, t }) => {
           </TableRow>
         }
       >
-        {subscribers.map((d, i) => {
+        {nodes.map((d, i) => {
           let {nickname, funds, address, ip} = d;
           let trunc = (s, n) => `${s.substr(0,n)}...${s.substr(-n)}`
           address = trunc(address, 6)

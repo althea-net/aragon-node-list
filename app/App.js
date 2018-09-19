@@ -37,13 +37,13 @@ class App extends React.Component {
 
   render() {
     const Page = this.state.page;
-    const { app, nodes, subscribers, t } = this.props;
+    const { app, nodes, t } = this.props;
 
     return (
       <AppContainer>
         <Grid fluid>
           <AltheaAppBar title={t('altheaSubnetDAO')} endContent={<Nav setPage={this.setPage} />} />
-          {this.state.page && <Page app={app} nodes={nodes} subscribers={subscribers} />}
+          {this.state.page && <Page app={app} nodes={nodes} />}
         </Grid>
       </AppContainer>
     )

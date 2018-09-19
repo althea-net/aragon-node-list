@@ -17,7 +17,7 @@ class SubnetAdmin extends React.Component {
   constructor() {
     super()
     this.state = {
-      nickname: '',
+      nickname: 'tony',
       ethAddress: '0x09c4d1f918d3c02b390765c7eb9849842c8f7997',
       ipAddress: '0xc0a8010ac0a8010a'
     } 
@@ -39,9 +39,11 @@ class SubnetAdmin extends React.Component {
   }
 
   addNode = async () => {
+    console.log('adding', this.state.ethAddress, this.state.ipAddress, this.state.nickname)
     this.props.app.addMember(
       this.state.ethAddress,
-      this.state.ipAddress
+      this.state.ipAddress,
+      this.state.nickname
     )
   } 
 
