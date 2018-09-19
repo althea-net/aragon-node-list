@@ -20,29 +20,75 @@ contract('Althea', accounts => {
   })
 
   context('Node List', () => {
-    let ipv6 = '0xc0a8010ac0a8010a'
+    let ipv6 = web3.utils.padRight('0xc0a8010ac0a8010a', 32)
+    let nick = web3.utils.padRight(web3.utils.toHex('Nick Hoggle'), 32)
     beforeEach(async () => {
       contract = await Althea.new()
       await contract.initialize(paymentAddress, 10**10)
     })
 
     it('Adds a new member to the list', async () => {
-      await contract.addMember(accounts[1], ipv6)
+      await contract.addMember(accounts[1], ipv6, nick)
       let address = await contract.nodeList(ipv6)
-      assert(contract.nodeList(ipv6), address)
+      assert.equal(await contract.nodeList(ipv6), address)
     })
 
     it('Reverts when adding an existing member to the list', async () => {
-      await contract.addMember(accounts[1], ipv6)
-      assertRevert(contract.addMember(accounts[1], ipv6))
+      await contract.addMember(accounts[1], ipv6, nick)
+      assertRevert(contract.addMember(accounts[1], ipv6, nick))
     })
 
     it('Removes member from list', async () => {
-      await contract.addMember(accounts[1], ipv6)
-      assert(await contract.nodeList(ipv6), accounts[1])
+      await contract.addMember(accounts[1], ipv6, nick)
+      let value = await contract.nodeList(ipv6)
+      assert.equal(value, accounts[1])
+
       await contract.deleteMember(ipv6)
-      assert(await contract.nodeList(ipv6), ZERO)
+      let value2 = await contract.nodeList(ipv6)
+      assert.equal(value2, ZERO)
     })
+
+    it('Saves the proper nick name', async () => {
+      await contract.addMember(accounts[1], ipv6, nick)
+      let value = await contract.nickName(ipv6)
+      assert.equal(value, nick)
+    })
+
+    it('Deletes nick name from mapping', async () => {
+      await contract.addMember(accounts[1], ipv6, nick)
+      let value = await contract.nickName(ipv6)
+      assert.equal(value, nick)
+
+      await contract.deleteMember(ipv6)
+      let value2 = await contract.nickName(ipv6)
+      assert.equal(value2, web3.utils.padRight('0x', 32))
+    })
+
+    it('Should have a NewMember event', async () => {
+      const receipt = await contract.addMember(accounts[1], ipv6, nick)
+      const event = await expectEvent.inLogs(receipt.logs, 'NewMember', {
+        ethNodeAddress: accounts[1],
+        ipAddress: ipv6,
+        nickName: nick
+      })
+      event.args.ethNodeAddress.should.eql(accounts[1])
+      event.args.ipAddress.should.eql(ipv6)
+      event.args.nickName.should.eql(nick)
+    })
+
+    it('Should have a MemberRemoved event', async () => {
+      await contract.addMember(accounts[1], ipv6, nick)
+      const receipt = await contract.deleteMember(ipv6)
+      const event = await expectEvent.inLogs(receipt.logs, 'MemberRemoved', {
+        ethNodeAddress: accounts[1],
+        ipAddress: ipv6,
+        nickName: nick
+      })
+      event.args.ethNodeAddress.should.eql(accounts[1])
+      event.args.ipAddress.should.eql(ipv6)
+      event.args.nickName.should.eql(nick)
+    })
+
   })
 
   describe('addBill', async () => {
@@ -67,18 +113,21 @@ contract('Althea', accounts => {
       event.args.collector.should.eql(paymentAddress)
     })
 
-    it('Will not replace an exsting bill', async () => {
-      await contract.addBill({value: 2*(10**10)})
-      assertRevert(contract.addBill({value: 4*(10**10)}))
-    })
-
     it('Contract ether balance should increase', async () => {
       let balance = 2*(10**10)
       await contract.addBill({value: balance})
 
       let contractBalance = await web3.eth.getBalance(contract.address)
       contractBalance.should.eql(web3.utils.toBN(balance).toString())
+    })
 
+    it('Increase bill by corresponding amount', async () => {
+      let account =  2*(10**10)
+      await contract.addBill({value: account})
+      await contract.addBill({value: account})
+      let total = new BN(account*2)
+      let bill = await contract.billMapping(accounts[0])
+      assert(bill.account.eq(total))
     })
   })
 
@@ -130,35 +179,6 @@ contract('Althea', accounts => {
       await contract.setPaymentAddress(newAddress)
       let addr = await contract.paymentAddress()
       addr.should.eql(newAddress)
-    })
-  })
-
-  describe('topOffBill', async () => {
-
-    beforeEach(async () => {
-      contract = await Althea.new()
-      await contract.initialize(paymentAddress, 10**10)
-    })
-
-    it('Revert when value is zero', async () => {
-      await contract.addBill({value: 2*(10**10)})
-      assertRevert(contract.topOffBill())
-    })
-
-    it('Revert if bill does not exist', async () => {
-      await contract.addBill({value: 2*(10**10)})
-      assertRevert(contract.topOffBill({from: accounts[1], value: 1*(10**10)}))
-    })
-
-    it('Increase bill by corresponding amount', async () => {
-      let account =  2*(10**10)
-      await contract.addBill({value: account})
-      await contract.topOffBill({value: account})
-
-      let total = new BN(account*2)
-
-      let bill = await contract.billMapping(accounts[0])
-      assert(bill.account.eq(total))
     })
 
   })
