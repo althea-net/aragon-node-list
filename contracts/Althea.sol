@@ -110,6 +110,14 @@ contract Althea is AragonApp {
     address(paymentAddress).transfer(transferValue);
   }
 
+  function totalBills() external auth(MANAGE_ESCROW) returns (uint) {
+    uint transferValue = 0;
+    for (uint i = 0; i < subnetSubscribers.length; i++) {
+      transferValue = transferValue.add(processBills(subnetSubscribers[i]));
+    }
+    return transferValue;
+  }
+
   function payMyBills() public {
     address(paymentAddress).transfer(processBills(msg.sender));
   }

@@ -40,7 +40,7 @@ class SubnetAdmin extends React.Component {
 
   addNode = async () => {
     console.log('adding', this.state.ethAddress, this.state.ipAddress, this.state.nickname)
-    this.props.app.addMember(
+    this.props.app.call('addMember',
       this.state.ethAddress,
       this.state.ipAddress,
       this.state.nickname
