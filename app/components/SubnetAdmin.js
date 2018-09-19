@@ -3,6 +3,7 @@ import { Card, TextInput, Field, Button, Text } from '@aragon/ui'
 import { Row, Col } from 'react-flexbox-grid'
 import styled from 'styled-components'
 import { translate } from 'react-i18next'
+import web3Utils from 'web3-utils'
 
 const StyledCard = styled(Card)`
   width: 100%;
@@ -39,11 +40,12 @@ class SubnetAdmin extends React.Component {
   }
 
   addNode = async () => {
-    console.log('adding', this.state.ethAddress, this.state.ipAddress, this.state.nickname)
-    this.props.app.call('addMember',
-      this.state.ethAddress,
-      this.state.ipAddress,
-      this.state.nickname
+    let { ethAddress, ipAddress, nickname } = this.state
+    nickname = web3Utils.padRight(web3Utils.toHex(nickname), 32)
+    this.props.app.addMember(
+      ethAddress,
+      ipAddress,
+      nickname
     )
   } 
 
