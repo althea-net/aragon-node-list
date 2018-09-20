@@ -1,6 +1,12 @@
 import React from 'react'
 import { Button, Table, TableHeader, TableRow, TableCell, Text } from '@aragon/ui'
 import { translate } from 'react-i18next'
+import styled from 'styled-components'
+
+const Abbr = styled.abbr`
+  cursor: pointer;
+  text-decoration: none;
+`
 
 export default translate()(({ app, nodes, t }) => {
   let fundsColor = funds => (funds > 0) ? "green" : "red"
@@ -8,7 +14,6 @@ export default translate()(({ app, nodes, t }) => {
 
   return (
     <div>
-      {JSON.stringify(nodes)}
       <Table
         header={
           <TableRow>
@@ -21,10 +26,9 @@ export default translate()(({ app, nodes, t }) => {
         }
       >
         {nodes.map((d, i) => {
-          let {nickname, funds, address, ip} = d;
+          let {nickname, funds, ethAddress, ipAddress} = d;
           let trunc = (s, n) => `${s.substr(0,n)}...${s.substr(-n)}`
-          address = trunc(address, 6)
-          ip = trunc(ip, 4)
+          nickname = web3.toUtf8(nickname)
 
           return (
             <TableRow key={i}>
@@ -35,10 +39,10 @@ export default translate()(({ app, nodes, t }) => {
                 <Text color={fundsColor(funds)}>{funds}</Text>
               </TableCell>
               <TableCell>
-                <Text>{address}</Text>
+                <Text><Abbr title={ethAddress}>{trunc(ethAddress, 6)}</Abbr></Text>
               </TableCell>
               <TableCell>
-                <Text>{ip}</Text>
+                <Text><Abbr title={ipAddress}>{trunc(ipAddress, 4)}</Abbr></Text>
               </TableCell>
               <TableCell>
                 <Button emphasis="negative">{t("remove")}</Button>

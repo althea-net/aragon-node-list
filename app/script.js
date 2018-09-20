@@ -9,26 +9,24 @@ const initialState = {
   nodes: []
 }
 
-app.store(async (state, { event }) => {
-  console.log('hi', state, event)
-  if (state === null) state = initialState
-
+app.store(async (state, { event, returnValues }) => {
   switch (event) {
     case INITIALIZATION_TRIGGER:
-      console.log('getting count')
+      state = initialState
       let count = await getCountOfSubscribers()
-      console.log('got count', count)
       for (let i; i < count; i++) {
-        state.nodes.push(await getNode(i))
+        let node = await getNode(i)
+        state.nodes.push({ address: node[0], ip: node[1] })
       } 
     break;
     case 'NewMember':
+      let { nickname, ethAddress, ipAddress } = returnValues
       state.nodes.push(
         {
-          nickname: "Crackson",
-          funds: 66.23,
-          address: "0xb4124ceb3451635dacedd11767f004d8a28c6ee8",
-          ip: "fddb:5b43:29f5:7244:13b4:e76b:473e:761b"
+          nickname,
+          ethAddress,
+          ipAddress,
+          funds: 0
         }
       )
     break;

@@ -51,6 +51,13 @@ class SubnetAdmin extends React.Component {
 
   render() {
     let { t } = this.props;
+    let { nickname, ethAddress, ipAddress} = this.state
+    /*
+    const billCount = new BN(summation(subscribersCount))
+    const perBlockFee = await contract.perBlockFee()
+    let expectedBalance = perBlockFee.mul(billCount).add(new BN(0))
+    */
+    let bills = 125.23
 
     return (
       <Row>
@@ -63,7 +70,7 @@ class SubnetAdmin extends React.Component {
                 name="nickname"
                 placeholder={t('whoOwns')}
                 onChange={this.setNickname}
-                value={this.state.nickname}
+                value={nickname}
               />
             </Field>
             <Button>Scan node QR code</Button>
@@ -73,7 +80,7 @@ class SubnetAdmin extends React.Component {
                 name="address"
                 placeholder={t('enterEthAddress')}
                 onChange={this.setEthAddress}
-                value={this.state.ethAddress}
+                value={ethAddress}
               />
             </Field>
             <Field label={t('ipAddress')}>
@@ -82,7 +89,7 @@ class SubnetAdmin extends React.Component {
                 name="ip"
                 placeholder={t('enterIpAddress')}
                 onChange={this.setIpAddress}
-                value={this.state.ipAddress}
+                value={ipAddress}
               />
             </Field>
             <Field>
@@ -91,7 +98,7 @@ class SubnetAdmin extends React.Component {
           </StyledCard>
           <StyledCard>
             <Text size="xlarge">{t('collectBills')}</Text>
-            <p>{t('youHave', { bills: 123.34 })}</p>
+            <p>{t('youHave', { bills })}</p>
             <Button>{t('collectBills')}</Button>
           </StyledCard>
         </Col>

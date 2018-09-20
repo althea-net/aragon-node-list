@@ -10,14 +10,14 @@ contract Althea is AragonApp {
   using SafeMath for uint;
 
   event NewMember(
-    address indexed ethNodeAddress,
+    address indexed ethAddress,
     bytes16 ipAddress,
-    bytes16 nickName
+    bytes16 nickname
   );
   event MemberRemoved(
-    address indexed ethNodeAddress,
+    address indexed ethAddress,
     bytes16 ipAddress,
-    bytes16 nickName
+    bytes16 nickname
   );
   event NewBill(address payer, address collector);
  
@@ -108,14 +108,6 @@ contract Althea is AragonApp {
       transferValue = transferValue.add(processBills(subnetSubscribers[i]));
     }
     address(paymentAddress).transfer(transferValue);
-  }
-
-  function totalBills() external auth(MANAGE_ESCROW) returns (uint) {
-    uint transferValue = 0;
-    for (uint i = 0; i < subnetSubscribers.length; i++) {
-      transferValue = transferValue.add(processBills(subnetSubscribers[i]));
-    }
-    return transferValue;
   }
 
   function payMyBills() public {
