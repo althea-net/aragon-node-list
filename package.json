@@ -10,6 +10,7 @@
     "i18next": ">= 6.0.1",
     "i18next-browser-languagedetector": "^2.2.3",
     "i18next-xhr-backend": "^1.5.1",
+    "ip-address": "^5.8.9",
     "react": "^0.14.0 ||^15.0.0 || ^16.0.0",
     "react-dom": "^16.3.2",
     "react-flexbox-grid": "^2.1.2",

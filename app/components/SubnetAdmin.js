@@ -4,6 +4,7 @@ import { Row, Col } from 'react-flexbox-grid'
 import styled from 'styled-components'
 import { translate } from 'react-i18next'
 import web3Utils from 'web3-utils'
+import { Address6 } from 'ip-address'
 
 const StyledCard = styled(Card)`
   width: 100%;
@@ -20,7 +21,8 @@ class SubnetAdmin extends React.Component {
     this.state = {
       nickname: 'tony',
       ethAddress: '0x09c4d1f918d3c02b390765c7eb9849842c8f7997',
-      ipAddress: '0xc0a8010ac0a8010a'
+      ipAddress: '',
+      ipValid: true
     } 
   } 
 
@@ -36,12 +38,15 @@ class SubnetAdmin extends React.Component {
 
   setIpAddress = e => { 
     let ipAddress = e.target.value
-    this.setState({ ipAddress })
+    let ipValid = (new Address6(ipAddress)).isValid()
+    this.setState({ ipAddress, ipValid })
   }
 
   addNode = async () => {
     let { ethAddress, ipAddress, nickname } = this.state
     nickname = web3Utils.padRight(web3Utils.toHex(nickname), 32)
+    ipAddress = '0x' + ipAddress.replace(new RegExp(':', 'g'), '')
+    console.log(ipAddress)
     this.props.app.addMember(
       ethAddress,
       ipAddress,
@@ -49,9 +54,16 @@ class SubnetAdmin extends React.Component {
     )
   } 
 
+  formatIp = async e => {
+    let ipAddress = (new Address6(e.target.value)).canonicalForm()
+    if (ipAddress)
+      this.setState({ ipAddress })
+  } 
+
   render() {
     let { t } = this.props;
-    let { nickname, ethAddress, ipAddress} = this.state
+    let { nickname, ethAddress, ipAddress, ipValid} = this.state
+
     /*
     const billCount = new BN(summation(subscribersCount))
     const perBlockFee = await contract.perBlockFee()
@@ -88,10 +100,12 @@ class SubnetAdmin extends React.Component {
                 type="text"
                 name="ip"
                 placeholder={t('enterIpAddress')}
+                onBlur={this.formatIp}
                 onChange={this.setIpAddress}
                 value={ipAddress}
               />
             </Field>
+            {ipValid || <span>Enter a valid ipv6 address</span>}
             <Field>
               <Button onClick={this.addNode}>{t('addNode')}</Button>
             </Field>
