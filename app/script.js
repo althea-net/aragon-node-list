@@ -33,13 +33,25 @@ app.store(async (state, { event, returnValues }) => {
     case 'MemberRemoved':
       let i = state.nodes.findIndex(n => n.ipAddress === returnValues.ipAddress)
       state.nodes = state.nodes.splice(i, 1)
-      console.log('member removed', state.nodes)
+    break;
+    case 'NewBill':
+      let { payer, collector } = returnValues
+      let bill = await getBill(payer)
+      let node = state.nodes.find(n => n.ethAddress === payer)
+      node.funds = bill.account
     break;
   } 
 
   return state
 }, [of({ event: INITIALIZATION_TRIGGER })])
 
+function getBill(address) {
+  return new Promise(resolve => {
+    app
+    .call('billMapping', address)
+    .subscribe(resolve)
+  })
+}
 
 function getNode(i) {
   return new Promise(resolve => {

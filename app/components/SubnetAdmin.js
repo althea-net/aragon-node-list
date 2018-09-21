@@ -46,7 +46,6 @@ class SubnetAdmin extends React.Component {
     let { ethAddress, ipAddress, nickname } = this.state
     nickname = web3Utils.padRight(web3Utils.toHex(nickname), 32)
     ipAddress = '0x' + ipAddress.replace(new RegExp(':', 'g'), '')
-    console.log(ipAddress)
     this.props.app.addMember(
       ethAddress,
       ipAddress,
