@@ -228,7 +228,7 @@ contract('Althea', accounts => {
 
       const billCount = new BN(summation(subscribersCount))
       const perBlockFee = await contract.perBlockFee()
-      let expectedBalance = perBlockFee.mul(billCount).add(new BN(0))
+      let expectedBalance = perBlockFee.mul(billCount)
 
       new BN(await web3.eth.getBalance(paymentAddress))
         .eq(expectedBalance).should.eql(true)
