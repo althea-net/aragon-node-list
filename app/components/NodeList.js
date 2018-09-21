@@ -8,6 +8,11 @@ const Abbr = styled.abbr`
   text-decoration: none;
 `
 
+const RemoveButton = ({ app, ip, t }) => {
+  let deleteMember = () => app.deleteMember(ip)  
+  return <Button emphasis="negative" onClick={deleteMember}>{t("remove")}</Button>
+} 
+
 export default translate()(({ app, nodes, t }) => {
   let fundsColor = funds => (funds > 0) ? "green" : "red"
   if (!nodes) return null
@@ -45,7 +50,7 @@ export default translate()(({ app, nodes, t }) => {
                 <Text><Abbr title={ipAddress}>{trunc(ipAddress, 4)}</Abbr></Text>
               </TableCell>
               <TableCell>
-                <Button emphasis="negative">{t("remove")}</Button>
+                <RemoveButton app={app} ip={ipAddress} t={t} />
               </TableCell>
             </TableRow>
           )}
