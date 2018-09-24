@@ -20,7 +20,7 @@ import "./Althea.sol";
 contract AltheDAO {
   APMRegistry apm;
   DAOFactory fac;
-  MiniMeTokenFactory minimeFac;
+  MiniMeToken minime;
 
   address constant ANY_ENTITY = address(-1);
 
@@ -29,14 +29,14 @@ contract AltheDAO {
 
   function DevTemplate(
     DAOFactory _fac,
-    MiniMeTokenFactory _minimeFac,
+    MiniMeToken _minime,
     APMRegistry _apm
   ) 
     public 
   {
     apm = _apm;
     fac = _fac;
-    minimeFac = _minimeFac;
+    minime = _minime;
   }
 
   function apmInit(
@@ -82,7 +82,7 @@ contract AltheDAO {
       dao.newAppInstance(votingAppId(), latestVersionAppBase(votingAppId()))
     );
 
-    MiniMeToken token = minimeFac.createCloneToken(
+    MiniMeToken token = minime.createCloneToken(
       "DevToken",
       18,
       "XDT",
@@ -98,12 +98,13 @@ contract AltheDAO {
     finance.initialize(vault, uint64(-1) - uint64(now));
 
     token.changeController(tokenManager);
-    token.manager.intialize(token, true, 0, true);
+    uint maxTokens = 100;
+    tokenManager.initialize(token, true, maxTokens);
 
     uint256 pct = 10**16;
     voting.initialize(token, 50 * pct, 15 * pct, 24 hours);
 
-    acl.createPermission(ANY_ENTITY, finance, finance.CREATE_PAY_ROLE(), msg.sender);
+    acl.createPermission(ANY_ENTITY, finance, finance.CREATE_PAYMENTS_ROLE(), msg.sender);
     acl.createPermission(ANY_ENTITY, finance, finance.CHANGE_PERIOD_ROLE(), msg.sender);
     acl.createPermission(ANY_ENTITY, finance, finance.CHANGE_BUDGETS_ROLE(), msg.sender);
     acl.createPermission(ANY_ENTITY, finance, finance.EXECUTE_PAYMENTS_ROLE(), msg.sender);
@@ -114,13 +115,13 @@ contract AltheDAO {
     acl.createPermission(ANY_ENTITY, tokenManager, tokenManager.MINT_ROLE(), msg.sender);
     acl.createPermission(ANY_ENTITY, tokenManager, tokenManager.ISSUE_ROLE(), msg.sender);
     acl.createPermission(ANY_ENTITY, tokenManager, tokenManager.ASSIGN_ROLE(), msg.sender);
-    acl.createPermission(ANY_ENTITY, tokenManager, tokenManager.REVOKE_VESTING_ROLE(), msg.sender);
+    acl.createPermission(ANY_ENTITY, tokenManager, tokenManager.REVOKE_VESTINGS_ROLE(), msg.sender);
     emit InstalledApp(tokenManager, tokenManagerAppId());
 
     // vault permissions
     acl.createPermission(finance, vault, vault.TRANSFER_ROLE(), this);
-    acl.grantPermission(voting, vault, vault.TRANSFER_ROLE);
-    acl.setPermissionManafer(msg.sender, vault, vault.TRANSFER_ROLE);
+    acl.grantPermission(voting, vault, vault.TRANSFER_ROLE());
+    acl.setPermissionManager(msg.sender, vault, vault.TRANSFER_ROLE());
     emit InstalledApp(vault, vaultAppId());
 
     acl.createPermission(ANY_ENTITY, voting, voting.CREATE_VOTES_ROLE(), msg.sender);
