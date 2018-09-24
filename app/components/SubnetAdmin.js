@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import { translate } from 'react-i18next'
 import web3Utils from 'web3-utils'
 import { Address6 } from 'ip-address'
+import QrReader from 'react-qr-reader'
 
 const StyledCard = styled(Card)`
   width: 100%;
@@ -19,10 +20,12 @@ class SubnetAdmin extends React.Component {
   constructor() {
     super()
     this.state = {
-      nickname: 'adam',
+      delay: 300,
       ethAddress: '0xb4124cEB3451635DAcedd11767f004d8a28c6eE7',
       ipAddress: '0000:0000:0000:0000:0000:0000:0000:0001',
-      ipValid: true
+      ipValid: true,
+      nickname: 'adam',
+      result: 'No result'
     } 
   } 
 
@@ -59,6 +62,16 @@ class SubnetAdmin extends React.Component {
       this.setState({ ipAddress })
   } 
 
+  handleScan = result => {
+    if (result) {
+      this.setState({ result })
+    }
+  }
+
+  handleError = err => {
+    console.error(err)
+  }
+
   render() {
     let { t } = this.props;
     let { nickname, ethAddress, ipAddress, ipValid} = this.state
@@ -85,6 +98,17 @@ class SubnetAdmin extends React.Component {
               />
             </Field>
             <Button>Scan node QR code</Button>
+            {/*
+            <div>
+              <QrReader
+                delay={this.state.delay}
+                onError={this.handleError}
+                onScan={this.handleScan}
+                style={{ width: '100%' }}
+                />
+              <p>{this.state.result}</p>
+            </div>
+            */}
             <Field label={t('ethAddress')}>
               <TextInput wide
                 type="text"
