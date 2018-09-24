@@ -3,7 +3,7 @@ var HDWalletProvider = require("truffle-hdwallet-provider");
 module.exports = {
   compilers: {
     solc: {
-      version: "0.4.18",
+      version: "0.4.24",
       docker: true
     }
   },
