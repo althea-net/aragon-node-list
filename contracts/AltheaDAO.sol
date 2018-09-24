@@ -27,13 +27,7 @@ contract AltheDAO {
   event DeployInstance(address dao);
   event InstalledApp(address appProxy, bytes32 appId);
 
-  constructor (
-    DAOFactory _fac,
-    MiniMeToken _minime,
-    APMRegistry _apm
-  ) 
-    public 
-  {
+  constructor (DAOFactory _fac, MiniMeToken _minime, APMRegistry _apm) public {
     apm = _apm;
     fac = _fac;
     minime = _minime;
@@ -69,7 +63,6 @@ contract AltheDAO {
       dao.newAppInstance(financeAppId(), latestVersionAppBase(finance.appId()))
     );
 
-  
     TokenManager tokenManager = TokenManager(
       dao.newAppInstance(financeAppId(), latestVersionAppBase(financeAppId()))
     );
@@ -81,6 +74,12 @@ contract AltheDAO {
     Voting voting = Voting(
       dao.newAppInstance(votingAppId(), latestVersionAppBase(votingAppId()))
     );
+
+
+    Althea althea = Althea(
+      dao.newAppInstance(altheaAppId(), latestVersionAppBase(altheaAppId()))
+    );
+
 
     MiniMeToken token = minime.createCloneToken(
       "DevToken",
@@ -94,7 +93,6 @@ contract AltheDAO {
     Vault vaultBase = Vault(latestVersionAppBase(vaultAppId()));
     vault.initialize();
 
-
     finance.initialize(vault, uint64(-1) - uint64(now));
 
     token.changeController(tokenManager);
@@ -104,6 +102,10 @@ contract AltheDAO {
     uint256 pct = 10**16;
     voting.initialize(token, 50 * pct, 15 * pct, 24 hours);
 
+    uint perBlockFee = 10^10;
+    althea.initialize(address(vault), perBlockFee);
+
+    //finance permissions
     acl.createPermission(ANY_ENTITY, finance, finance.CREATE_PAYMENTS_ROLE(), msg.sender);
     acl.createPermission(ANY_ENTITY, finance, finance.CHANGE_PERIOD_ROLE(), msg.sender);
     acl.createPermission(ANY_ENTITY, finance, finance.CHANGE_BUDGETS_ROLE(), msg.sender);
@@ -111,7 +113,8 @@ contract AltheDAO {
     acl.createPermission(ANY_ENTITY, finance, finance.DISABLE_PAYMENTS_ROLE(), msg.sender);
     emit InstalledApp(finance, financeAppId());
 
-
+  
+    //token manager permissions
     acl.createPermission(ANY_ENTITY, tokenManager, tokenManager.MINT_ROLE(), msg.sender);
     acl.createPermission(ANY_ENTITY, tokenManager, tokenManager.ISSUE_ROLE(), msg.sender);
     acl.createPermission(ANY_ENTITY, tokenManager, tokenManager.ASSIGN_ROLE(), msg.sender);
@@ -124,9 +127,16 @@ contract AltheDAO {
     acl.setPermissionManager(msg.sender, vault, vault.TRANSFER_ROLE());
     emit InstalledApp(vault, vaultAppId());
 
+    //voting permissions
     acl.createPermission(ANY_ENTITY, voting, voting.CREATE_VOTES_ROLE(), msg.sender);
     acl.createPermission(ANY_ENTITY, voting, voting.MODIFY_QUORUM_ROLE(), msg.sender);
     emit InstalledApp(voting, votingAppId());
+
+    //althea permissions
+    acl.createPermission(ANY_ENTITY, althea, althea.ADD_MEMBER(), msg.sender);
+    acl.createPermission(ANY_ENTITY, althea, althea.DELETE_MEMBER(), msg.sender);
+    acl.createPermission(ANY_ENTITY, althea, althea.MANAGE_ESCROW(), msg.sender);
+    emit InstalledApp(althea, altheaAppId());
 
     emit DeployInstance(dao);
   }
