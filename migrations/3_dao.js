@@ -10,13 +10,13 @@ const votingIpfs = ipfsHashes.voting
 module.exports = async (deployer, network, accounts, arts = null) => {
   if (arts != null) artifacts = arts // allow running outside
 
-  const DevTemplate = artifacts.require('DevTemplate')
+  const AltheaDAO = artifacts.require('AltheaDAO')
   const Finance = artifacts.require('@aragon/apps-finance/contracts/Finance')
   const TokenManager = artifacts.require('@aragon/apps-token-manager/contracts/TokenManager')
   const Vault = artifacts.require('@aragon/apps-vault/contracts/Vault')
   const Voting = artifacts.require('@aragon/apps-voting/contracts/Voting')
 
-  const MiniMeTokenFactory = artifacts.require('@aragon/os/lib/minime/MiniMeTokenFactory')
+  const MiniMeTokenFactory = artifacts.require('@aragon/apps-shared-minime/contracts/MiniMeToken.sol')
 
   const { apm, ensAddr } = await apmMigration(deployer, network, accounts, artifacts)
   const { daoFact } = await daoFactoryMigration(deployer, network, accounts, artifacts)
@@ -26,7 +26,7 @@ module.exports = async (deployer, network, accounts, arts = null) => {
   const votingBase = await Voting.new()
 
   const minimeFac = await MiniMeTokenFactory.new()
-  const template = await DevTemplate.new(daoFact.address, minimeFac.address, apm.address)
+  const template = await AltheaDAO.new(daoFact.address, minimeFac.address, apm.address)
   await template.apmInit(
     financeBase.address,
     financeIpfs,
@@ -46,6 +46,7 @@ module.exports = async (deployer, network, accounts, arts = null) => {
   const tokenManagerId = await template.tokenManagerAppId()
   const vaultId = await template.vaultAppId()
   const votingId = await template.votingAppId()
+  const altheaId = await template.altheaAppId()
 
   const installedApps = receipt.logs.filter(l => l.event == 'InstalledApp')
   const financeAddr = installedApps.filter(e => e.args.appId == financeId)[0].args.appProxy

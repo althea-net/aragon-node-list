@@ -27,7 +27,7 @@ contract AltheDAO {
   event DeployInstance(address dao);
   event InstalledApp(address appProxy, bytes32 appId);
 
-  function DevTemplate(
+  constructor (
     DAOFactory _fac,
     MiniMeToken _minime,
     APMRegistry _apm
