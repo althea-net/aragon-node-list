@@ -28,6 +28,10 @@ class BillManagement extends React.Component {
     this.setState({ amount })
   } 
 
+  withdraw = () => {
+    this.props.app.withdrawFromBill()
+  }
+
   render() {
     let { t } = this.props;
     let { amount } = this.state;
@@ -52,7 +56,7 @@ class BillManagement extends React.Component {
         <Col xs={6}>
           <StyledCard>
             <Text.Block size="xlarge">{t('withdrawAllFunds')}</Text.Block>
-            <Button>{t('withdraw')}</Button>
+            <Button onClick={this.withdraw}>{t('withdraw')}</Button>
           </StyledCard>
         </Col>
       </Row>

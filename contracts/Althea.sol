@@ -20,6 +20,7 @@ contract Althea is AragonApp {
     bytes16 nickname
   );
   event NewBill(address payer, address collector);
+  event BillUpdated(address payer, address collector);
  
   bytes32 constant public ADD_MEMBER = keccak256("ADD_MEMBER");
   bytes32 constant public DELETE_MEMBER = keccak256("DELETE_MEMBER");
@@ -120,6 +121,7 @@ contract Althea is AragonApp {
     require(amount > 0);
     billMapping[msg.sender].account = 0;
     address(msg.sender).transfer(amount);
+    BillUpdated(msg.sender, paymentAddress);
   }
 
   function processBills(address _subscriber) internal returns(uint) {
