@@ -19,9 +19,9 @@ class SubnetAdmin extends React.Component {
   constructor() {
     super()
     this.state = {
-      nickname: 'tony',
-      ethAddress: '0x09c4d1f918d3c02b390765c7eb9849842c8f7997',
-      ipAddress: '',
+      nickname: 'adam',
+      ethAddress: '0xb4124cEB3451635DAcedd11767f004d8a28c6eE7',
+      ipAddress: '0000:0000:0000:0000:0000:0000:0000:0001',
       ipValid: true
     } 
   } 

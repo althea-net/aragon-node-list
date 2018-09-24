@@ -100,6 +100,7 @@ contract Althea is AragonApp {
       NewBill(msg.sender, paymentAddress);
     } else {
       billMapping[msg.sender].account = billMapping[msg.sender].account.add(msg.value);
+      BillUpdated(msg.sender, paymentAddress);
     }
   }
 

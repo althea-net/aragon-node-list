@@ -35,6 +35,7 @@ app.store(async (state, { event, returnValues }) => {
       state.nodes = state.nodes.splice(i, 1)
     break;
     case 'NewBill':
+    case 'BillUpdated':
       let { payer, collector } = returnValues
       let bill = await getBill(payer)
       let node = state.nodes.find(n => n.ethAddress === payer)
