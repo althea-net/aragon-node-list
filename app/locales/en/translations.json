@@ -20,7 +20,7 @@
   "enterEthAddress": "Enter node's Ethereum address",
   "enterIpAddress": "Enter node's IP address",
   "collectBills": "Collect bills",
-  "youHave": "You have ${{bills}} in bills to collect right now",
+  "youHave": "You have Ξ{{bills}} in bills to collect right now",
   "checkNode": "Check node",
   "checkNodeInSubnetDAO": "Check if node is in subnet DAO",
   "removeNode": "Remove node",

@@ -20,7 +20,7 @@
   "enterEthAddress": "Ingrese la dirección Ethereum del nodo",
   "enterIpAddress": "Ingrese la dirección IP del nodo",
   "collectBills": "Cobrar facturas",
-  "youHave": "Tienes ${{bills}} en facturas para cobrar en este momento",
+  "youHave": "Tienes Ξ{{bills}} en facturas para cobrar en este momento",
   "checkNode": "Verificar nodo",
   "checkNodeInSubnetDAO": "Comprobar si el nodo está en la subred DAO",
   "removeNode": "Eliminar nodo",
