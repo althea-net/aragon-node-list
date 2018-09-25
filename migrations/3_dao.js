@@ -1,16 +1,16 @@
-const apmMigration = require('@aragon/os/migrations/2_apm')
-const daoFactoryMigration = require('@aragon/os/migrations/3_factory')
+const apmMigration = require('../node_modules/@aragon/os/scripts/deploy-beta-apm.js')
+const daoFactoryMigration = require('../node_modules/@aragon/os/scripts/deploy-daofactory')
+const ipfsHashes = require('./ipfs.js')
 
-const ipfsHashes = require('../ipfs.js')
 const financeIpfs = ipfsHashes.finance
 const tokenManagerIpfs = ipfsHashes.tokenManager
 const vaultIpfs = ipfsHashes.vault
 const votingIpfs = ipfsHashes.voting
+const altheaIpfs = ipfsHashes.althea
 
 module.exports = async (deployer, network, accounts, arts = null) => {
   if (arts != null) artifacts = arts // allow running outside
 
-  const AltheaDAO = artifacts.require('AltheaDAO')
   const Finance = artifacts.require('@aragon/apps-finance/contracts/Finance')
   const TokenManager = artifacts.require('@aragon/apps-token-manager/contracts/TokenManager')
   const Vault = artifacts.require('@aragon/apps-vault/contracts/Vault')
@@ -18,12 +18,18 @@ module.exports = async (deployer, network, accounts, arts = null) => {
 
   const MiniMeTokenFactory = artifacts.require('@aragon/apps-shared-minime/contracts/MiniMeToken.sol')
 
+  const Althea = artifacts.require('./Althea.sol')
+  const AltheaDAO = artifacts.require('./AltheaDAO.sol')
+
+
   const { apm, ensAddr } = await apmMigration(deployer, network, accounts, artifacts)
   const { daoFact } = await daoFactoryMigration(deployer, network, accounts, artifacts)
   const financeBase = await Finance.new()
   const tokenManagerBase = await TokenManager.new()
   const vaultBase = await Vault.new()
   const votingBase = await Voting.new()
+  const altheaBase = await Althea.new()
+
 
   const minimeFac = await MiniMeTokenFactory.new()
   const template = await AltheaDAO.new(daoFact.address, minimeFac.address, apm.address)
@@ -35,7 +41,9 @@ module.exports = async (deployer, network, accounts, arts = null) => {
     vaultBase.address,
     vaultIpfs,
     votingBase.address,
-    votingIpfs
+    votingIpfs,
+    altheaBase,
+    altheaIpfs
   )
 
   const receipt = await template.createInstance()
