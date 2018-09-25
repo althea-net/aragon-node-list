@@ -20,11 +20,10 @@ module.exports = async (deployer, network, accounts, arts = null) => {
   )
 
   const Althea = artifacts.require('./Althea.sol')
-  console.log('my man')
-  const AltheaDAO = artifacts.require('./AltheaDAO.sol')
-  console.log('booooo')
+  const AltheaDAOFactory = artifacts.require('./AltheaDAOFactory.sol')
 
 
+  console.log('naaah')
   const { apm, ens } = await apmMigration(deployer, network, accounts, artifacts)
   const { daoFactory } = await daoFactoryMigration(deployer, network, accounts, artifacts)
   console.log('heeeyoo')

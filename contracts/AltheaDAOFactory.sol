@@ -17,7 +17,7 @@ import "@aragon/apps-voting/contracts/Voting.sol";
 
 import "./Althea.sol";
 
-contract AltheDAO {
+contract AltheaDAOFactory {
   APMRegistry apm;
   DAOFactory fac;
   MiniMeToken minime;
