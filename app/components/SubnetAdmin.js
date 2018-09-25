@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, TextInput, Field, Button, Text } from '@aragon/ui'
+import { Card, TextInput, Info, Field, Button, Text } from '@aragon/ui'
 import { Row, Col } from 'react-flexbox-grid'
 import styled from 'styled-components'
 import { translate } from 'react-i18next'
@@ -23,6 +23,9 @@ class SubnetAdmin extends React.Component {
       bills: 0,
       delay: 300,
       currentBlock: 0,
+      checkAddress: '',
+      checkResult: null,
+      removeAddress: '',
       // ethAddress: '0xb4124cEB3451635DAcedd11767f004d8a28c6eE7',
       ethAddress: '0x8401eb5ff34cc943f096a32ef3d5113febe8d4eb',
       ipAddress: '0000:0000:0000:0000:0000:0000:0000:0001',
@@ -38,7 +41,6 @@ class SubnetAdmin extends React.Component {
 
     let bills = 0
     await Promise.all(nodes.map(async node => {
-      console.log(bills)
       bills += await this.getOwing(currentBlock, node)
     }))
     this.setState({ bills, currentBlock })
@@ -50,6 +52,14 @@ class SubnetAdmin extends React.Component {
     }) 
 
     this.componentDidMount()
+  } 
+
+  checkNode = () => {
+    let { nodes } = this.props
+    let { checkAddress } = this.state
+
+    let checkResult = nodes.findIndex(n => n.ethAddress.toLowerCase() === checkAddress.toLowerCase()) > -1
+    this.setState({ checkResult })
   } 
 
   getOwing = async (currentBlock, node) => {
@@ -117,7 +127,7 @@ class SubnetAdmin extends React.Component {
 
   render() {
     let { t } = this.props;
-    let { bills, currentBlock, nickname, ethAddress, ipAddress, ipValid} = this.state
+    let { bills, checkResult, currentBlock, nickname, ethAddress, ipAddress, ipValid} = this.state
 
     /*
     const billCount = new BN(summation(subscribersCount))
@@ -192,14 +202,17 @@ class SubnetAdmin extends React.Component {
           <Col xs={6}>
             <StyledCard>
               <Text size="xlarge">{t('checkNode')}</Text>
+              {checkResult && <Info title="Yup!" />}
+              {checkResult !== null && !checkResult && <Info title="Nope" />}
               <Field label={t('ethAddress')}>
                 <TextInput wide
                   type="text"
-                  name="address"
                   placeholder={t('enterEthAddress')}
+                  onChange={e => { this.setState( { checkAddress: e.target.value }) }}
+                  value={this.state.checkAddress}
                 />
               </Field>
-              <Button>{t('checkNodeInSubnetDAO')}</Button>
+              <Button onClick={this.checkNode}>{t('checkNodeInSubnetDAO')}</Button>
             </StyledCard>
             <StyledCard>
               <Text size="xlarge">{t('removeNode')}</Text>
