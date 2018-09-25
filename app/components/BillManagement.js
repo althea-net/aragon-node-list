@@ -19,16 +19,24 @@ class BillManagement extends React.Component {
     this.state = { 
       amount: 1000000001,
       account: 0,
-      days: 0
+      balance: 0,
+      days: 0,
+      owing: 0
     }
   } 
 
   async componentDidMount() {
-    let bill = await this.getBill()
-    let { account, perBlock } = bill
+    let address = (await this.getAccounts())[0]
+    let balance = await this.getBalance(address)
+    let currentBlock = (await this.getLatestBlock()).number
+    let bill = await this.getBill(address)
+    let { account, lastUpdated, perBlock } = bill
     let blocksPerDay = 6000
+    let blocksElapsed = currentBlock - lastUpdated
+    if (blocksElapsed > 0) blocksElapsed++
+    let owing = blocksElapsed * perBlock
     let days = (account / (perBlock * blocksPerDay)).toFixed(6)
-    this.setState({ account, days })
+    this.setState({ account, balance, days, owing })
   } 
 
   addBill = async () => {
@@ -45,11 +53,21 @@ class BillManagement extends React.Component {
     }) 
   } 
 
-  getBill = async () => {
-    let address = (await this.getAccounts())[0]
-    console.log(address)
+  getBill = async address => {
     return new Promise(resolve => {
       this.props.app.call('billMapping', address).subscribe(resolve)
+    }) 
+  } 
+
+  getLatestBlock = () => {
+    return new Promise(resolve => {
+      this.props.app.web3Eth('getBlock', 'latest').subscribe(resolve)
+    }) 
+  } 
+
+  getBalance = address => {
+    return new Promise(resolve => {
+      this.props.app.web3Eth('getBalance', address).subscribe(resolve)
     }) 
   } 
 
@@ -58,20 +76,28 @@ class BillManagement extends React.Component {
     this.setState({ amount })
   } 
 
-  withdraw = () => {
-    this.props.app.withdrawFromBill()
+  withdraw = async () => {
+    await new Promise(resolve => {
+      this.props.app.withdrawFromBill().subscribe(resolve)
+    })
+
+    this.componentDidMount()
   }
 
   render() {
     let { t } = this.props;
-    let { amount, account, days } = this.state;
+    let { amount, account, balance, days, owing } = this.state;
 
     return (
       <React.Fragment>
         <Row>
           <Col xs={12}>
             <StyledCard>
-              <Text>Your current balance is <strong>&Xi;{account}</strong>. This will pay your subnet DAO fees for <strong>{days} days</strong>.</Text>
+              <Text.Block>Address balance: <strong>&Xi;{balance}</strong></Text.Block>
+              <Text.Block>DAO balance: <strong>&Xi;{account}</strong></Text.Block>
+              <Text.Block>Outstanding payment: <strong>&Xi;{owing}</strong></Text.Block>
+              <Text.Block>Estimated days paid up: <strong>{days}</strong></Text.Block>
+              <Text.Block>Address balance after withdrawal: <strong>{parseInt(balance) + parseInt(account - owing)}</strong></Text.Block>
             </StyledCard>
           </Col>
         </Row>
