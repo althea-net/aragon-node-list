@@ -41,7 +41,7 @@ export default translate()(({ app, nodes, t }) => {
                 <Text>{nickname}</Text>
               </TableCell>
               <TableCell>
-                <Text color={fundsColor(funds)}>{funds}</Text>
+                <Text color={fundsColor(funds)}>&Xi;{funds}</Text>
               </TableCell>
               <TableCell>
                 <Text><Abbr title={ethAddress}>{trunc(ethAddress, 6)}</Abbr></Text>

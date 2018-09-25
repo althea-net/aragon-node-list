@@ -44,6 +44,14 @@ class SubnetAdmin extends React.Component {
     this.setState({ bills, currentBlock })
   } 
 
+  collectBills = async () => {
+    await new Promise(resolve => {
+      this.props.app.collectBills().subscribe(resolve)
+    }) 
+
+    this.componentDidMount()
+  } 
+
   getOwing = async (currentBlock, node) => {
     let bill = await this.getBill(node.ethAddress)
     let { lastUpdated, perBlock } = bill
@@ -178,7 +186,7 @@ class SubnetAdmin extends React.Component {
             <StyledCard>
               <Text size="xlarge">{t('collectBills')}</Text>
               <p>{t('youHave', { bills })}</p>
-              <Button>{t('collectBills')}</Button>
+              <Button onClick={this.collectBills}>{t('collectBills')}</Button>
             </StyledCard>
           </Col>
           <Col xs={6}>
