@@ -1,5 +1,5 @@
-const apmMigration = require('../node_modules/@aragon/os/scripts/deploy-beta-apm.js')
-const daoFactoryMigration = require('../node_modules/@aragon/os/scripts/deploy-daofactory')
+const apmMigration = require('@aragon/os/scripts/deploy-beta-apm.js')
+const daoFactoryMigration = require('@aragon/os/scripts/deploy-daofactory')
 const ipfsHashes = require('./ipfs.js')
 
 const financeIpfs = ipfsHashes.finance
@@ -9,21 +9,25 @@ const votingIpfs = ipfsHashes.voting
 const altheaIpfs = ipfsHashes.althea
 
 module.exports = async (deployer, network, accounts, arts = null) => {
-  if (arts != null) artifacts = arts // allow running outside
+  if (arts != null) artifacts = arts // allow running outside 
+  const Finance = artifacts.require('@aragon/apps-finance/contracts/Finance.sol')
+  const TokenManager = artifacts.require('@aragon/apps-token-manager/contracts/TokenManager.sol')
+  const Vault = artifacts.require('@aragon/apps-vault/contracts/Vault.sol')
+  const Voting = artifacts.require('@aragon/apps-voting/contracts/Voting.sol')
 
-  const Finance = artifacts.require('@aragon/apps-finance/contracts/Finance')
-  const TokenManager = artifacts.require('@aragon/apps-token-manager/contracts/TokenManager')
-  const Vault = artifacts.require('@aragon/apps-vault/contracts/Vault')
-  const Voting = artifacts.require('@aragon/apps-voting/contracts/Voting')
-
-  const MiniMeTokenFactory = artifacts.require('@aragon/apps-shared-minime/contracts/MiniMeToken.sol')
+  const MiniMeTokenFactory = artifacts.require(
+    '@aragon/apps-shared-minime/contracts/MiniMeToken.sol'
+  )
 
   const Althea = artifacts.require('./Althea.sol')
+  console.log('my man')
   const AltheaDAO = artifacts.require('./AltheaDAO.sol')
+  console.log('booooo')
 
 
-  const { apm, ensAddr } = await apmMigration(deployer, network, accounts, artifacts)
-  const { daoFact } = await daoFactoryMigration(deployer, network, accounts, artifacts)
+  const { apm, ens } = await apmMigration(deployer, network, accounts, artifacts)
+  const { daoFactory } = await daoFactoryMigration(deployer, network, accounts, artifacts)
+  console.log('heeeyoo')
   const financeBase = await Finance.new()
   const tokenManagerBase = await TokenManager.new()
   const vaultBase = await Vault.new()

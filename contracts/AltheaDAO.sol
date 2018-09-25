@@ -1,4 +1,4 @@
-pragma solidity 0.4.24;
+pragma solidity ^0.4.24;
 
 import "@aragon/os/contracts/apm/APMRegistry.sol";
 import "@aragon/os/contracts/apm/APMRegistry.sol";
