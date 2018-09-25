@@ -16,11 +16,41 @@ const StyledCard = styled(Card)`
 class BillManagement extends React.Component {
   constructor() {
     super()
-    this.state = { amount: 1000000001 }
+    this.state = { 
+      amount: 1000000001,
+      account: 0,
+      days: 0
+    }
   } 
 
-  addBill = () => {
-    this.props.app.addBill({ value: this.state.amount })
+  async componentDidMount() {
+    let bill = await this.getBill()
+    let { account, perBlock } = bill
+    let blocksPerDay = 6000
+    let days = (account / (perBlock * blocksPerDay)).toFixed(6)
+    this.setState({ account, days })
+  } 
+
+  addBill = async () => {
+    await new Promise(resolve => {
+      this.props.app.addBill({ value: this.state.amount }).subscribe(resolve)
+    })
+
+    this.componentDidMount()
+  } 
+
+  getAccounts = () => {
+    return new Promise(resolve => {
+      this.props.app.accounts().subscribe(resolve)
+    }) 
+  } 
+
+  getBill = async () => {
+    let address = (await this.getAccounts())[0]
+    console.log(address)
+    return new Promise(resolve => {
+      this.props.app.call('billMapping', address).subscribe(resolve)
+    }) 
   } 
 
   setAmount = (e) => {
@@ -34,32 +64,41 @@ class BillManagement extends React.Component {
 
   render() {
     let { t } = this.props;
-    let { amount } = this.state;
+    let { amount, account, days } = this.state;
 
     return (
-      <Row>
-        <Col xs={6}>
-          <StyledCard>
-            <Text size="xlarge">{t('addFunds')}</Text>
-            <Field label={t('amountToAdd')}>
-              <TextInput wide
-                type="text"
-                name="amount"
-                placeholder={t('enterAmount')}
-                value={amount}
-                onChange={this.setAmount}
-              />
-            </Field>
-            <Button onClick={this.addBill}>{t('addFunds')}</Button>
-          </StyledCard>
-        </Col>
-        <Col xs={6}>
-          <StyledCard>
-            <Text.Block size="xlarge">{t('withdrawAllFunds')}</Text.Block>
-            <Button onClick={this.withdraw}>{t('withdraw')}</Button>
-          </StyledCard>
-        </Col>
-      </Row>
+      <React.Fragment>
+        <Row>
+          <Col xs={12}>
+            <StyledCard>
+              <Text>Your current balance is <strong>&Xi;{account}</strong>. This will pay your subnet DAO fees for <strong>{days} days</strong>.</Text>
+            </StyledCard>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={6}>
+            <StyledCard>
+              <Text size="xlarge">{t('addFunds')}</Text>
+              <Field label={t('amountToAdd')}>
+                <TextInput wide
+                  type="text"
+                  name="amount"
+                  placeholder={t('enterAmount')}
+                  value={amount}
+                  onChange={this.setAmount}
+                />
+              </Field>
+              <Button onClick={this.addBill}>{t('addFunds')}</Button>
+            </StyledCard>
+          </Col>
+          <Col xs={6}>
+            <StyledCard>
+              <Text.Block size="xlarge">{t('withdrawAllFunds')}</Text.Block>
+              <Button onClick={this.withdraw}>{t('withdraw')}</Button>
+            </StyledCard>
+          </Col>
+        </Row>
+      </React.Fragment>
     );
   }
 }
