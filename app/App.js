@@ -12,10 +12,8 @@ import Nav from './components/Nav'
 
 const AppContainer = styled(AragonApp)`
   display: flex;
-  justify-content: center;
   align-content: flex-start;
   flex-direction: column;
-  text-align: center;
 `
 
 const AltheaAppBar = styled(AppBar)`
@@ -23,7 +21,7 @@ const AltheaAppBar = styled(AppBar)`
   border: 2px solid #ddd;
   border-radius: 5px;
   padding: 0;
-  margin: 0;
+  margin: 20px 0;
   height: 100%;
 `
 
