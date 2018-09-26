@@ -15,7 +15,7 @@ const RemoveButton = ({ app, ip, t }) => {
 
 export default translate()(({ app, nodes, t }) => {
   let fundsColor = funds => (funds > 0) ? "green" : "red"
-  if (!nodes) return <Text>{t('noNodes')}</Text>
+  if (!nodes || !nodes.length) return <Text>{t('noNodes')}</Text>
 
   return (
     <div>
