@@ -32,7 +32,7 @@ app.store(async (state, { event, returnValues }) => {
     break;
     case 'MemberRemoved':
       let i = state.nodes.findIndex(n => n.ipAddress === returnValues.ipAddress)
-      state.nodes = state.nodes.splice(i, 1)
+      state.nodes.splice(i, 1)
     break;
     case 'NewBill':
     case 'BillUpdated':

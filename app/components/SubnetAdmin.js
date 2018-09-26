@@ -26,6 +26,7 @@ class SubnetAdmin extends React.Component {
       checkAddress: '',
       checkResult: null,
       removeAddress: '',
+      removeResult: null,
       // ethAddress: '0xb4124cEB3451635DAcedd11767f004d8a28c6eE7',
       ethAddress: '0x8401eb5ff34cc943f096a32ef3d5113febe8d4eb',
       ipAddress: '0000:0000:0000:0000:0000:0000:0000:0001',
@@ -60,6 +61,24 @@ class SubnetAdmin extends React.Component {
 
     let checkResult = nodes.findIndex(n => n.ethAddress.toLowerCase() === checkAddress.toLowerCase()) > -1
     this.setState({ checkResult })
+  } 
+
+  removeNode = async () => {
+    let { nodes } = this.props
+    let { removeAddress } = this.state
+
+    let node = nodes.find(n => n.ethAddress.toLowerCase() === removeAddress.toLowerCase())
+
+    if (!node) return this.setState({ removeResult: false })
+
+    try {
+      await new Promise((resolve, reject) => {
+        this.props.app.deleteMember(node.ipAddress).subscribe(resolve, reject)
+      }) 
+      this.setState({ removeResult: true })
+    } catch (e) {
+      console.log(e)
+    } 
   } 
 
   getOwing = async (currentBlock, node) => {
@@ -127,7 +146,7 @@ class SubnetAdmin extends React.Component {
 
   render() {
     let { t } = this.props;
-    let { bills, checkResult, currentBlock, nickname, ethAddress, ipAddress, ipValid} = this.state
+    let { bills, checkResult, currentBlock, nickname, ethAddress, ipAddress, ipValid, removeResult } = this.state
 
     /*
     const billCount = new BN(summation(subscribersCount))
@@ -216,14 +235,18 @@ class SubnetAdmin extends React.Component {
             </StyledCard>
             <StyledCard>
               <Text size="xlarge">{t('removeNode')}</Text>
+              {removeResult && <Info title="Gone!" />}
+              {removeResult !== null && !removeResult && <Info title="Can't find node" />}
               <Field label={t('ethAddress')}>
                 <TextInput wide
                   type="text"
                   name="address"
                   placeholder={t('enterEthAddress')}
+                  onChange={e => { this.setState( { removeAddress: e.target.value }) }}
+                  value={this.state.removeAddress}
                 />
               </Field>
-              <Button>{t('removeNodeFromSubnetDAO')}</Button>
+              <Button onClick={this.removeNode}>{t('removeNodeFromSubnetDAO')}</Button>
             </StyledCard>
           </Col>
         </Row>
