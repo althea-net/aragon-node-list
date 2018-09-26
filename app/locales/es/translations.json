@@ -24,6 +24,7 @@
   "checkNode": "Verificar nodo",
   "checkNodeInSubnetDAO": "Comprobar si el nodo está en la subred DAO",
   "removeNode": "Eliminar nodo",
-  "removeNodeFromSubnetDAO": "Eliminar el nodo de la subred DAO"
+  "removeNodeFromSubnetDAO": "Eliminar el nodo de la subred DAO",
+  "noNodes": "No se encontraron nodos"
 }
 

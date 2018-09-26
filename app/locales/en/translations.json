@@ -24,5 +24,6 @@
   "checkNode": "Check node",
   "checkNodeInSubnetDAO": "Check if node is in subnet DAO",
   "removeNode": "Remove node",
-  "removeNodeFromSubnetDAO": "Remove node from subnet DAO"
+  "removeNodeFromSubnetDAO": "Remove node from subnet DAO",
+  "noNodes": "No nodes were found"
 }

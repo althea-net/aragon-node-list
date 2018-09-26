@@ -15,18 +15,18 @@ const RemoveButton = ({ app, ip, t }) => {
 
 export default translate()(({ app, nodes, t }) => {
   let fundsColor = funds => (funds > 0) ? "green" : "red"
-  if (!nodes) return null
+  if (!nodes) return <Text>{t('noNodes')}</Text>
 
   return (
     <div>
       <Table
         header={
           <TableRow>
-            <TableHeader title={t("nickname")} />
-            <TableHeader title={t("fundsRemaining")} />
-            <TableHeader title={t("ethAddress")} />
-            <TableHeader title={t("ipAddress")} />
-            <TableHeader title={t("removeNode")} />
+            <TableHeader title={t('nickname')} />
+            <TableHeader title={t('fundsRemaining')} />
+            <TableHeader title={t('ethAddress')} />
+            <TableHeader title={t('ipAddress')} />
+            <TableHeader title={t('removeNode')} />
           </TableRow>
         }
       >
