@@ -1,0 +1,13 @@
+# This is a systemd service for Parity
+[Unit]
+Description=Parity wallet
+Requires=network.target
+
+[Service]
+Type=simple
+TimeoutStartSec=10s
+Environment=RUST_LOG=INFO
+ExecStart=/usr/bin/parity
+
+[Install]
+WantedBy=default.target

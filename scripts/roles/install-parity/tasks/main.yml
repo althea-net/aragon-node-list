@@ -1,0 +1,82 @@
+# Installs the latest stable Parity wallet and sets it to run on boot
+
+- name: download latest release
+  get_url:
+    url: "{{parity_bin_url}}"
+    dest: "/usr/bin/parity"
+    mode: 0755
+    force: true
+  become: true
+
+- name: Create parity config folder
+  file:
+    state: directory
+    path: "{{ansible_env.HOME}}/.local/share/io.parity.ethereum"
+
+- name: Copy the parity config
+  template:
+    src: parity.toml.j2
+    dest: "{{ansible_env.HOME}}/.local/share/io.parity.ethereum/"
+  become: true
+
+- name: Template parity service file
+  template:
+    src: parity.service.j2
+    dest: /etc/systemd/system/parity.service
+  become: true
+
+- name: Set parity to run on startup
+  systemd:
+    daemon_reload: yes
+    name: parity
+    state: restarted
+    enabled: yes
+  become: true
+
+- name: Wait for Quick crashes
+  pause:
+    seconds: 30
+
+- name: Check if parity is running
+  command: systemctl status parity
+  ignore_errors: yes
+  changed_when: false
+  register: service_parity_status
+
+- name: Report status of parity
+  fail:
+    msg: |
+      Service parity is not running.
+      Output of `systemctl status parity`:
+      {{ service_parity_status.stdout }}
+      {{ service_parity_status.stderr }}
+  when: service_parity_status is failed
+
+- name: Open ports
+  iptables:
+    chain: INPUT
+    protocol: tcp
+    destination_port: "{{item[0]}}"
+    jump: ACCEPT
+    ip_version: "{{item[1]}}"
+    ctstate: NEW
+  become: true
+  with_nested:
+    - "{{parity_ports}}"
+    - ["ipv4", "ipv6"]
+
+- name: save iptables rules
+  shell: "service {{item}} save"
+  become: true
+  with_items:
+    - iptables
+    - ip6tables
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' or ansible_distribution == 'Fedora'
+
+- name: save iptables rules
+  shell: "{{item}}"
+  become: true
+  with_items:
+    - "iptables-save > /etc/iptables/rules.v4"
+    - "ip6tables-save > /etc/iptables/rules.v6"
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'

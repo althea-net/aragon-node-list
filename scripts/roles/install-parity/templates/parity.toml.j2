@@ -1,0 +1,25 @@
+[parity]
+public_node = true
+
+[ipfs]
+enable = true
+port = {{parity_ipfs_port}}
+interface = "local"
+cors = []
+hosts = ["none"]
+
+[rpc]
+disable = false
+port = {{parity_rpc_port}}
+interface = "local"
+cors = []
+apis = ["web3", "eth", "pubsub", "net", "parity", "parity_pubsub", "traces", "rpc", "shh", "shh_pubsub"]
+hosts = ["none"]
+
+[websockets]
+disable = false
+port = {{parity_websocket_port}}
+interface = "local"
+origins = ["none"]
+apis = ["web3", "eth", "pubsub", "net", "parity", "parity_pubsub", "traces", "rpc", "shh", "shh_pubsub"]
+hosts = ["none"]
