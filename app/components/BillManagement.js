@@ -114,13 +114,13 @@ class BillManagement extends React.Component {
                   onChange={this.setAmount}
                 />
               </Field>
-              <Button onClick={this.addBill}>{t('addFunds')}</Button>
+              <Button onClick={this.addBill} mode="outline">{t('addFunds')}</Button>
             </StyledCard>
           </Col>
           <Col xs={6}>
             <StyledCard>
               <Text.Block size="xlarge">{t('withdrawAllFunds')}</Text.Block>
-              <Button onClick={this.withdraw}>{t('withdraw')}</Button>
+              <Button onClick={this.withdraw} mode="outline">{t('withdraw')}</Button>
             </StyledCard>
           </Col>
         </Row>

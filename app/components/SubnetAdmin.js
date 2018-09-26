@@ -209,13 +209,13 @@ class SubnetAdmin extends React.Component {
               </Field>
               {ipValid || <span>Enter a valid ipv6 address</span>}
               <Field>
-                <Button onClick={this.addNode}>{t('addNode')}</Button>
+                <Button onClick={this.addNode} mode="outline">{t('addNode')}</Button>
               </Field>
             </StyledCard>
             <StyledCard>
               <Text size="xlarge">{t('collectBills')}</Text>
               <p>{t('youHave', { bills })}</p>
-              <Button onClick={this.collectBills}>{t('collectBills')}</Button>
+              <Button onClick={this.collectBills} mode="outline">{t('collectBills')}</Button>
             </StyledCard>
           </Col>
           <Col xs={6}>
@@ -231,7 +231,7 @@ class SubnetAdmin extends React.Component {
                   value={this.state.checkAddress}
                 />
               </Field>
-              <Button onClick={this.checkNode}>{t('checkNodeInSubnetDAO')}</Button>
+              <Button onClick={this.checkNode} mode="outline">{t('checkNodeInSubnetDAO')}</Button>
             </StyledCard>
             <StyledCard>
               <Text size="xlarge">{t('removeNode')}</Text>
@@ -246,7 +246,7 @@ class SubnetAdmin extends React.Component {
                   value={this.state.removeAddress}
                 />
               </Field>
-              <Button onClick={this.removeNode}>{t('removeNodeFromSubnetDAO')}</Button>
+              <Button onClick={this.removeNode} mode="outline">{t('removeNodeFromSubnetDAO')}</Button>
             </StyledCard>
           </Col>
         </Row>

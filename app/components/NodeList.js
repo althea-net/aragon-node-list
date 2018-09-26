@@ -10,7 +10,7 @@ const Abbr = styled.abbr`
 
 const RemoveButton = ({ app, ip, t }) => {
   let deleteMember = () => app.deleteMember(ip)  
-  return <Button emphasis="negative" onClick={deleteMember}>{t("remove")}</Button>
+  return <Button emphasis="negative" onClick={deleteMember} mode="outline">{t("remove")}</Button>
 } 
 
 export default translate()(({ app, nodes, t }) => {
