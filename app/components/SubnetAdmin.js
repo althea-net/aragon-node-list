@@ -176,8 +176,8 @@ class SubnetAdmin extends React.Component {
                   value={nickname}
                 />
               </Field>
-              <Button>Scan node QR code</Button>
               {/*
+              <Button>Scan node QR code</Button>
               <div>
                 <QrReader
                   delay={this.state.delay}
