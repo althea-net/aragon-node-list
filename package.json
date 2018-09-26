@@ -3,10 +3,13 @@
   "version": "0.1.0",
   "description": "",
   "dependencies": {
-    "@aragon/apps-vault": "^3.0.0-alpha.1",
-    "@aragon/cli": "^5.0.0",
+    "@aragon/apps-finance": "^2.0.0-beta.2",
+    "@aragon/apps-shared-minime": "^1.0.0",
+    "@aragon/apps-token-manager": "^2.0.0-beta.2",
+    "@aragon/apps-vault": "^3.0.0-beta.2",
+    "@aragon/apps-voting": "^2.0.0-beta.2",
     "@aragon/client": "^1.0.0-beta.9",
-    "@aragon/os": "3.1.12",
+    "@aragon/os": "^4.0.0-beta.2",
     "@aragon/ui": "^0.16.0",
     "i18next": ">= 6.0.1",
     "i18next-browser-languagedetector": "^2.2.3",
@@ -21,7 +24,6 @@
     "web3": "^1.0.0-beta.36"
   },
   "devDependencies": {
-    "@aragon/aragen": "^2.0.0-beta.1",
     "babel-eslint": "^7.2.3",
     "babel-plugin-styled-components": "^1.5.1",
     "babel-plugin-transform-runtime": "^6.23.0",
@@ -53,7 +55,14 @@
     "build": "npm run sync-assets && npm run build:app && npm run build:script",
     "publish": "aragon apm publish",
     "abi": "mkdir -p contracts/abi && for i in contracts/*.sol; do x=$(echo $i | sed 's/.sol//' | sed 's|contracts/||'); jq .abi build/contracts/$x.json > contracts/abi/$x.json; done",
-    "devchain": "ganache-cli --db node_modules/@aragon/aragen/aragon-ganache -m \"explain tackle mirror kit van hammer degree position ginger unfair soup bonus\" -i 15 -l 100000000"
+    "devchain": "ganache-cli --db node_modules/@aragon/aragen/aragon-ganache -m \"explain tackle mirror kit van hammer degree position ginger unfair soup bonus\" -i 15 -l 100000000",
+    "deploy:rpc": "truffle exec scripts/deploy.js --network rpc",
+    "deploy:rinkeby": "truffle exec scripts/deploy.js --network rinkeby",
+    "deploy:devnet": "truffle exec scripts/deploy.js --network development",
+    "publish:devnet": "npm run compile && aragon publish --apm.ipfs.rpc.protocol http --apm.ipfs.rpc.host ipfs.aragon.network --no-confirm=true --keyfile ../../.localkey.json \"$(npm run deploy:devnet | tail -n 1)\"",
+    "publish:rpc": "npm run compile && aragon publish --no-confirm=true \"$(npm run deploy:rpc | tail -n 1)\"",
+    "publish:rinkeby": "npm run compile && aragon publish --no-confirm=true --keyfile ~/.rinkebykey.json \"$(npm run deploy:rinkeby | tail -n 1)\"",
+    "migrate-clean": "rm -r build && truffle migrate"
   },
   "keywords": [],
   "license": "GPL-3.0"

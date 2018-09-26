@@ -1,7 +1,7 @@
 pragma solidity ^0.4.18;
 
 import "@aragon/os/contracts/apps/AragonApp.sol";
-import "@aragon/os/contracts/lib/zeppelin/math/SafeMath.sol";
+import "@aragon/os/contracts/lib/math/SafeMath.sol";
 
 import "@aragon/os/contracts/common/IVaultRecoverable.sol";
 import "@aragon/os/contracts/apm/APMNamehash.sol";
@@ -57,7 +57,7 @@ contract Althea is AragonApp {
     bytes16 _ip,
     bytes16 _nick
   )
-    public
+    external 
     auth(ADD_MEMBER)
   {
     require(nodeList[_ip] == address(0));

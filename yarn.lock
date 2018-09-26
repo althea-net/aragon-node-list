@@ -2,98 +2,36 @@
 # yarn lockfile v1
 
 
-"@aragon/apm@^2.0.0", "@aragon/apm@^2.0.1":
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/@aragon/apm/-/apm-2.0.2.tgz#156f0d3c94b4437be429fb0f39dc820bf11a2e60"
+"@aragon/apps-finance@^2.0.0-beta.2":
+  version "2.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/@aragon/apps-finance/-/apps-finance-2.0.0-beta.2.tgz#e934bf34bbbbb0072d4678b765620f0c62ddcdcb"
   dependencies:
-    "@aragon/os" "^3.1.2"
-    axios "^0.18.0"
-    ethjs-ens "^2.0.1"
-    ipfs-api "^17.5.0"
-    semver "^5.5.0"
+    "@aragon/apps-vault" "^3.0.0-beta.2"
+    "@aragon/os" "4.0.0-beta.2"
 
-"@aragon/apps-finance@^1.0.0", "@aragon/apps-finance@^1.0.1":
-  version "1.0.1"
-  resolved "http://registry.npmjs.org/@aragon/apps-finance/-/apps-finance-1.0.1.tgz#d7e68815287340b06693fe17e764e6f333836f61"
-  dependencies:
-    "@aragon/apps-vault" "^2.0.0"
-    "@aragon/os" "^3.1.1"
-
-"@aragon/apps-token-manager@^1.0.0":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@aragon/apps-token-manager/-/apps-token-manager-1.0.1.tgz#bfb312658bd5469a647efba42bd264e43585b0fc"
-  dependencies:
-    "@aragon/core" "^2.0.0"
-
-"@aragon/apps-vault@^1.0.0":
+"@aragon/apps-shared-minime@1.0.0", "@aragon/apps-shared-minime@^1.0.0":
   version "1.0.0"
-  resolved "http://registry.npmjs.org/@aragon/apps-vault/-/apps-vault-1.0.0.tgz#56e54538e2e876a7de0b14159c7b837ca1da0bc9"
-  dependencies:
-    "@aragon/os" "^3.0.8"
+  resolved "https://registry.yarnpkg.com/@aragon/apps-shared-minime/-/apps-shared-minime-1.0.0.tgz#9667d52b2b719b33835b944e82757d29849f7f52"
 
-"@aragon/apps-vault@^2.0.0", "@aragon/apps-vault@^2.0.1":
-  version "2.0.1"
-  resolved "http://registry.npmjs.org/@aragon/apps-vault/-/apps-vault-2.0.1.tgz#f6866726694c4907792351a70a05c00ef8a7e961"
+"@aragon/apps-token-manager@^2.0.0-beta.2":
+  version "2.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/@aragon/apps-token-manager/-/apps-token-manager-2.0.0-beta.2.tgz#1285a98207e4d25803b8620ab4759d3e3b06fb67"
   dependencies:
-    "@aragon/os" "^3.1.1"
+    "@aragon/apps-shared-minime" "1.0.0"
+    "@aragon/os" "4.0.0-beta.2"
 
-"@aragon/apps-vault@^3.0.0-alpha.1":
-  version "3.0.0-alpha.1"
-  resolved "https://registry.yarnpkg.com/@aragon/apps-vault/-/apps-vault-3.0.0-alpha.1.tgz#0b7bd071f9bd4810b35b11a31b560eb6116024ba"
+"@aragon/apps-vault@^3.0.0-beta.2":
+  version "3.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/@aragon/apps-vault/-/apps-vault-3.0.0-beta.2.tgz#5eae6ee2bacf68efd40f0de96456e169466e52ff"
   dependencies:
-    "@aragon/os" "4.0.0-beta.1"
+    "@aragon/os" "4.0.0-beta.2"
 
-"@aragon/apps-voting@^1.0.0":
-  version "1.0.0"
-  resolved "http://registry.npmjs.org/@aragon/apps-voting/-/apps-voting-1.0.0.tgz#e8c34643b070471423e4280fd4645a4f3fdac0f7"
+"@aragon/apps-voting@^2.0.0-beta.2":
+  version "2.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/@aragon/apps-voting/-/apps-voting-2.0.0-beta.2.tgz#66d74b53a194aa96ea8abc208c0374a150cf7326"
   dependencies:
-    "@aragon/os" "^3.0.8"
-
-"@aragon/aragen@2.0.0-beta.1", "@aragon/aragen@^2.0.0-beta.1":
-  version "2.0.0-beta.1"
-  resolved "https://registry.yarnpkg.com/@aragon/aragen/-/aragen-2.0.0-beta.1.tgz#0a951242cd08c174249f89be91b447e2cee0eb45"
-
-"@aragon/cli@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@aragon/cli/-/cli-5.0.0.tgz#bc272a93bbeb80a62232f1cfd5ec65540759700e"
-  dependencies:
-    "@aragon/apm" "^2.0.1"
-    "@aragon/apps-finance" "^1.0.1"
-    "@aragon/apps-token-manager" "^1.0.0"
-    "@aragon/apps-vault" "^2.0.1"
-    "@aragon/apps-voting" "^1.0.0"
-    "@aragon/aragen" "2.0.0-beta.1"
-    "@aragon/os" "4.0.0-beta.1"
-    "@aragon/templates-beta" "^1.1.3"
-    "@aragon/wrapper" "^2.0.0-beta.43"
-    babel-polyfill "^6.26.0"
-    bignumber.js "^7.1.0"
-    chalk "^2.1.0"
-    cli-table "^0.3.1"
-    colors "^1.2.4"
-    dev-null "^0.1.1"
-    eth-ens-namehash "^2.0.8"
-    execa "^0.10.0"
-    figures "^2.0.0"
-    find-up "^2.1.0"
-    fs-extra "^4.0.2"
-    ganache-core "^2.1.6"
-    git-clone "^0.1.0"
-    hasbin "^1.2.3"
-    homedir "^0.6.0"
-    ignore "^3.3.7"
-    ipfs-api "^21.0.0"
-    js-sha3 "^0.7.0"
-    listr "^0.13.0"
-    mkdirp "^0.5.1"
-    ncp "^2.0.0"
-    opn "^5.3.0"
-    rimraf "^2.6.2"
-    semver "^5.4.1"
-    tmp-promise "^1.0.4"
-    truffle "4.1.14"
-    web3 "^1.0.0-beta.34"
-    yargs "^10.1.0"
+    "@aragon/apps-shared-minime" "1.0.0"
+    "@aragon/os" "4.0.0-beta.2"
 
 "@aragon/client@^1.0.0-beta.9":
   version "1.0.0-beta.9"
@@ -112,9 +50,9 @@
     rxjs "^5.5.6"
     uuid "^3.2.1"
 
-"@aragon/os@3.1.12", "@aragon/os@^3.0.8", "@aragon/os@^3.1.1", "@aragon/os@^3.1.2":
-  version "3.1.12"
-  resolved "https://registry.yarnpkg.com/@aragon/os/-/os-3.1.12.tgz#c76b9f928af52b428c933e39a0fc809409e114e2"
+"@aragon/os@4.0.0-beta.2", "@aragon/os@^4.0.0-beta.2":
+  version "4.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/@aragon/os/-/os-4.0.0-beta.2.tgz#6a6cd99c6aad0af2929d99afcd60a439f550b272"
   dependencies:
     homedir "^0.6.0"
     truffle-hdwallet-provider "0.0.3"
