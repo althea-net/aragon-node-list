@@ -1,5 +1,5 @@
 import React from 'react'
-import { AragonApp, AppBar, observe } from '@aragon/ui'
+import { AragonApp, AppBar, observe, Text } from '@aragon/ui'
 import Aragon, { providers } from '@aragon/client'
 import styled from 'styled-components'
 import { Grid } from 'react-flexbox-grid'
@@ -25,23 +25,42 @@ const AltheaAppBar = styled(AppBar)`
   height: 100%;
 `
 
+const OrganizerModeLink = styled.a`
+  cursor: pointer;
+  color: blue;
+  text-decoration: underline;
+`
+
 class App extends React.Component {
   constructor() {
     super();
-    this.state = { page: null }
+    this.state = { 
+      mode: 'user',
+      page: null 
+    }
   } 
 
+  setMode = mode => this.setState({ mode })
   setPage = page => this.setState({ page })  
 
   render() {
     const Page = this.state.page;
     const { app, nodes, t } = this.props;
+    const { mode } = this.state;
+    let title = t('altheaSubnetDAO')
+    if (mode === 'organizer') title += ' ' + t('organizerMode')
 
     return (
       <AppContainer>
         <Grid fluid>
-          <AltheaAppBar title={t('altheaSubnetDAO')} endContent={<Nav setPage={this.setPage} />} />
+          <AltheaAppBar title={title} endContent={<Nav mode={mode} setMode={this.setMode} setPage={this.setPage} />} />
           {this.state.page && <Page app={app} nodes={nodes} />}
+
+          {mode === 'user' &&
+          <Text.Block style={{marginTop: '20px'}}>
+            <OrganizerModeLink onClick={() => this.setMode('organizer')}>{t('organizerModeLink')}</OrganizerModeLink>
+          </Text.Block>
+          }
         </Grid>
       </AppContainer>
     )
