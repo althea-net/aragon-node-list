@@ -13,15 +13,16 @@ const StyledCard = styled(Card)`
   padding: 20px;
 `
 
+const BLOCKS_PER_DAY = 6000
+
 class BillManagement extends React.Component {
   constructor() {
     super()
     this.state = { 
-      amount: 1000000001,
+      amount: '',
       account: 0,
       balance: 0,
-      days: 0,
-      owing: 0
+      days: 0
     }
   } 
 
@@ -31,12 +32,11 @@ class BillManagement extends React.Component {
     let currentBlock = (await this.getLatestBlock()).number
     let bill = await this.getBill(address)
     let { account, lastUpdated, perBlock } = bill
-    let blocksPerDay = 6000
     let blocksElapsed = currentBlock - lastUpdated
     if (blocksElapsed > 0) blocksElapsed++
-    let owing = blocksElapsed * perBlock
-    let days = (account / (perBlock * blocksPerDay)).toFixed(6)
-    this.setState({ account, balance, days, owing })
+    let days = (account / (perBlock * BLOCKS_PER_DAY)).toFixed(4)
+    if (isNan(days)) days = 0
+    this.setState({ account, balance, days })
   } 
 
   addBill = async () => {
@@ -86,18 +86,17 @@ class BillManagement extends React.Component {
 
   render() {
     let { t } = this.props;
-    let { amount, account, balance, days, owing } = this.state;
+    let { amount, account, balance, days } = this.state;
 
     return (
       <React.Fragment>
         <Row>
           <Col xs={12}>
             <StyledCard>
-              <Text.Block>Address balance: <strong>&Xi;{balance}</strong></Text.Block>
-              <Text.Block>DAO balance: <strong>&Xi;{account}</strong></Text.Block>
-              <Text.Block>Outstanding payment: <strong>&Xi;{owing}</strong></Text.Block>
-              <Text.Block>Estimated days paid up: <strong>{days}</strong></Text.Block>
-              <Text.Block>Address balance after withdrawal: <strong>{parseInt(balance) + parseInt(account - owing)}</strong></Text.Block>
+              <Text.Block>
+                Your current balance is <strong>&Xi;{account}</strong>.
+                This will pay your subnet DAO fees for <strong>{days} days</strong>.
+              </Text.Block>
             </StyledCard>
           </Col>
         </Row>

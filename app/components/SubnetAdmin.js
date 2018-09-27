@@ -25,13 +25,13 @@ class SubnetAdmin extends React.Component {
       currentBlock: 0,
       checkAddress: '',
       checkResult: null,
+      ipExists: false,
       removeAddress: '',
       removeResult: null,
-      // ethAddress: '0xb4124cEB3451635DAcedd11767f004d8a28c6eE7',
-      ethAddress: '0x8401eb5ff34cc943f096a32ef3d5113febe8d4eb',
-      ipAddress: '0000:0000:0000:0000:0000:0000:0000:0001',
+      ethAddress: '',
+      ipAddress: '',
       ipValid: true,
-      nickname: 'adam',
+      nickname: '',
       result: 'No result'
     } 
   } 
@@ -70,9 +70,11 @@ class SubnetAdmin extends React.Component {
     let node = nodes.find(n => n.ethAddress.toLowerCase() === removeAddress.toLowerCase())
 
     if (!node) return this.setState({ removeResult: false })
+    console.log(node)
 
     try {
       await new Promise((resolve, reject) => {
+        console.log(node.ipAddress)
         this.props.app.deleteMember(node.ipAddress).subscribe(resolve, reject)
       }) 
       this.setState({ removeResult: true })
@@ -114,7 +116,11 @@ class SubnetAdmin extends React.Component {
   setIpAddress = e => { 
     let ipAddress = e.target.value
     let ipValid = (new Address6(ipAddress)).isValid()
-    this.setState({ ipAddress, ipValid })
+
+    let hexIp = '0x' + ipAddress.replace(new RegExp(':', 'g'), '')
+    let ipExists = this.props.nodes.findIndex(n => n.ipAddress === hexIp) > -1
+
+    this.setState({ ipAddress, ipExists, ipValid })
   }
 
   addNode = async () => {
@@ -146,7 +152,17 @@ class SubnetAdmin extends React.Component {
 
   render() {
     let { t } = this.props;
-    let { bills, checkResult, currentBlock, nickname, ethAddress, ipAddress, ipValid, removeResult } = this.state
+    let { 
+      bills, 
+      checkResult, 
+      currentBlock, 
+      nickname, 
+      ethAddress, 
+      ipAddress, 
+      ipValid,
+      ipExists,
+      removeResult 
+    } = this.state
 
     /*
     const billCount = new BN(summation(subscribersCount))
@@ -156,13 +172,6 @@ class SubnetAdmin extends React.Component {
 
     return (
       <React.Fragment>
-        <Row>
-          <Col xs={12}>
-            <StyledCard>
-              <Text>Current block: {currentBlock}</Text>
-            </StyledCard>
-          </Col>
-        </Row>
         <Row>
           <Col xs={6}>
             <StyledCard>
@@ -197,6 +206,8 @@ class SubnetAdmin extends React.Component {
                   value={ethAddress}
                 />
               </Field>
+              {ipValid || <Info>Enter a valid ipv6 address</Info>}
+              {ipExists && <Info>IP has already been added</Info>}
               <Field label={t('ipAddress')}>
                 <TextInput wide
                   type="text"
@@ -207,7 +218,6 @@ class SubnetAdmin extends React.Component {
                   value={ipAddress}
                 />
               </Field>
-              {ipValid || <span>Enter a valid ipv6 address</span>}
               <Field>
                 <Button onClick={this.addNode} mode="outline">{t('addNode')}</Button>
               </Field>
