@@ -8,7 +8,7 @@
   "nodeList": "Lista de nodos",
   "subnetAdmin": "Administrador de subred",
   "billManagement": "Gestión de facturas",
-  "altheaSubnetDAO": "Althea Subnet DAO",
+  "altheaSubnetDAO": "Althea subnet DAO",
   "addFunds": "Agregar fondos",
   "amountToAdd": "Cantidad a agregar",
   "enterAmount": "Ingrese el importe para agregar",
@@ -25,6 +25,9 @@
   "checkNodeInSubnetDAO": "Comprobar si el nodo está en la subred DAO",
   "removeNode": "Eliminar nodo",
   "removeNodeFromSubnetDAO": "Eliminar el nodo de la subred DAO",
-  "noNodes": "No se encontraron nodos"
+  "noNodes": "No se encontraron nodos",
+  "organizerMode": "modo organizador",
+  "organizerModeLink": "Modo organizador (avanzado)",
+  "backToUserMode": "Volver al modo de usuario"
 }
 

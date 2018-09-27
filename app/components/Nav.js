@@ -30,7 +30,7 @@ class Nav extends React.Component {
   } 
 
   componentDidMount() {
-    this.props.setPage(this.pages['nodeList'])
+    this.props.setPage(BillManagement)
   } 
 
   setLocale = i => {
@@ -42,14 +42,26 @@ class Nav extends React.Component {
   active = () => this.locales.findIndex(e => e === this.state.locale)
 
   render() {
-    let { setPage, t } = this.props;
+    let { mode, setMode, setPage, t } = this.props;
     let pages = Object.keys(this.pages);
 
     return (
       <div>
-        {pages.map((p, i) => {
-          return <NavButton onClick={() => setPage(this.pages[p])} key={i}>{t(p)}</NavButton>
-        })}
+        {(mode === 'organizer') ?
+          (
+            <React.Fragment>
+              <NavButton onClick={() => setPage(NodeList)}>{t('nodeList')}</NavButton>
+              <NavButton onClick={() => setPage(SubnetAdmin)}>{t('subnetAdmin')}</NavButton>
+              <NavButton onClick={() => setPage(BillManagement)}>{t('billManagement')}</NavButton>
+              <NavButton onClick={() => { setPage(BillManagement); setMode('user'); }}>{t('backToUserMode')}</NavButton>
+            </React.Fragment>
+          )
+        :
+          (
+            <NavButton onClick={() => setPage(BillManagement)}>{t('billManagement')}</NavButton>
+          )
+        }
+
         <DropDown items={this.locales} onChange={this.setLocale} active={this.active()} />
       </div>
     );
