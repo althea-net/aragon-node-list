@@ -1,0 +1,12 @@
+# This is a systemd service for IPFS
+[Unit]
+Description=IPFS
+Requires=network.target
+
+[Service]
+Type=simple
+TimeoutStartSec=10s
+ExecStart=/usr/bin/ipfs daemon
+
+[Install]
+WantedBy=default.target

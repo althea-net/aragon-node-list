@@ -8,3 +8,4 @@ package-lock.json
 .eth-mutants
 rinkeby
 yarn-error.log
+*hosts
