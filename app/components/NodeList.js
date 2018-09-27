@@ -9,7 +9,10 @@ const Abbr = styled.abbr`
 `
 
 const RemoveButton = ({ app, ip, t }) => {
-  let deleteMember = () => app.deleteMember(ip)  
+  let deleteMember = () => {
+    app.deleteMember(ip)  
+  } 
+
   return <Button emphasis="negative" onClick={deleteMember} mode="outline">{t("remove")}</Button>
 } 
 
