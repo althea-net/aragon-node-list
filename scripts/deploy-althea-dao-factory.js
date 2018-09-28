@@ -13,39 +13,37 @@ module.exports = async (
 
   const log = (...args) => { if (verbose) console.log(...args) }
 
-
-  log('1')
-  const financeBase = await artifacts.require('@aragon/apps-finance/contracts/Finance.sol').new()
-
-  log('2')
-  const tokenManagerBase = await artifacts.require('@aragon/apps-token-manager/contracts/TokenManager.sol').new()
-
-  log('3')
-  const vaultBase = await artifacts.require('@aragon/apps-vault/contracts/Vault.sol').new()
-
-  log('4')
-  const votingBase = await artifacts.require('@aragon/apps-voting/contracts/Voting.sol')
-
-  log('5')
-  const minimeFac = await artifacts.require(
-    '@aragon/apps-shared-minime/contracts/MiniMeToken.sol'
+  const financeBase = await artifacts.require(
+    '@aragon/apps-finance/contracts/Finance.sol'
   ).new()
-  log('5.5')
 
-  log('6')
+  const tokenManagerBase = await artifacts.require(
+    '@aragon/apps-token-manager/contracts/TokenManager.sol'
+  ).new()
+
+  const vaultBase = await artifacts.require(
+    '@aragon/apps-vault/contracts/Vault.sol'
+  ).new()
+
+  const votingBase = await artifacts.require(
+    '@aragon/apps-voting/contracts/Voting.sol'
+  ).new()
+
+
+  // This .sol file has multiple contracts. Specify the correct
+  // contract name for this .new() to work.
+  const MiniMeTokenFactory = await artifacts.require(
+    '@aragon/apps-shared-minime/contracts/MiniMeToken.sol'
+  )
+  const minemeFact = MiniMeTokenFactory.new()
+
   const altheaBase = await artifacts.require('./Althea.sol').new()
 
-  /*
-   *
-  const { apm, ens } = await apmMigration()
-  const { daoFactory } = await daoFactoryMigration()
-  */
+  console.log('aye')
 
-  onsole.log('naaah')
-  onsole.log('aye')
-
-  let daoFactory = 0xc8f466ffef9e9788fb363c2f4fbddf2cae477805
-  let apm = 0xd33824d26df396f04dba40e709f130d86a2f5ddd
+  const network = artifacts.options._values.network
+  // Make sure that these addresses are correct for the corresponding network
+  const {daoFactory, apm, ens} = require('./assets.js').contracts[network]
   const AltheaDAOFactory = artifacts.require('./AltheaDAOFactory.sol')
   const template = await AltheaDAOFactory.new(daoFactory, minimeFac.address, apm)
   await template.apmInit(
@@ -64,6 +62,7 @@ module.exports = async (
     altheaBase.address,
     altheaIpfs
   )
+  console.log('naaah')
 
   console.log('SUCCESS')
   const receipt = await template.createInstance()
