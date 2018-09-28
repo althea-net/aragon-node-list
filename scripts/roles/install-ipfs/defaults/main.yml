@@ -1,0 +1,5 @@
+ipfs_tar_url: https://dist.ipfs.io/go-ipfs/v0.4.17/go-ipfs_v0.4.17_linux-amd64.tar.gz
+ipfs_api_port: 5001 # do not expose!
+ipfs_gateway_port: 8080
+ipfs_swarm_port: 4001
+ipfs_ports: ["{{ipfs_gateway_port}}", "{{ipfs_swarm_port}}"]

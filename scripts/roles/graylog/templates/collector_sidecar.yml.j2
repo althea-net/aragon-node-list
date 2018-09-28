@@ -1,0 +1,18 @@
+server_url: https://{{log_server}}:9000/api/
+update_interval: 30
+tls_skip_verify: false
+send_status: true
+list_log_files:
+  - /var/log
+node_id: {{inventory_hostname}}
+collector_id: file:/etc/graylog/collector-sidecar/collector-id
+log_path: /var/log/graylog/collector-sidecar
+log_rotation_time: 86400
+log_max_age: 604800
+tags:
+  - linux
+backends:
+    - name: filebeat
+      enabled: true
+      binary_path: /usr/bin/filebeat
+      configuration_path: /etc/graylog/collector-sidecar/generated/filebeat.yml

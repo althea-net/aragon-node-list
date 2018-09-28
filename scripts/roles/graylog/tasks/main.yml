@@ -1,0 +1,71 @@
+#Deploys Graylog collector to log system metrics, not run by default
+
+- name: Install the Collector Sidecar RPM
+  dnf:
+    name: "{{sidecar_rpm}}"
+    state: latest
+  become: true
+  when: ansible_distribution == 'Fedora'
+
+- name: Install the Collector Sidecar RPM
+  yum:
+    name: "{{sidecar_rpm}}"
+    state: latest
+  become: true
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+- name: Install the Collector Sidecar DEB
+  apt:
+    name: "{{sidecar_deb}}"
+    state: latest
+  become: true
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: Fail on nonsystemd systems
+  fail:
+    msg: "No support for non systemd services, please add support for your init system!"
+  when: "ansible_service_mgr != 'systemd'"
+
+- name: Setup Sidecar service
+  shell: "graylog-collector-sidecar -service install"
+  become: true
+  ignore_errors: true
+
+- name: Create config folder
+  file:
+    path: /etc/graylog/graylog-sidecar/
+    state: directory
+  become: true
+
+- name: Template sidecar config
+  template:
+    src: collector_sidecar.yml.j2
+    dest: /etc/graylog/collector-sidecar/collector_sidecar.yml
+  become: true
+
+- name: Set Collector-sidecar to run on startup
+  systemd:
+    daemon_reload: yes
+    name: collector-sidecar
+    state: restarted
+    enabled: yes
+  become: true
+
+- name: Wait for Quick crashes
+  pause:
+    seconds: 30
+
+- name: Check if collector-sidecar is running
+  command: systemctl status collector-sidecar
+  ignore_errors: yes
+  changed_when: false
+  register: service_collector_sidecar_status
+
+- name: Report status of collector_sidecar
+  fail:
+    msg: |
+      Service graylog-sidecar is not running.
+      Output of `systemctl status collector-sidecar`:
+      {{ service_collector_sidecar_status.stdout }}
+      {{ service_collector_sidecar_status.stderr }}
+  when: service_collector_sidecar_status is failed

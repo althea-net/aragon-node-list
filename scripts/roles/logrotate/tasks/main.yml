@@ -1,0 +1,32 @@
+# Handle log growth
+
+- name: Set log retention values for systemd
+  command: "journalctl --vacuum-size=500M"
+  become: true
+  ignore_errors: true
+
+- name: Template logrotate config
+  template:
+    src: logrotate.conf.j2
+    dest: /etc/logrotate.conf
+  become: true
+
+- name: Run logrotate now
+  shell: "logrotate /etc/logrotate.conf"
+  become: true
+
+- name: Take off rsyslog rate limiting
+  lineinfile:
+    path: /etc/rsyslog.conf
+    line: "{{item}}"
+  with_items:
+    - "$SystemLogRateLimitInterval 2"
+    - "$SystemLogRateLimitBurst 500"
+
+- name: Restart rsyslog
+  service:
+    name: rsyslog
+    state: restarted
+    enabled: true
+  become: true
+  ignore_errors: true

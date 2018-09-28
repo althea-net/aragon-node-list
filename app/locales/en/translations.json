@@ -8,7 +8,7 @@
   "nodeList": "Node list",
   "subnetAdmin": "Subnet admin",
   "billManagement": "Bill management",
-  "altheaSubnetDAO": "Althea Subnet DAO",
+  "altheaSubnetDAO": "Althea subnet DAO",
   "addFunds": "Add funds",
   "amountToAdd": "Amount to add",
   "enterAmount": "Enter amount to add",
@@ -25,5 +25,8 @@
   "checkNodeInSubnetDAO": "Check if node is in subnet DAO",
   "removeNode": "Remove node",
   "removeNodeFromSubnetDAO": "Remove node from subnet DAO",
-  "noNodes": "No nodes were found"
+  "noNodes": "No nodes were found",
+  "organizerMode": "organizer mode",
+  "organizerModeLink": "Organizer mode (advanced)",
+  "backToUserMode": "Back to user mode"
 }
