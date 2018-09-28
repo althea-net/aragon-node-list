@@ -13,23 +13,27 @@ module.exports = async (
 
   const log = (...args) => { if (verbose) console.log(...args) }
 
+  log('Deploying finanance app...')
   const financeBase = await artifacts.require(
     '@aragon/apps-finance/contracts/Finance.sol'
   ).new()
 
+  log('Deploying token manager app...')
   const tokenManagerBase = await artifacts.require(
     '@aragon/apps-token-manager/contracts/TokenManager.sol'
   ).new()
 
+  log('Deploying vault app...')
   const vaultBase = await artifacts.require(
     '@aragon/apps-vault/contracts/Vault.sol'
   ).new()
 
+  log('Deploying voting app...')
   const votingBase = await artifacts.require(
     '@aragon/apps-voting/contracts/Voting.sol'
   ).new()
 
-
+  log('Deploying mime token app...')
   // This .sol file has multiple contracts. Specify the correct
   // contract name for this .new() to work.
   const MiniMeTokenFactory = await artifacts.require(
@@ -37,15 +41,19 @@ module.exports = async (
   )
   const minemeFact = MiniMeTokenFactory.new()
 
+  log('Deploying althea app...')
   const altheaBase = await artifacts.require('./Althea.sol').new()
-
-  console.log('aye')
 
   const network = artifacts.options._values.network
   // Make sure that these addresses are correct for the corresponding network
   const {daoFactory, apm, ens} = require('./assets.js').contracts[network]
+
+  log('Deploying AltheaDAOFactory...')
   const AltheaDAOFactory = artifacts.require('./AltheaDAOFactory.sol')
+  log('aye')
   const template = await AltheaDAOFactory.new(daoFactory, minimeFac.address, apm)
+  log('SUCCESS')
+
   await template.apmInit(
     financeBase.address,
     financeIpfs,
@@ -64,7 +72,6 @@ module.exports = async (
   )
   console.log('naaah')
 
-  console.log('SUCCESS')
   const receipt = await template.createInstance()
   const daoAddr = receipt.logs.filter(l => l.event == 'DeployInstance')[0].args.dao
 
