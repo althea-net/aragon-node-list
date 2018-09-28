@@ -1,3 +1,6 @@
+const apmMigration = require('@aragon/os/scripts/deploy-beta-apm.js')
+const daoFactoryMigration = require('@aragon/os/scripts/deploy-daofactory')
+
 const ipfsHashes = require('./ipfs.js')
 
 const financeIpfs = ipfsHashes.finance
@@ -21,9 +24,8 @@ module.exports = async (
   const Althea = artifacts.require('./Althea.sol')
   const AltheaDAOFactory = artifacts.require('./AltheaDAOFactory.sol')
 
-  console.log('naaah')
-
   /*
+   *
   const { apm, ens } = await apmMigration()
   const { daoFactory } = await daoFactoryMigration()
   */
@@ -35,22 +37,29 @@ module.exports = async (
   const votingBase = await Voting.new()
   const altheaBase = await Althea.new()
   const minimeFac = await TokenFactory.new()
-  console.log("MIME", minimeFac)
 
-  const template = await AltheaDAO.new(daoFactory.address, minimeFac.address, apm.address)
+  let daoFactory = 0xc8f466ffef9e9788fb363c2f4fbddf2cae477805
+  let apm = 0xd33824d26df396f04dba40e709f130d86a2f5ddd
+  const template = await AltheaDAOFactory.new(daoFactory, minimeFac.address, apm)
+  console.log('naaah')
   await template.apmInit(
     financeBase.address,
     financeIpfs,
+
     tokenManagerBase.address,
     tokenManagerIpfs,
+
     vaultBase.address,
     vaultIpfs,
+
     votingBase.address,
     votingIpfs,
-    altheaBase,
+
+    altheaBase.address,
     altheaIpfs
   )
 
+  console.log('SUCCESS')
   const receipt = await template.createInstance()
   const daoAddr = receipt.logs.filter(l => l.event == 'DeployInstance')[0].args.dao
 

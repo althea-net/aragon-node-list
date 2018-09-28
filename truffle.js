@@ -13,6 +13,11 @@ module.exports = {
       port: 8545,
       network_id: '*'
     },
+    devnet: {
+      host: 'localhost',
+      port: 8535,
+      network_id: '*'
+    },
     sasquatch_rpc: {
       host: 'sasquatch.network',
       port: 19545,
