@@ -4,7 +4,7 @@
   "description": "",
   "dependencies": {
     "@aragon/apps-finance": "^2.0.0-beta.2",
-    "@aragon/apps-shared-minime": "^1.0.0",
+    "@aragon/apps-shared-minime": "https://github.com/sebohe/aragon-apps/raw/tar/shared/minime.tar",
     "@aragon/apps-token-manager": "^2.0.0-beta.2",
     "@aragon/apps-vault": "^3.0.0-beta.2",
     "@aragon/apps-voting": "^2.0.0-beta.2",
@@ -49,7 +49,7 @@
     "start:aragon:http": "aragon run --http localhost:8001 --http-served-from ./dist --app-init-args 0xe743212601fFDF381d6cD68af1C4D6E8355e205D 1000000000",
     "start:app": "npm run sync-assets && npm run build:script -- --no-minify && parcel serve app/index.html -p 8001 --out-dir dist/ --no-cache",
     "test": "aragon contracts test",
-    "compile": "aragon contracts compile",
+    "compile": "truffle compile",
     "sync-assets": "copy-aragon-ui-assets -n aragon-ui ./dist",
     "build:app": "parcel build app/index.html -d dist/ --public-url '.' --no-cache",
     "build:script": "parcel build app/script.js -d dist/ --no-cache",

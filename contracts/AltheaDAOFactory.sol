@@ -9,7 +9,7 @@ import "@aragon/os/contracts/lib/ens/ENS.sol";
 import "@aragon/os/contracts/lib/ens/PublicResolver.sol";
 
 
-import "@aragon/apps-shared-minime/contracts/MiniMeToken.sol";
+import "@aragon/apps-shared-minime/contracts/MiniMeTokenFactory.sol";
 import "@aragon/apps-finance/contracts/Finance.sol";
 import "@aragon/apps-token-manager/contracts/TokenManager.sol";
 import "@aragon/apps-vault/contracts/Vault.sol";
@@ -20,17 +20,17 @@ import "./Althea.sol";
 contract AltheaDAOFactory {
   APMRegistry apm;
   DAOFactory fac;
-  MiniMeToken minime;
+  MiniMeTokenFactory minimeFac;
 
   address constant ANY_ENTITY = address(-1);
 
   event DeployInstance(address dao);
   event InstalledApp(address appProxy, bytes32 appId);
 
-  constructor (DAOFactory _fac, MiniMeToken _minime, APMRegistry _apm) public {
+  constructor (DAOFactory _fac, MiniMeTokenFactory _minimeFac, APMRegistry _apm) public {
     apm = _apm;
     fac = _fac;
-    minime = _minime;
+    minimeFac = _minimeFac;
   }
 
   function apmInit(
@@ -81,11 +81,12 @@ contract AltheaDAOFactory {
     );
 
 
-    MiniMeToken token = minime.createCloneToken(
-      "DevToken",
-      18,
-      "XDT",
+    MiniMeToken token = minimeFac.createCloneToken(
+      MiniMeToken(address(0)),
       0,
+      "Althea DAO",
+      18,
+      "ATH",
       true
     );
 
