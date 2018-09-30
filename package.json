@@ -9,7 +9,7 @@
     "@aragon/apps-vault": "^3.0.0-beta.2",
     "@aragon/apps-voting": "^2.0.0-beta.2",
     "@aragon/client": "^1.0.0-beta.9",
-    "@aragon/os": "^4.0.0-beta.3",
+    "@aragon/os": "git+https://github.com/sebohe/aragonOS.git",
     "@aragon/ui": "^0.16.0",
     "i18next": ">= 6.0.1",
     "i18next-browser-languagedetector": "^2.2.3",

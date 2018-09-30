@@ -61,10 +61,9 @@
     truffle-hdwallet-provider "0.0.3"
     truffle-hdwallet-provider-privkey "0.3.0"
 
-"@aragon/os@^4.0.0-beta.3":
+"@aragon/os@git+https://github.com/sebohe/aragonOS.git":
   version "4.0.0-beta.3"
-  resolved "https://registry.yarnpkg.com/@aragon/os/-/os-4.0.0-beta.3.tgz#b29b7b525725365f1d52ba9c2c9571217aa55994"
-  integrity sha512-8/UUupEZVZqu2I6ToXLQLkGP/ZOjq6dSATQCLUH6uathfL8JgafTuDKT3VqnpRrGbA0bG9IKA9ZSw734baFVCA==
+  resolved "git+https://github.com/sebohe/aragonOS.git#f4df0c0361f19ee95bd7cff2239935cf0a73a791"
   dependencies:
     homedir "^0.6.0"
     truffle-hdwallet-provider "0.0.3"
