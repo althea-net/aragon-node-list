@@ -18,16 +18,18 @@ import "@aragon/apps-voting/contracts/Voting.sol";
 import "./Althea.sol";
 
 contract AltheaDAOFactory {
-  APMRegistry apm;
-  DAOFactory fac;
-  MiniMeTokenFactory minimeFac;
+  APMRegistry public apm;
+  DAOFactory public fac;
+  MiniMeTokenFactory public minimeFac;
 
   address constant ANY_ENTITY = address(-1);
 
   event DeployInstance(address dao);
   event InstalledApp(address appProxy, bytes32 appId);
 
-  constructor (DAOFactory _fac, MiniMeTokenFactory _minimeFac, APMRegistry _apm) public {
+  // Please use the old constructor standard because truffle .new() doesn't work
+  // with constructor()
+  function AltheaDAOFactory(DAOFactory _fac, MiniMeTokenFactory _minimeFac, APMRegistry _apm) public {
     apm = _apm;
     fac = _fac;
     minimeFac = _minimeFac;
