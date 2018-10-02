@@ -5,5 +5,12 @@ module.exports = {
       docker: true
     }
   },
-  networks: require("@aragon/os/truffle-config.js").networks
+  networks: {
+    development: {
+      host: 'localhost',
+      port: 8535,
+      network_id: '*'
+    },
+    ...require("@aragon/os/truffle-config.js").networks
+  }
 }
