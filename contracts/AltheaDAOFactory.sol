@@ -142,12 +142,13 @@ contract AltheaDAOFactory {
     emit InstalledApp(althea, altheaAppId());
 
     emit DeployInstance(dao);
+    */
   }
   
-  function createRepo(string name, address votingBase, bytes votingContentURI) internal {
+  function createRepo(string _name, address _base, bytes _uri) internal {
     uint16[3] memory firstVersion;
     firstVersion[0] = 1;
-    apm.newRepoWithVersion(name, ANY_ENTITY, firstVersion, votingBase, votingContentURI);
+    apm.newRepoWithVersion(_name, ANY_ENTITY, firstVersion, _base, _uri);
   }
 
   function financeAppId() public view returns (bytes32) {
