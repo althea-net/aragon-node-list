@@ -63,7 +63,7 @@
 
 "@aragon/os@git+https://github.com/sebohe/aragonOS.git":
   version "4.0.0-beta.3"
-  resolved "git+https://github.com/sebohe/aragonOS.git#92a3fa24caee5ac361255e7a911d60af61fcc17c"
+  resolved "git+https://github.com/sebohe/aragonOS.git#7e59c9ab6fcb52767b0b71df13b736027abb947f"
   dependencies:
     homedir "^0.6.0"
     truffle-hdwallet-provider "0.0.3"
@@ -3334,9 +3334,9 @@ ee-first@1.1.1:
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
 electron-to-chromium@^1.2.7, electron-to-chromium@^1.3.47, electron-to-chromium@^1.3.62:
-  version "1.3.72"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.72.tgz#b69683081d5b7eee6e1ea07b2f5fa30b3c72252d"
-  integrity sha512-OFbXEC01Lq7A66e3UywkvWYNN00HO1I9MAPereGe0NIXrt2MeaovL1bbY+951HKG0euUdPBe0L7yfKxgqxBMMw==
+  version "1.3.73"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.73.tgz#aa67787067d58cc3920089368b3b8d6fe0fc12f6"
+  integrity sha512-6PIg7v9zRoVGh6EheRF8h6Plti+3Yo/qtHobS4/Htyt53DNHmKKGFqSae1AIk0k1S4gCQvt7I2WgpbuZNcDY+g==
 
 elliptic@6.3.3:
   version "6.3.3"
@@ -7347,15 +7347,16 @@ psl@^1.1.24:
   integrity sha512-AeUmQ0oLN02flVHXWh9sSJF7mcdFq0ppid/JkErufc3hGIV/AMa8Fo9VgDo/cT2jFdOWoFvHp90qqBH54W+gjQ==
 
 public-encrypt@^4.0.0:
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/public-encrypt/-/public-encrypt-4.0.2.tgz#46eb9107206bf73489f8b85b69d91334c6610994"
-  integrity sha512-4kJ5Esocg8X3h8YgJsKAuoesBgB7mqH3eowiDzMUPKiRDDE7E/BqqZD1hnTByIaAFiwAw246YEltSq7tdrOH0Q==
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/public-encrypt/-/public-encrypt-4.0.3.tgz#4fcc9d77a07e48ba7527e7cbe0de33d0701331e0"
+  integrity sha512-zVpa8oKZSz5bTMTFClc1fQOnyyEzpl5ozpi1B5YcvBrdohMjH2rfsBtyXcuNuwjsDIXmBYlF2N5FlJYhR29t8Q==
   dependencies:
     bn.js "^4.1.0"
     browserify-rsa "^4.0.0"
     create-hash "^1.1.0"
     parse-asn1 "^5.0.0"
     randombytes "^2.0.1"
+    safe-buffer "^5.1.2"
 
 punycode@1.3.2:
   version "1.3.2"
@@ -7546,9 +7547,9 @@ react-qr-reader@^2.1.0:
     webrtc-adapter "^6.1.1"
 
 react-spring@^5.3.12:
-  version "5.8.0"
-  resolved "https://registry.yarnpkg.com/react-spring/-/react-spring-5.8.0.tgz#52d8206487692b99c223377c252acea645d77307"
-  integrity sha512-+qpkf/kntPuhc3o8zlT094gTcEk7pZ02W1UKoI/4HaxyjSQV09p4PeWA3i7aWZeJAGF9gHcNwx7K4DVUAHIceA==
+  version "5.9.0"
+  resolved "https://registry.yarnpkg.com/react-spring/-/react-spring-5.9.0.tgz#0ad0c6f9826fea9ce25e819d7a566dfc132c3d21"
+  integrity sha512-wgCimhKJaKcolR+bRVfETw9QptfR3HXJP8zMnWR2qqjMwvFdSk+ULomKth3E8VFJb5+qKOTdxElcHToSzsGTAQ==
   dependencies:
     "@babel/runtime" "^7.0.0"
 
@@ -8360,9 +8361,9 @@ spdx-correct@^3.0.0:
     spdx-license-ids "^3.0.0"
 
 spdx-exceptions@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/spdx-exceptions/-/spdx-exceptions-2.1.0.tgz#2c7ae61056c714a5b9b9b2b2af7d311ef5c78fe9"
-  integrity sha512-4K1NsmrlCU1JJgUrtgEeTVyfx8VaYea9J9LvARxhbHtVtohPs/gFGG5yy49beySjlIMhhXZ4QqujIZEfS4l6Cg==
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/spdx-exceptions/-/spdx-exceptions-2.2.0.tgz#2ea450aee74f2a89bfb94519c07fcd6f41322977"
+  integrity sha512-2XQACfElKi9SlVb1CYadKDXvoajPgBVPn/gOQLrTvHdElaVhr7ZEbqJaRnJLVNeaI4cMEAgVCeBMKF6MWRDCRA==
 
 spdx-expression-parse@^3.0.0:
   version "3.0.0"
