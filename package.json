@@ -58,6 +58,7 @@
     "publish": "aragon apm publish",
     "deploy:rpc": "truffle compile && truffle exec scripts/deploy.js --network rpc",
     "deploy:devnet:apm": "npm explore @aragon/os -- npm run deploy:devnet:apm",
+    "get-addresses": "npm run deploy:devnet:apm | grep -e 'ENS:' -e 'APMRegisty:' -e 'DAOFactory:'",
     "deploy:rinkeby": "truffle compile && truffle exec scripts/deploy-althea-dao-factory.js --network rinkeby",
     "deploy:devnet": "npm run compile && truffle exec scripts/deploy-althea-dao-factory.js --network devnet",
     "publish:devnet": "npm run compile && aragon publish --apm.ipfs.rpc.protocol http --apm.ipfs.rpc.host ipfs.aragon.network --no-confirm=true --keyfile ../../.localkey.json \"$(npm run deploy:devnet | tail -n 1)\"",
