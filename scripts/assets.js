@@ -8,14 +8,16 @@ module.exports = {
   },
   contracts: {
     rinkeby: {
-      daoFactory: "0xdfc0cafc77278ee705e0ea2486b4116054e1b02e",
-      apm: "0x65bd14a676603965dc0fbc7c13197a368a200e49",
-      ens: "0x387a70144dc47f5cc1d6109212af5084a1becf30"
+      ens: "0x704d1f911c55b6ff8012d8f754bf4014db508090",
+      daoFactory: "0x96e1a4e0b18d3a0a6f6e4d9ece32b2d986f2eb67",
+      apmRegistry: "0xfec02df7fe7a2963243e95be7a5d190cd6a9c714"
     },
     devnet: {
-      daoFactory: "0xdfc0cafc77278ee705e0ea2486b4116054e1b02e",
-      apm: "0x65bd14a676603965dc0fbc7c13197a368a200e49",
-      ens: "0x387a70144dc47f5cc1d6109212af5084a1becf30"
+      ens: "0x5f6f7e8cc7346a11ca2def8f827b7a0b612c56a1",
+      daoFactory: "0xc8f466ffef9e9788fb363c2f4fbddf2cae477805",
+      apmRegistry: "0xd33824d26df396f04dba40e709f130d86a2f5ddd"
     }
   }
 }
+
+
