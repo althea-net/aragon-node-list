@@ -2,9 +2,7 @@ const ipfsHashes = require('./assets.js').ipfs
 const w3Utils = require('web3-utils')
 
 
-const toBytes32 = s => {
-  return w3Utils.toHex(s)
-}
+const toBytes32 = s => w3Utils.toHex(s)
 
 const financeIpfs = toBytes32(ipfsHashes.finance)
 const tokenManagerIpfs = toBytes32(ipfsHashes.tokenManager)
@@ -54,11 +52,12 @@ module.exports = async (
     const network = artifacts.options._values.network
     let {daoFactory, apmRegistry} = require('./assets.js').contracts[network]
     log('Deploying AltheaDAOFactory...')
-    const altheaFac = await artifacts.require('AltheaDAOFactory').new(
+    let altheaFac = await artifacts.require('AltheaDAOFactory').new(
       daoFactory,
       minimeFac.address,
       apmRegistry
     )
+
     log(altheaFac.address)
 
     let inputs = [
@@ -79,7 +78,6 @@ module.exports = async (
     let receipt = await altheaFac.apmInit(
       altheaBase.address,
       altheaIpfs,
-      apmRegistry
     )
     log('txn: ', receipt.tx)
     /*

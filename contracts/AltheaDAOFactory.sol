@@ -53,13 +53,12 @@ contract AltheaDAOFactory {
     bytes votingContentURI,
     */
     address altheaBase,
-    bytes altheaContentURI,
-    APMRegistry _apm
+    bytes altheaContentURI
   ) 
     public
   {
-    DebugAddress(this, _apm, apm);
-    createRepo("althea", altheaBase, altheaContentURI, _apm);
+    DebugAddress(this, altheaBase, apm);
+    createRepo("althea", altheaBase, altheaContentURI);
     /*
     createRepo("finance", financeBase, financeContentURI);
     createRepo("token-manager", tokenManagerBase, tokenManagerContentURI);
@@ -156,12 +155,12 @@ contract AltheaDAOFactory {
     emit DeployInstance(dao);
   }
   
-  function createRepo(string _name, address _base, bytes _uri, APMRegistry _apm) internal {
+  function createRepo(string _name, address _base, bytes _uri) internal {
     uint16[3] memory firstVersion;
     firstVersion[0] = 1;
     emit DebugAddress(apm, address(0), ANY_ENTITY);
     
-    _apm.newRepoWithVersion(_name, ANY_ENTITY, firstVersion,  _base, _uri);
+    apm.newRepoWithVersion(_name, ANY_ENTITY, firstVersion,  _base, _uri);
   }
 
   function financeAppId() public view returns (bytes32) {
