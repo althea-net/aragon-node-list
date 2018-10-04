@@ -1,7 +1,6 @@
 pragma solidity ^0.4.24;
 
 import "@aragon/os/contracts/apm/APMRegistry.sol";
-import "@aragon/os/contracts/apm/APMRegistry.sol";
 import "@aragon/os/contracts/factory/DAOFactory.sol";
 import "@aragon/os/contracts/kernel/Kernel.sol";
 import "@aragon/os/contracts/acl/ACL.sol";
@@ -22,20 +21,28 @@ contract AltheaDAOFactory {
   DAOFactory public fac;
   MiniMeTokenFactory public minimeFac;
 
-  address constant ANY_ENTITY = address(-1);
+  address constant public ANY_ENTITY = address(-1);
 
   event DeployInstance(address dao);
   event InstalledApp(address appProxy, bytes32 appId);
+  event DebugAddress(address a, address b, address c);
 
   // Please use the old constructor standard because truffle .new() doesn't work
   // with constructor()
-  function AltheaDAOFactory(DAOFactory _fac, MiniMeTokenFactory _minimeFac, APMRegistry _apm) public {
+  function AltheaDAOFactory(
+    DAOFactory _fac,
+    MiniMeTokenFactory _minimeFac,
+    APMRegistry _apm
+  )
+    public
+  {
     apm = _apm;
     fac = _fac;
     minimeFac = _minimeFac;
   }
 
   function apmInit(
+    /*
     address financeBase,
     bytes financeContentURI,
     address tokenManagerBase,
@@ -44,16 +51,21 @@ contract AltheaDAOFactory {
     bytes vaultContentURI,
     address votingBase,
     bytes votingContentURI,
+    */
     address altheaBase,
-    bytes altheaContentURI
+    bytes altheaContentURI,
+    APMRegistry _apm
   ) 
     public
   {
-    createRepo("althea", altheaBase, altheaContentURI);
+    DebugAddress(this, _apm, apm);
+    createRepo("althea", altheaBase, altheaContentURI, _apm);
+    /*
     createRepo("finance", financeBase, financeContentURI);
     createRepo("token-manager", tokenManagerBase, tokenManagerContentURI);
     createRepo("vault", financeBase, financeContentURI);
     createRepo("voting", votingBase, vaultContentURI);
+    */
   }
 
   function createInstance() public {
@@ -142,13 +154,14 @@ contract AltheaDAOFactory {
     emit InstalledApp(althea, altheaAppId());
 
     emit DeployInstance(dao);
-    */
   }
   
-  function createRepo(string _name, address _base, bytes _uri) internal {
+  function createRepo(string _name, address _base, bytes _uri, APMRegistry _apm) internal {
     uint16[3] memory firstVersion;
     firstVersion[0] = 1;
-    apm.newRepoWithVersion(_name, ANY_ENTITY, firstVersion, _base, _uri);
+    emit DebugAddress(apm, address(0), ANY_ENTITY);
+    
+    _apm.newRepoWithVersion(_name, ANY_ENTITY, firstVersion,  _base, _uri);
   }
 
   function financeAppId() public view returns (bytes32) {
