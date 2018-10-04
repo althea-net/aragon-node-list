@@ -27,9 +27,7 @@ contract AltheaDAOFactory {
   event InstalledApp(address appProxy, bytes32 appId);
   event DebugAddress(address a, address b, address c);
 
-  // Please use the old constructor standard because truffle .new() doesn't work
-  // with constructor()
-  function AltheaDAOFactory(
+  constructor(
     DAOFactory _fac,
     MiniMeTokenFactory _minimeFac,
     APMRegistry _apm
