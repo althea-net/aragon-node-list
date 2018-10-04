@@ -1,10 +1,16 @@
 const ipfsHashes = require('./assets.js').ipfs
+const w3Utils = require('web3-utils')
 
-const financeIpfs = ipfsHashes.finance
-const tokenManagerIpfs = ipfsHashes.tokenManager
-const vaultIpfs = ipfsHashes.vault
-const votingIpfs = ipfsHashes.voting
-const altheaIpfs = ipfsHashes.althea
+
+const toBytes32 = s => {
+  return w3Utils.toHex(s)
+}
+
+const financeIpfs = toBytes32(ipfsHashes.finance)
+const tokenManagerIpfs = toBytes32(ipfsHashes.tokenManager)
+const vaultIpfs = toBytes32(ipfsHashes.vault)
+const votingIpfs = toBytes32(ipfsHashes.voting)
+const altheaIpfs = toBytes32(ipfsHashes.althea)
 
 module.exports = async (
   truffleExecCallback,
@@ -12,9 +18,9 @@ module.exports = async (
 ) => {
 
   try {
-    const log = (...args) => { if (verbose) console.log(...args) }
-    
 
+    const log = (...args) => { if (verbose) console.log(...args) }
+   
     log('Deploying finance app...')
     let p = '@aragon/apps-finance/contracts/Finance.sol'
     const financeBase = await artifacts.require(p).new()
@@ -41,41 +47,47 @@ module.exports = async (
     log(minimeFac.address)
 
     log('Deploying althea app...')
-    p = '../contracts/Althea.sol'
-    const altheaBase = await artifacts.require(p).new()
+    const altheaBase = await artifacts.require('Althea').new()
     log(altheaBase.address)
 
-    const network = artifacts.options._values.network
     // Make sure that these addresses are correct for the corresponding network
-    const {daoFactory, apm} = require('./assets.js').contracts[network]
+    const network = artifacts.options._values.network
+    let {daoFactory, apmRegistry} = require('./assets.js').contracts[network]
     log('Deploying AltheaDAOFactory...')
-    p = './AltheaDAOFactory.sol'
-    const altheaFac = await artifacts.require(p)
-      .new(daoFactory, minimeFac.address, apm)
+    const altheaFac = await artifacts.require('AltheaDAOFactory').new(
+      daoFactory,
+      minimeFac.address,
+      apmRegistry
+    )
     log(altheaFac.address)
 
-    log('Calling apmInit...')
-    const receipt = await altheaFac.apmInit(
+    let inputs = [
       financeBase.address,
       financeIpfs,
-
       tokenManagerBase.address,
       tokenManagerIpfs,
-
       vaultBase.address,
       vaultIpfs,
-
       votingBase.address,
       votingIpfs,
-
       altheaBase.address,
       altheaIpfs
+    ]
+
+    log('inputs\n', inputs)
+    log('Calling apmInit...')
+    let receipt = await altheaFac.apmInit(
+      altheaBase.address,
+      altheaIpfs,
+      apmRegistry
     )
-    log(receipt)
+    log('txn: ', receipt.tx)
+    /*
 
     log('Creating Althea DAO...')
     receipt = await altheaFac.createInstance()
     const daoAddr = receipt.logs.filter(l => l.event == 'DeployInstance')[0].args.dao
+    log('daoAddr', daoAddr)
 
     const financeId = await altheaFac.financeAppId()
     const tokenManagerId = await altheaFac.tokenManagerAppId()
@@ -100,11 +112,12 @@ module.exports = async (
     if (! typeof truffleExecCallback === 'function') {
       return { daoAddr }
     }
+    */
 
     truffleExecCallback()
   }
   catch (e) {
-    console.log(e)
+    console.error(e)
     truffleExecCallback()
   }
 }
