@@ -1,0 +1,3 @@
+[submodule "contracts/dao-kits"]
+	path = contracts/dao-kits
+	url = https://github.com/aragon/dao-kits
