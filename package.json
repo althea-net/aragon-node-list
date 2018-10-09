@@ -4,7 +4,7 @@
   "description": "",
   "dependencies": {
     "@aragon/apps-finance": "^2.0.0-beta.2",
-    "@aragon/apps-shared-minime": "https://github.com/sebohe/aragon-apps/raw/tar/shared/minime.tar",
+    "@aragon/apps-shared-minime": "^1.0.0",
     "@aragon/apps-token-manager": "^2.0.0-beta.2",
     "@aragon/apps-vault": "^3.0.0-beta.2",
     "@aragon/apps-voting": "^2.0.0-beta.2",
