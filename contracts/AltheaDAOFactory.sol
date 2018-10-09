@@ -29,14 +29,14 @@ contract AltheaDAOFactory is KitBase {
   event DeployInstance(address dao, address indexed token);
 
   constructor(
-      DAOFactory _fac,
-      ENS _ens,
-      MiniMeTokenFactory _minimeFac,
-      IFIFSResolvingRegistrar _aragonID,
-      bytes32[5] _appIds
+    DAOFactory _fac,
+    ENS _ens,
+    MiniMeTokenFactory _minimeFac,
+    IFIFSResolvingRegistrar _aragonID,
+    bytes32[5] _appIds
   )
-      KitBase(_fac, _ens)
-      public
+    KitBase(_fac, _ens)
+    public
   {
     minimeFac = _minimeFac;
     aragonID = _aragonID;
@@ -56,9 +56,7 @@ contract AltheaDAOFactory is KitBase {
     require(holders.length == stakes.length);
 
     Kernel dao = fac.newDAO(this);
-
     ACL acl = ACL(dao.acl());
-
     acl.createPermission(this, dao, dao.APP_MANAGER_ROLE(), this);
 
     Voting voting = Voting(
@@ -216,4 +214,47 @@ contract AltheaDAOFactory is KitBase {
   function registerAragonID(string name, address owner) internal {
     aragonID.register(keccak256(abi.encodePacked(name)), owner);
   }
+
+  function newToken(string name, string symbol) external returns (MiniMeToken token) {
+    token = minimeFac.createCloneToken(
+      MiniMeToken(address(0)),
+      0,
+      name,
+      0,
+      symbol,
+      true
+    );
+    cacheToken(token, msg.sender);
+
+  function newInstance(
+    string name, address[] signers,
+    uint256 neededSignatures) external {
+    require(signers.length > 0 && neededSignatures > 0);
+    require(neededSignatures <= signers.length);
+    // We can avoid safemath checks here as it's very unlikely a user will pass in enough
+    // signers to cause this to overflow
+    uint256 neededSignaturesE18 = neededSignatures * 10 ** 18;
+
+    uint256[] memory stakes = new uint256[](signers.length);
+
+    for (uint256 i = 0; i < signers.length; i++) {
+      stakes[i] = 1;
+    }
+
+    MiniMeToken token = popTokenCache(msg.sender);
+    Voting voting = createDAO(
+        name,
+        token,
+        signers,
+        stakes,
+        1
+    );
+
+    // We are subtracting 1 because comparison in Voting app is strict,
+    // while Multisig needs to allow equal too. So for instance in 2 out of 4
+    // multisig, we would define 50 * 10 ^ 16 - 1 instead of just 50 * 10 ^ 16,
+    // so 2 signatures => 2 * 10 ^ 18 / 4 = 50 * 10 ^ 16 > 50 * 10 ^ 16 - 1 would pass
+    uint256 multisigSupport = neededSignat
+  }
 }
+
