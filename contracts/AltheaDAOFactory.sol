@@ -16,204 +16,204 @@ import "@aragon/apps-finance/contracts/Finance.sol";
 import "./Althea.sol";
 
 contract AltheaDAOFactory is KitBase {
-    MiniMeTokenFactory public minimeFac;
-    IFIFSResolvingRegistrar public aragonID;
-    bytes32[5] public appIds;
+  MiniMeTokenFactory public minimeFac;
+  IFIFSResolvingRegistrar public aragonID;
+  bytes32[5] public appIds;
 
-    mapping (address => address) tokenCache;
+  mapping (address => address) tokenCache;
 
     // ensure alphabetic order
-    enum Apps { Althea, Finance, TokenManager, Vault, Voting }
+  enum Apps { Althea, Finance, TokenManager, Vault, Voting }
 
-    event DeployToken(address token, address indexed cacheOwner);
-    event DeployInstance(address dao, address indexed token);
+  event DeployToken(address token, address indexed cacheOwner);
+  event DeployInstance(address dao, address indexed token);
 
-    constructor(
-        DAOFactory _fac,
-        ENS _ens,
-        MiniMeTokenFactory _minimeFac,
-        IFIFSResolvingRegistrar _aragonID,
-        bytes32[5] _appIds
-    )
-        KitBase(_fac, _ens)
-        public
-    {
-        minimeFac = _minimeFac;
-        aragonID = _aragonID;
-        appIds = _appIds;
+  constructor(
+      DAOFactory _fac,
+      ENS _ens,
+      MiniMeTokenFactory _minimeFac,
+      IFIFSResolvingRegistrar _aragonID,
+      bytes32[5] _appIds
+  )
+      KitBase(_fac, _ens)
+      public
+  {
+    minimeFac = _minimeFac;
+    aragonID = _aragonID;
+    appIds = _appIds;
+  }
+
+  function createDAO(
+    string name,
+    MiniMeToken token,
+    address[] holders,
+    uint256[] stakes,
+    uint256 _maxTokens
+  )
+    internal
+    returns (Voting)
+  {
+    require(holders.length == stakes.length);
+
+    Kernel dao = fac.newDAO(this);
+
+    ACL acl = ACL(dao.acl());
+
+    acl.createPermission(this, dao, dao.APP_MANAGER_ROLE(), this);
+
+    Voting voting = Voting(
+      dao.newAppInstance(
+        appIds[uint8(Apps.Voting)],
+        latestVersionAppBase(appIds[uint8(Apps.Voting)])
+      )
+    );
+    emit InstalledApp(voting, appIds[uint8(Apps.Voting)]);
+
+    Vault vault = Vault(
+      dao.newAppInstance(
+        appIds[uint8(Apps.Vault)],
+        latestVersionAppBase(appIds[uint8(Apps.Vault)])
+      )
+    );
+    emit InstalledApp(vault, appIds[uint8(Apps.Vault)]);
+
+    Finance finance = Finance(
+      dao.newAppInstance(
+        appIds[uint8(Apps.Finance)],
+        latestVersionAppBase(appIds[uint8(Apps.Finance)])
+      )
+    );
+    emit InstalledApp(finance, appIds[uint8(Apps.Finance)]);
+
+    TokenManager tokenManager = TokenManager(
+      dao.newAppInstance(
+        appIds[uint8(Apps.TokenManager)],
+        latestVersionAppBase(appIds[uint8(Apps.TokenManager)])
+      )
+    );
+    emit InstalledApp(tokenManager, appIds[uint8(Apps.TokenManager)]);
+
+    Althea althea = Althea(
+      dao.newAppInstance(
+        appIds[uint8(Apps.Althea)],
+        latestVersionAppBase(appIds[uint8(Apps.Althea)])
+      )
+    );
+
+    // Required for initializing the Token Manager
+    token.changeController(tokenManager);
+
+    // Permissions
+    acl.createPermission(
+      acl.ANY_ENTITY(),
+      voting,
+      voting.CREATE_VOTES_ROLE(),
+      voting
+    );
+    acl.createPermission(
+      voting,
+      voting,
+      voting.MODIFY_QUORUM_ROLE(),
+      voting
+    );
+
+    acl.createPermission(
+      finance,
+      vault,
+      vault.TRANSFER_ROLE(),
+      voting
+    );
+    acl.createPermission(
+      voting,
+      finance,
+      finance.CREATE_PAYMENTS_ROLE(),
+      voting
+    );
+    acl.createPermission(
+      voting,
+      finance,
+      finance.EXECUTE_PAYMENTS_ROLE(),
+      voting
+    );
+    acl.createPermission(
+      voting,
+      finance,
+      finance.DISABLE_PAYMENTS_ROLE(),
+      voting
+    );
+    acl.createPermission(
+      voting,
+      tokenManager,
+      tokenManager.ASSIGN_ROLE(),
+      voting
+    );
+      
+    acl.createPermission(
+      voting,
+      tokenManager,
+      tokenManager.REVOKE_VESTINGS_ROLE(),
+      voting
+    );
+
+    acl.createPermission(
+      ANY_ENTITY,
+      althea,
+      althea.ADD_MEMBER(),
+      msg.sender
+    );
+
+    acl.createPermission(
+      ANY_ENTITY,
+      althea,
+      althea.DELETE_MEMBER(),
+      msg.sender
+    );
+    acl.createPermission(
+      ANY_ENTITY,
+      althea,
+      althea.MANAGE_ESCROW(),
+      msg.sender
+    );
+    emit InstalledApp(althea, altheaAppId());
+
+
+    // App inits
+    vault.initialize();
+    finance.initialize(vault, uint64(-1) - uint64(now)); // yuge period
+    tokenManager.initialize(token, _maxTokens > 1, _maxTokens);
+
+    // Set up the token stakes
+    acl.createPermission(this, tokenManager, tokenManager.MINT_ROLE(), this);
+
+    for (uint256 i = 0; i < holders.length; i++) {
+      tokenManager.mint(holders[i], stakes[i]);
     }
 
-    function createDAO(
-      string name,
-      MiniMeToken token,
-      address[] holders,
-      uint256[] stakes,
-      uint256 _maxTokens
-    )
-      internal
-      returns (Voting)
-    {
-      require(holders.length == stakes.length);
+    // Clean-up
+    cleanupPermission(acl, voting, dao, dao.APP_MANAGER_ROLE());
+    cleanupPermission(acl, voting, tokenManager, tokenManager.MINT_ROLE());
 
-      Kernel dao = fac.newDAO(this);
+    registerAragonID(name, dao);
+    emit DeployInstance(dao, token);
 
-      ACL acl = ACL(dao.acl());
+    // Voting is returned so its init can happen later
+    return voting;
+  }
 
-      acl.createPermission(this, dao, dao.APP_MANAGER_ROLE(), this);
+  function cacheToken(MiniMeToken token, address owner) internal {
+    tokenCache[owner] = token;
+    emit DeployToken(token, owner);
+  }
 
-      Voting voting = Voting(
-        dao.newAppInstance(
-          appIds[uint8(Apps.Voting)],
-          latestVersionAppBase(appIds[uint8(Apps.Voting)])
-        )
-      );
-      emit InstalledApp(voting, appIds[uint8(Apps.Voting)]);
+  function popTokenCache(address owner) internal returns (MiniMeToken) {
+    require(tokenCache[owner] != address(0));
+    MiniMeToken token = MiniMeToken(tokenCache[owner]);
+    delete tokenCache[owner];
 
-      Vault vault = Vault(
-        dao.newAppInstance(
-          appIds[uint8(Apps.Vault)],
-          latestVersionAppBase(appIds[uint8(Apps.Vault)])
-        )
-      );
-      emit InstalledApp(vault, appIds[uint8(Apps.Vault)]);
+    return token;
+  }
 
-      Finance finance = Finance(
-        dao.newAppInstance(
-          appIds[uint8(Apps.Finance)],
-          latestVersionAppBase(appIds[uint8(Apps.Finance)])
-        )
-      );
-      emit InstalledApp(finance, appIds[uint8(Apps.Finance)]);
-
-      TokenManager tokenManager = TokenManager(
-          dao.newAppInstance(
-              appIds[uint8(Apps.TokenManager)],
-              latestVersionAppBase(appIds[uint8(Apps.TokenManager)])
-          )
-      );
-      emit InstalledApp(tokenManager, appIds[uint8(Apps.TokenManager)]);
-
-      Althea althea = Althea(
-          dao.newAppInstance(
-              appIds[uint8(Apps.Althea)],
-              latestVersionAppBase(appIds[uint8(Apps.Althea)])
-          )
-      );
-
-      // Required for initializing the Token Manager
-      token.changeController(tokenManager);
-
-      // Permissions
-      acl.createPermission(
-        acl.ANY_ENTITY(),
-        voting,
-        voting.CREATE_VOTES_ROLE(),
-        voting
-      );
-      acl.createPermission(
-        voting,
-        voting,
-        voting.MODIFY_QUORUM_ROLE(),
-        voting
-      );
-
-      acl.createPermission(
-        finance,
-        vault,
-        vault.TRANSFER_ROLE(),
-        voting
-      );
-      acl.createPermission(
-        voting,
-        finance,
-        finance.CREATE_PAYMENTS_ROLE(),
-        voting
-      );
-      acl.createPermission(
-        voting,
-        finance,
-        finance.EXECUTE_PAYMENTS_ROLE(),
-        voting
-      );
-      acl.createPermission(
-        voting,
-        finance,
-        finance.DISABLE_PAYMENTS_ROLE(),
-        voting
-      );
-      acl.createPermission(
-        voting,
-        tokenManager,
-        tokenManager.ASSIGN_ROLE(),
-        voting
-      );
-        
-      acl.createPermission(
-        voting,
-        tokenManager,
-        tokenManager.REVOKE_VESTINGS_ROLE(),
-        voting
-      );
-
-      acl.createPermission(
-        ANY_ENTITY,
-        althea,
-        althea.ADD_MEMBER(),
-        msg.sender
-      );
-
-      acl.createPermission(
-        ANY_ENTITY,
-        althea,
-        althea.DELETE_MEMBER(),
-        msg.sender
-      );
-      acl.createPermission(
-        ANY_ENTITY,
-        althea,
-        althea.MANAGE_ESCROW(),
-        msg.sender
-      );
-      emit InstalledApp(althea, altheaAppId());
-
-
-      // App inits
-      vault.initialize();
-      finance.initialize(vault, uint64(-1) - uint64(now)); // yuge period
-      tokenManager.initialize(token, _maxTokens > 1, _maxTokens);
-
-      // Set up the token stakes
-      acl.createPermission(this, tokenManager, tokenManager.MINT_ROLE(), this);
-
-      for (uint256 i = 0; i < holders.length; i++) {
-          tokenManager.mint(holders[i], stakes[i]);
-      }
-
-      // Clean-up
-      cleanupPermission(acl, voting, dao, dao.APP_MANAGER_ROLE());
-      cleanupPermission(acl, voting, tokenManager, tokenManager.MINT_ROLE());
-
-      registerAragonID(name, dao);
-      emit DeployInstance(dao, token);
-
-      // Voting is returned so its init can happen later
-      return voting;
-    }
-
-    function cacheToken(MiniMeToken token, address owner) internal {
-        tokenCache[owner] = token;
-        emit DeployToken(token, owner);
-    }
-
-    function popTokenCache(address owner) internal returns (MiniMeToken) {
-        require(tokenCache[owner] != address(0));
-        MiniMeToken token = MiniMeToken(tokenCache[owner]);
-        delete tokenCache[owner];
-
-        return token;
-    }
-
-    function registerAragonID(string name, address owner) internal {
-        aragonID.register(keccak256(abi.encodePacked(name)), owner);
-    }
+  function registerAragonID(string name, address owner) internal {
+    aragonID.register(keccak256(abi.encodePacked(name)), owner);
+  }
 }
