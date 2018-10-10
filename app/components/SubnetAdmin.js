@@ -92,7 +92,11 @@ class SubnetAdmin extends React.Component {
     let { nodes } = this.props
     let { checkAddress } = this.state
 
-    let checkResult = nodes.findIndex(n => n.ethAddress.toLowerCase() === checkAddress.toLowerCase()) > -1
+    let checkResult = false
+
+    if (nodes)
+      checkResult = nodes.findIndex(n => n.ethAddress.toLowerCase() === checkAddress.toLowerCase()) > -1
+
     this.setState({ checkResult })
   } 
 
@@ -100,14 +104,15 @@ class SubnetAdmin extends React.Component {
     let { nodes } = this.props
     let { removeAddress } = this.state
 
-    let node = nodes.find(n => n.ethAddress.toLowerCase() === removeAddress.toLowerCase())
+    let node
+
+    if (nodes)
+      node = nodes.find(n => n.ethAddress.toLowerCase() === removeAddress.toLowerCase())
 
     if (!node) return this.setState({ removeResult: false })
-    console.log(node)
 
     try {
       await new Promise((resolve, reject) => {
-        console.log(node.ipAddress)
         this.props.app.deleteMember(node.ipAddress).subscribe(resolve, reject)
       }) 
       this.setState({ removeResult: true })
@@ -168,12 +173,18 @@ class SubnetAdmin extends React.Component {
   addNode = async () => {
     let { ethAddress, ipAddress, nickname } = this.state
     nickname = web3Utils.padRight(web3Utils.toHex(nickname), 32)
-    ipAddress = '0x' + ipAddress.replace(new RegExp(':', 'g'), '')
-    this.props.app.addMember(
-      ethAddress,
-      ipAddress,
-      nickname
-    )
+    ipAddress = '0x' + (new Address6(ipAddress)).canonicalForm().replace(new RegExp(':', 'g'), '')
+
+    try {
+      let res = await new Promise((resolve, reject) => {
+        this.props.app.addMember(
+          ethAddress,
+          ipAddress,
+          nickname
+        ).subscribe(resolve, reject)
+      }) 
+
+    } catch (e) { console.log(e) }
   } 
 
   formatIp = async e => {
@@ -294,8 +305,8 @@ class SubnetAdmin extends React.Component {
           <Col md={6}>
             <StyledCard>
               <Text size="xlarge">{t('checkNode')}</Text>
-              {checkResult && <Info title="Yup!" />}
-              {checkResult !== null && !checkResult && <Info title="Nope" />}
+              {checkResult && <Info title="Yes, the node exists" />}
+              {checkResult !== null && !checkResult && <Info title="The node could not be found" />}
               <Field label={t('ethAddress')}>
                 <TextInput wide
                   type="text"
@@ -308,7 +319,7 @@ class SubnetAdmin extends React.Component {
             </StyledCard>
             <StyledCard>
               <Text size="xlarge">{t('removeNode')}</Text>
-              {removeResult && <Info title="Gone!" />}
+              {removeResult && <Info title="Node successfully removed" />}
               {removeResult !== null && !removeResult && <Info title="Can't find node" />}
               <Field label={t('ethAddress')}>
                 <TextInput wide
