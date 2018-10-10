@@ -60,6 +60,7 @@
     "publish": "aragon apm publish",
     "deploy:rpc": "truffle compile && truffle exec scripts/deploy.js --network rpc",
     "deploy:devnet:apm": "npm explore @aragon/os -- npm run deploy:devnet:apm",
+    "deploy:devnet:id": "npm explore @aragon/id -- npm run deploy:devnet",
     "deploy:rinkeby:apm": "npm explore @aragon/os -- npm run deploy:rinkeby:apm",
     "deploy:kovan:apm": "npm explore @aragon/os -- npm run deploy:rinkeby:apm",
     "update-assets:devnet": "npm run deploy:devnet:apm | grep -e 'ENS:' -e 'APMRegisty:' -e 'DAOFactory:' | node ./scripts/update-assets.js",
