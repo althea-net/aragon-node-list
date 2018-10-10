@@ -25,6 +25,8 @@ contract AltheaDAOFactory is KitBase {
     // ensure alphabetic order
   enum Apps { Althea, Finance, TokenManager, Vault, Voting }
 
+  address public MANAGER;
+
   event DeployToken(address token, address indexed cacheOwner);
   event DeployInstance(address dao, address indexed token);
 
@@ -41,6 +43,7 @@ contract AltheaDAOFactory is KitBase {
     minimeFac = _minimeFac;
     aragonID = _aragonID;
     appIds = _appIds;
+    MANAGER = msg.sender;
   }
 
   function createDAO(
@@ -97,6 +100,7 @@ contract AltheaDAOFactory is KitBase {
         latestVersionAppBase(appIds[uint8(Apps.Althea)])
       )
     );
+    emit InstalledApp(althea, appIds[uint8(Apps.Althea)]);
 
     // Required for initializing the Token Manager
     token.changeController(tokenManager);
@@ -154,25 +158,24 @@ contract AltheaDAOFactory is KitBase {
     );
 
     acl.createPermission(
-      ANY_ENTITY,
+      MANAGER,
       althea,
       althea.ADD_MEMBER(),
       msg.sender
     );
 
     acl.createPermission(
-      ANY_ENTITY,
+      MANAGER,
       althea,
       althea.DELETE_MEMBER(),
       msg.sender
     );
     acl.createPermission(
-      ANY_ENTITY,
+      MANAGER,
       althea,
       althea.MANAGE_ESCROW(),
       msg.sender
     );
-    emit InstalledApp(althea, altheaAppId());
 
 
     // App inits
@@ -225,10 +228,15 @@ contract AltheaDAOFactory is KitBase {
       true
     );
     cacheToken(token, msg.sender);
+  }
 
   function newInstance(
-    string name, address[] signers,
-    uint256 neededSignatures) external {
+    string name,
+    address[] signers,
+    uint256 neededSignatures
+  )
+    external
+  {
     require(signers.length > 0 && neededSignatures > 0);
     require(neededSignatures <= signers.length);
     // We can avoid safemath checks here as it's very unlikely a user will pass in enough
@@ -243,18 +251,30 @@ contract AltheaDAOFactory is KitBase {
 
     MiniMeToken token = popTokenCache(msg.sender);
     Voting voting = createDAO(
-        name,
-        token,
-        signers,
-        stakes,
-        1
+      name,
+      token,
+      signers,
+      stakes,
+      1
     );
 
     // We are subtracting 1 because comparison in Voting app is strict,
     // while Multisig needs to allow equal too. So for instance in 2 out of 4
     // multisig, we would define 50 * 10 ^ 16 - 1 instead of just 50 * 10 ^ 16,
     // so 2 signatures => 2 * 10 ^ 18 / 4 = 50 * 10 ^ 16 > 50 * 10 ^ 16 - 1 would pass
-    uint256 multisigSupport = neededSignat
+    uint256 multisigSupport = neededSignaturesE18 / signers.length - 1;
+    voting.initialize(
+    token,
+    multisigSupport,
+    multisigSupport,
+    1825 days // ~5 years
+    );
+
+    // Include support modification permission to handle changes to the multisig's size
+    ACL acl = ACL(Kernel(voting.kernel()).acl());
+    acl.createPermission(voting, voting, voting.MODIFY_SUPPORT_ROLE(), voting);
+
+    cleanupPermission(acl, voting, acl, acl.CREATE_PERMISSIONS_ROLE());
   }
 }
 
