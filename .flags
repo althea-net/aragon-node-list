@@ -1,3 +1,4 @@
-export ENS='"0xfbae32d1cde62858bc45f51efc8cc4fa1415447e"'
+export ENS='0xd76afaf688416d19e1e4df89c799a0b3cfcb9279'
 export IPFS='"http://ipfs.aragon.network:5001"'
 export RINKEBY='--apm.ens-registry '$ENS' --no-ipfs-check --apm.ipfs.rpc '$IPFS
+export OWNER='0xb4124ceb3451635dacedd11767f004d8a28c6ee7'
