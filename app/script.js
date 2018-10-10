@@ -3,12 +3,22 @@ import { of } from 'rxjs/observable/of'
 
 const app = new Aragon()
 
+const INITIALIZATION_TRIGGER = Symbol('INITIALIZATION_TRIGGER')
+
 const initialState = {
   nodes: []
 }
 
 app.store(async (state, { event, returnValues }) => {
   switch (event) {
+    case INITIALIZATION_TRIGGER:
+      state = initialState
+      let count = await getCountOfSubscribers()
+      for (let i; i < count; i++) {
+        let node = await getNode(i)
+        state.nodes.push({ address: node[0], ip: node[1] })
+      } 
+    break;
     case 'NewMember':
       let { nickname, ethAddress, ipAddress } = returnValues
       state.nodes.push(
@@ -34,7 +44,7 @@ app.store(async (state, { event, returnValues }) => {
   } 
 
   return state
-})
+}, [of({ event: INITIALIZATION_TRIGGER })])
 
 function getBill(address) {
   return new Promise(resolve => {
