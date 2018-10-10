@@ -264,8 +264,10 @@ class SubnetAdmin extends React.Component {
                     />
                   </Col>
                   <Col md={4} style={{ textAlign: 'center' }}>
-                    {scanning || <Button mode="outline" onClick={() => this.setState({ scanning: true })}>Scan QR</Button>}
-                    {scanning && <Button mode="outline" onClick={() => this.setState({ scanning: false })}>Stop Scanning</Button>}
+                    <React.Fragment>
+                      {scanning || <Button mode="outline" onClick={() => this.setState({ scanning: true })}>Scan QR</Button>}
+                      {scanning && <Button mode="outline" onClick={() => this.setState({ scanning: false })}>Stop Scanning</Button>}
+                    </React.Fragment>
                   </Col>
                 </Row>
               </Field>
