@@ -1,5 +1,10 @@
 pragma solidity 0.4.24;
 
+
+// This is the Import truffle hack, which for some reason can't
+// be included in Imports.sol
+import "@aragon/id/contracts/FIFSResolvingRegistrar.sol";
+
 import "@aragon/os/contracts/factory/DAOFactory.sol";
 import "@aragon/os/contracts/kernel/Kernel.sol";
 import "@aragon/os/contracts/acl/ACL.sol";
@@ -277,4 +282,3 @@ contract AltheaDAOFactory is KitBase {
     cleanupPermission(acl, voting, acl, acl.CREATE_PERMISSIONS_ROLE());
   }
 }
-
