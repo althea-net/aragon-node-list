@@ -25,7 +25,7 @@ const QrCard = styled(Card)`
   justify-content: center;
   height: auto;
   padding: 15px;
-  margin-top: 15px;
+  margin: 15px 0;
 `
 
 class SubnetAdmin extends React.Component {
