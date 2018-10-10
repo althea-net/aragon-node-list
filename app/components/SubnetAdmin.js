@@ -16,9 +16,11 @@ const StyledCard = styled(Card)`
   padding: 20px;
 `
 
+
 class SubnetAdmin extends React.Component {
   constructor() {
     super()
+
     this.state = {
       bills: 0,
       delay: 300,
@@ -29,11 +31,24 @@ class SubnetAdmin extends React.Component {
       removeAddress: '',
       removeResult: null,
       ethAddress: '',
-      ipAddress: '',
+      ipAddress: this.generateIp(),
       ipValid: true,
       nickname: '',
       result: 'No result'
     } 
+  } 
+
+  generateIp = () => {
+    const subnet = '2001deadbeef'
+    let pad = n => ('0000' + n.toString(16)).substr(-4)
+
+    let bytes = new Uint16Array(5)
+    crypto.getRandomValues(bytes)
+
+    let suffix = Array.from(bytes).map(pad).join('')
+    let addr = Address6.fromBigInteger(subnet + suffix, 16)
+
+    return addr.canonicalForm()
   } 
 
   async componentDidMount() {
@@ -41,9 +56,13 @@ class SubnetAdmin extends React.Component {
     let { nodes } = this.props
 
     let bills = 0
-    await Promise.all(nodes.map(async node => {
-      bills += await this.getOwing(currentBlock, node)
-    }))
+
+    if (nodes && nodes.length) {
+      await Promise.all(nodes.map(async node => {
+        bills += await this.getOwing(currentBlock, node)
+      }))
+    }
+
     this.setState({ bills, currentBlock })
   } 
 
@@ -185,18 +204,16 @@ class SubnetAdmin extends React.Component {
                   value={nickname}
                 />
               </Field>
-              {/*
               <Button>Scan node QR code</Button>
               <div>
                 <QrReader
                   delay={this.state.delay}
                   onError={this.handleError}
                   onScan={this.handleScan}
-                  style={{ width: '100%' }}
+                  style={{ width: '300px' }}
                   />
                 <p>{this.state.result}</p>
               </div>
-              */}
               <Field label={t('ethAddress')}>
                 <TextInput wide
                   type="text"

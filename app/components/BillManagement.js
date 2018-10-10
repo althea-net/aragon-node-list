@@ -35,7 +35,7 @@ class BillManagement extends React.Component {
     let blocksElapsed = currentBlock - lastUpdated
     if (blocksElapsed > 0) blocksElapsed++
     let days = (account / (perBlock * BLOCKS_PER_DAY)).toFixed(4)
-    if (isNan(days)) days = 0
+    if (isNaN(days)) days = 0
     this.setState({ account, balance, days })
   } 
 
