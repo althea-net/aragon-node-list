@@ -39,16 +39,12 @@ class SubnetAdmin extends React.Component {
   } 
 
   generateIp = () => {
-    const subnet = '2001deadbeef'
-    let pad = n => ('0000' + n.toString(16)).substr(-4)
-
-    let bytes = new Uint16Array(5)
+    let prefix = '2001:dead:beef:'
+    let bytes = new Uint16Array(1)
     crypto.getRandomValues(bytes)
 
-    let suffix = Array.from(bytes).map(pad).join('')
-    let addr = Address6.fromBigInteger(subnet + suffix, 16)
-
-    return addr.canonicalForm()
+    let suffix = ('0000' + Array.from(bytes).toString(16)).substr(-4)
+    return prefix + suffix + '::/64'
   } 
 
   async componentDidMount() {
@@ -137,7 +133,11 @@ class SubnetAdmin extends React.Component {
     let ipValid = (new Address6(ipAddress)).isValid()
 
     let hexIp = '0x' + ipAddress.replace(new RegExp(':', 'g'), '')
-    let ipExists = this.props.nodes.findIndex(n => n.ipAddress === hexIp) > -1
+    let ipExists = false
+    let { nodes } = this.props
+
+    if (nodes)
+      ipExists = nodes.findIndex(n => n.ipAddress === hexIp) > -1
 
     this.setState({ ipAddress, ipExists, ipValid })
   }
@@ -154,9 +154,8 @@ class SubnetAdmin extends React.Component {
   } 
 
   formatIp = async e => {
-    let ipAddress = (new Address6(e.target.value)).canonicalForm()
-    if (ipAddress)
-      this.setState({ ipAddress })
+    let addr = new Address6(e.target.value)
+    if (addr.isValid()) this.setState({ ipAddress: addr.correctForm() + addr.subnet })
   } 
 
   handleScan = result => {
@@ -230,8 +229,8 @@ class SubnetAdmin extends React.Component {
                   type="text"
                   name="ip"
                   placeholder={t('enterIpAddress')}
-                  onBlur={this.formatIp}
                   onChange={this.setIpAddress}
+                  onBlur={this.formatIp}
                   value={ipAddress}
                 />
               </Field>
