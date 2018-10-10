@@ -6,6 +6,7 @@ import { translate } from 'react-i18next'
 import web3Utils from 'web3-utils'
 import { Address6 } from 'ip-address'
 import QrReader from 'react-qr-reader'
+import QrCode from 'qrcode.react'
 
 const StyledCard = styled(Card)`
   width: 100%;
@@ -16,6 +17,16 @@ const StyledCard = styled(Card)`
   padding: 20px;
 `
 
+const QrCard = styled(Card)`
+  width: 100%;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: center;
+  height: auto;
+  padding: 15px;
+  margin-top: 15px;
+`
 
 class SubnetAdmin extends React.Component {
   constructor() {
@@ -31,20 +42,26 @@ class SubnetAdmin extends React.Component {
       removeAddress: '',
       removeResult: null,
       ethAddress: '',
-      ipAddress: this.generateIp(),
+      ipAddress: '',
       ipValid: true,
       nickname: '',
-      result: 'No result'
+      scanning: false
     } 
   } 
 
   generateIp = () => {
-    let prefix = '2001:dead:beef:'
+    const subnet48 = '2001:dead:beef:'
     let bytes = new Uint16Array(1)
     crypto.getRandomValues(bytes)
 
-    let suffix = ('0000' + Array.from(bytes).toString(16)).substr(-4)
-    return prefix + suffix + '::/64'
+    let block64 = Array.from(bytes)[0].toString(16)
+    let ipAddress = subnet48 + block64 + '::/64' 
+
+    if (this.ipExists(ipAddress)) {
+      return this.generateIp()
+    }
+
+    this.setState({ ipAddress })
   } 
 
   async componentDidMount() {
@@ -59,6 +76,7 @@ class SubnetAdmin extends React.Component {
       }))
     }
 
+    this.generateIp()
     this.setState({ bills, currentBlock })
   } 
 
@@ -128,16 +146,21 @@ class SubnetAdmin extends React.Component {
     this.setState({ ethAddress })
   }
 
+  ipExists = ip => {
+    let { nodes } = this.props
+
+    if (nodes)
+      return nodes.findIndex(n => n.ipAddress === hexIp) > -1
+
+    return false
+  } 
+
   setIpAddress = e => { 
     let ipAddress = e.target.value
     let ipValid = (new Address6(ipAddress)).isValid()
 
     let hexIp = '0x' + ipAddress.replace(new RegExp(':', 'g'), '')
-    let ipExists = false
-    let { nodes } = this.props
-
-    if (nodes)
-      ipExists = nodes.findIndex(n => n.ipAddress === hexIp) > -1
+    let ipExists = this.ipExists()
 
     this.setState({ ipAddress, ipExists, ipValid })
   }
@@ -158,9 +181,11 @@ class SubnetAdmin extends React.Component {
     if (addr.isValid()) this.setState({ ipAddress: addr.correctForm() + addr.subnet })
   } 
 
+  startScanning = () => this.setState({ scanning: true })
+
   handleScan = result => {
-    if (result) {
-      this.setState({ result })
+    if (web3Utils.isAddress(result)) {
+      this.setState({ ethAddress: result, scanning: false })
     }
   }
 
@@ -179,7 +204,8 @@ class SubnetAdmin extends React.Component {
       ipAddress, 
       ipValid,
       ipExists,
-      removeResult 
+      removeResult,
+      scanning
     } = this.state
 
     /*
@@ -191,7 +217,7 @@ class SubnetAdmin extends React.Component {
     return (
       <React.Fragment>
         <Row>
-          <Col xs={6}>
+          <Col md={6}>
             <StyledCard>
               <Text size="xlarge">{t('addNode')}</Text>
               <Field label={t('nodeNickname')}>
@@ -203,37 +229,56 @@ class SubnetAdmin extends React.Component {
                   value={nickname}
                 />
               </Field>
-              <Button>Scan node QR code</Button>
-              <div>
-                <QrReader
-                  delay={this.state.delay}
-                  onError={this.handleError}
-                  onScan={this.handleScan}
-                  style={{ width: '300px' }}
-                  />
-                <p>{this.state.result}</p>
-              </div>
-              <Field label={t('ethAddress')}>
-                <TextInput wide
-                  type="text"
-                  name="address"
-                  placeholder={t('enterEthAddress')}
-                  onChange={this.setEthAddress}
-                  value={ethAddress}
-                />
-              </Field>
               {ipValid || <Info>Enter a valid ipv6 address</Info>}
               {ipExists && <Info>IP has already been added</Info>}
               <Field label={t('ipAddress')}>
-                <TextInput wide
-                  type="text"
-                  name="ip"
-                  placeholder={t('enterIpAddress')}
-                  onChange={this.setIpAddress}
-                  onBlur={this.formatIp}
-                  value={ipAddress}
-                />
+                <Row>
+                  <Col md={8}>
+                    <TextInput wide
+                      type="text"
+                      name="ip"
+                      placeholder={t('enterIpAddress')}
+                      onChange={this.setIpAddress}
+                      onBlur={this.formatIp}
+                      value={ipAddress}
+                    />
+                  </Col>
+                  <Col md={4} style={{ textAlign: 'center' }}>
+                    <Button mode="outline" onClick={this.generateIp}>Generate IP</Button>
+                  </Col>
+                </Row>
+                <QrCard>
+                  <Text.Block>To assign this IP to a router, go to Networking Settings -> Subnet DAOs in the Althea Dashboard web interface and click the Scan QR button, then position this QR code in the center of the camera.</Text.Block>
+                  <QrCode value={ipAddress} size="250" style={{height: 250, marginTop: 15}} />
+                </QrCard>
               </Field>
+              <Field label={t('ethAddress')}>
+                <Row>
+                  <Col md={8}>
+                    <TextInput wide
+                      type="text"
+                      name="address"
+                      placeholder={t('enterEthAddress')}
+                      onChange={this.setEthAddress}
+                      value={ethAddress}
+                    />
+                  </Col>
+                  <Col md={4} style={{ textAlign: 'center' }}>
+                    {scanning || <Button mode="outline" onClick={() => this.setState({ scanning: true })}>Scan QR</Button>}
+                    {scanning && <Button mode="outline" onClick={() => this.setState({ scanning: false })}>Stop Scanning</Button>}
+                  </Col>
+                </Row>
+              </Field>
+              {scanning && 
+                <QrCard>
+                  <QrReader
+                    delay={this.state.delay}
+                    onError={this.handleError}
+                    onScan={this.handleScan}
+                    style={{ width: '300px' }}
+                  />
+                </QrCard>
+              }
               <Field>
                 <Button onClick={this.addNode} mode="outline">{t('addNode')}</Button>
               </Field>
@@ -244,7 +289,7 @@ class SubnetAdmin extends React.Component {
               <Button onClick={this.collectBills} mode="outline">{t('collectBills')}</Button>
             </StyledCard>
           </Col>
-          <Col xs={6}>
+          <Col md={6}>
             <StyledCard>
               <Text size="xlarge">{t('checkNode')}</Text>
               {checkResult && <Info title="Yup!" />}
