@@ -30,7 +30,7 @@ contract AltheaDAOFactory is KitBase {
     // ensure alphabetic order
   enum Apps { Althea, Finance, TokenManager, Vault, Voting }
 
-  address public MANAGER;
+  address public manager;
 
   event DeployToken(address token, address indexed cacheOwner);
   event DeployInstance(address dao, address indexed token);
@@ -48,9 +48,79 @@ contract AltheaDAOFactory is KitBase {
     minimeFac = _minimeFac;
     aragonID = _aragonID;
     appIds = _appIds;
-    MANAGER = msg.sender;
+    manager = msg.sender;
   }
 
+  // multisig
+  function newToken(
+    string name,
+    string symbol
+  )
+    external
+    returns (MiniMeToken token)
+  {
+    token = minimeFac.createCloneToken(
+      MiniMeToken(address(0)),
+      0,
+      name,
+      0,
+      symbol,
+      true
+    );
+    cacheToken(token, msg.sender);
+  }
+
+  // multisig
+  function newInstance(
+    string name,
+    address[] signers,
+    uint256 neededSignatures
+  )
+    external
+  {
+
+    require(signers.length > 0 && neededSignatures > 0);
+    require(neededSignatures <= signers.length);
+    // We can avoid safemath checks here as it's very unlikely a user will pass in enough
+    // signers to cause this to overflow
+    uint256 neededSignaturesE18 = neededSignatures * 10 ** 18;
+
+    uint256[] memory stakes = new uint256[](signers.length);
+
+    for (uint256 i = 0; i < signers.length; i++) {
+      stakes[i] = 1;
+    }
+
+    MiniMeToken token = popTokenCache(msg.sender);
+    Voting voting = createDAO(
+      name,
+      token,
+      signers,
+      stakes,
+      1
+    );
+
+    // We are subtracting 1 because comparison in Voting app is strict,
+    // while Multisig needs to allow equal too. So for instance in 2 out of 4
+    // multisig, we would define 50 * 10 ^ 16 - 1 instead of just 50 * 10 ^ 16,
+    // so 2 signatures => 2 * 10 ^ 18 / 4 = 50 * 10 ^ 16 > 50 * 10 ^ 16 - 1 would pass
+    uint256 multisigSupport = neededSignaturesE18 / signers.length - 1;
+    voting.initialize(
+    token,
+    multisigSupport,
+    multisigSupport,
+    1825 days // ~5 years
+    );
+
+    // Include support modification permission to handle changes to the multisig's size
+    ACL acl = ACL(Kernel(voting.kernel()).acl());
+    acl.createPermission(voting, voting, voting.MODIFY_SUPPORT_ROLE(), voting);
+
+    cleanupPermission(acl, voting, acl, acl.CREATE_PERMISSIONS_ROLE());
+  }
+
+
+  // base
   function createDAO(
     string name,
     MiniMeToken token,
@@ -110,6 +180,19 @@ contract AltheaDAOFactory is KitBase {
     // Required for initializing the Token Manager
     token.changeController(tokenManager);
 
+
+    /*
+    createPermission
+    function createPermission(address _entity, address _app, bytes32 _role, address _manager) external
+
+    Creates a permission that wasn't previously set and managed. Access is limited by the ACL. If a created permission is removed it is possible to reset it with createPermission., Create a new permission granting `_entity` the ability to perform actions of role `_role` on `_app` (setting `_manager` as the permission manager).
+
+Parameters:
+    _entity - Address of the whitelisted entity that will be able to perform the role
+    _app - Address of the app in which the role will be allowed (requires app to depend on kernel for ACL)
+    _role - Identifier for the group of actions in app given access to perform
+    _manager - Address of the entity that will be able to grant and revoke the permission further.
+  */
     // Permissions
     acl.createPermission(
       acl.ANY_ENTITY(),
@@ -163,20 +246,20 @@ contract AltheaDAOFactory is KitBase {
     );
 
     acl.createPermission(
-      MANAGER,
+      manager,
       althea,
       althea.ADD_MEMBER(),
       msg.sender
     );
 
     acl.createPermission(
-      MANAGER,
+      manager,
       althea,
       althea.DELETE_MEMBER(),
       msg.sender
     );
     acl.createPermission(
-      MANAGER,
+      manager,
       althea,
       althea.MANAGE_ESCROW(),
       msg.sender
@@ -206,11 +289,14 @@ contract AltheaDAOFactory is KitBase {
     return voting;
   }
 
+
+  // beta-base
   function cacheToken(MiniMeToken token, address owner) internal {
     tokenCache[owner] = token;
     emit DeployToken(token, owner);
   }
 
+  // beta-base
   function popTokenCache(address owner) internal returns (MiniMeToken) {
     require(tokenCache[owner] != address(0));
     MiniMeToken token = MiniMeToken(tokenCache[owner]);
@@ -219,66 +305,9 @@ contract AltheaDAOFactory is KitBase {
     return token;
   }
 
+  // beta-base
   function registerAragonID(string name, address owner) internal {
     aragonID.register(keccak256(abi.encodePacked(name)), owner);
   }
 
-  function newToken(string name, string symbol) external returns (MiniMeToken token) {
-    token = minimeFac.createCloneToken(
-      MiniMeToken(address(0)),
-      0,
-      name,
-      0,
-      symbol,
-      true
-    );
-    cacheToken(token, msg.sender);
-  }
-
-  function newInstance(
-    string name,
-    address[] signers,
-    uint256 neededSignatures
-  )
-    external
-  {
-    require(signers.length > 0 && neededSignatures > 0);
-    require(neededSignatures <= signers.length);
-    // We can avoid safemath checks here as it's very unlikely a user will pass in enough
-    // signers to cause this to overflow
-    uint256 neededSignaturesE18 = neededSignatures * 10 ** 18;
-
-    uint256[] memory stakes = new uint256[](signers.length);
-
-    for (uint256 i = 0; i < signers.length; i++) {
-      stakes[i] = 1;
-    }
-
-    MiniMeToken token = popTokenCache(msg.sender);
-    Voting voting = createDAO(
-      name,
-      token,
-      signers,
-      stakes,
-      1
-    );
-
-    // We are subtracting 1 because comparison in Voting app is strict,
-    // while Multisig needs to allow equal too. So for instance in 2 out of 4
-    // multisig, we would define 50 * 10 ^ 16 - 1 instead of just 50 * 10 ^ 16,
-    // so 2 signatures => 2 * 10 ^ 18 / 4 = 50 * 10 ^ 16 > 50 * 10 ^ 16 - 1 would pass
-    uint256 multisigSupport = neededSignaturesE18 / signers.length - 1;
-    voting.initialize(
-    token,
-    multisigSupport,
-    multisigSupport,
-    1825 days // ~5 years
-    );
-
-    // Include support modification permission to handle changes to the multisig's size
-    ACL acl = ACL(Kernel(voting.kernel()).acl());
-    acl.createPermission(voting, voting, voting.MODIFY_SUPPORT_ROLE(), voting);
-
-    cleanupPermission(acl, voting, acl, acl.CREATE_PERMISSIONS_ROLE());
-  }
 }
