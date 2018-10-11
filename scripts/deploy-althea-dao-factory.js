@@ -44,9 +44,7 @@ module.exports = async (
     const newRepo = async(name, address, ipfs, ) => {
       log(`Creating Repo for ${name}`)
       log(`with apm address ${apm.address}`)
-      log('vars')
       let inputs = [name, owner, [1, 0, 0], address, ipfs]
-      log(inputs)
       return await apm.newRepoWithVersion(...inputs)
     }
 
@@ -95,12 +93,17 @@ module.exports = async (
       ens.address,
       minimeFac.address,
       aragonId.address,
-      [apps.map(a => namehash(a))],
+      apps.map(a => namehash(a)),
     ]
     log('AltheaDAOFactory inputs..\n', inputs, '\n')
     log('Deploying AltheaDAOFactory...')
     let altheaFac = await artifacts.require('AltheaDAOFactory').new(...inputs)
     log(altheaFac.address)
+
+    //Dao creation steps
+    let receipt = await altheaFac.newToken('XDT', 'DEV')
+    receipt = await altheaFac.newInstance('factory', [owner], 1)
+    log(receipt)
 
     if (! typeof truffleExecCallback === 'function') {
       return { daoAddr }
