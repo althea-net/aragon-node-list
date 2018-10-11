@@ -138,6 +138,7 @@ contract Althea is AragonApp {
       billMapping[_subscriber].account = 0;
     }
     billMapping[_subscriber].lastUpdated = block.number;
+    BillUpdated(_subscriber, paymentAddress);
     return transferValue;
   }
 
