@@ -1,19 +1,15 @@
 const ipfs = require('./assets.json').ipfs
 const w3Utils = require('web3-utils')
 const namehash = require('eth-ens-namehash').hash
-
 const deployApm = require('@aragon/os/scripts/deploy-beta-apm.js')
 const deployId = require('@aragon/id/scripts/deploy-beta-aragonid.js')
 
-
 const toBytes32 = s => w3Utils.toHex(s)
-
 ipfs.finance = toBytes32(ipfs.finance)
 ipfs.tokenManager = toBytes32(ipfs.tokenManager)
 ipfs.vault = toBytes32(ipfs.vault)
 ipfs.voting = toBytes32(ipfs.voting)
 ipfs.althea = toBytes32(ipfs.althea)
-
 
 module.exports = async (
   truffleExecCallback,
@@ -27,7 +23,6 @@ module.exports = async (
 
     const log = (...args) => { if (verbose) console.log(...args) }
 
-
     const { apmFactory,
       ens,
       apm,
@@ -39,13 +34,6 @@ module.exports = async (
       verbose: true
     })
 
-    const newRepo = async(name, owner, address, ipfs, version) => {
-      log(`Creating Repo for ${name}`)
-      log(`with apm address ${apm.address}`)
-      log('vars', name, owner, address, ipfs, version)
-      return await apm.newRepoWithVersion(name, owner, version, address, ipfs)
-    }
-
     const { aragonId } = await deployId(null, {
       artifacts: this.artifacts,
       ensAddress: ens.address,
@@ -53,32 +41,40 @@ module.exports = async (
       verbose: true
     })
 
+    const newRepo = async(name, address, ipfs, ) => {
+      log(`Creating Repo for ${name}`)
+      log(`with apm address ${apm.address}`)
+      log('vars')
+      let inputs = [name, owner, [1, 0, 0], address, ipfs]
+      log(inputs)
+      return await apm.newRepoWithVersion(...inputs)
+    }
 
     appIds = {}
     // Aragon Apps deploys
     log('Deploying finance app...')
     const financeBase = await artifacts.require('Finance').new()
-    log(financeBase.address)
     appIds.finance = namehash('finance')
-    await newRepo(apm, 'finance', owner, [1, 0, 0], financeBase.address, ipfs.finance)
+    log(financeBase.address)
+    await newRepo('finance', financeBase.address, ipfs.finance)
 
     log('Deploying token manager app...')
     const tokenManagerBase = await artifacts.require('TokenManager').new()
     appIds.finance = namehash('finance')
     log(tokenManagerBase.address)
-    await newRepo(apm, 'token-manager', owner, [1, 0, 0], tokenManagerBase.address, ipfs.tokenManager)
+    await newRepo('token-manager', tokenManagerBase.address, ipfs.tokenManager)
 
     log('Deploying vault app...')
     const vaultBase = await artifacts.require('Vault').new()
     log(vaultBase.address)
-    await newRepo(apm, 'vault', owner, [1, 0, 0], vaultBase.address, ipfs.vault)
+    await newRepo('vault', vaultBase.address, ipfs.vault)
 
 
     log('Deploying voting app...')
     p = '@aragon/apps-voting/contracts/Voting.sol'
     const votingBase = await artifacts.require('Voting').new()
     log(votingBase.address)
-    await newRepo(apm, 'voting', owner, [1, 0, 0], votingBase.address, ipfs.voting)
+    await newRepo('voting', votingBase.address, ipfs.voting)
 
 
     log('Deploying mime token factory...')
@@ -89,7 +85,7 @@ module.exports = async (
     log('Deploying althea app...')
     const altheaBase = await artifacts.require('Althea').new()
     log(altheaBase.address)
-    await newRepo(apm, 'althea', owner, [1, 0, 0], altheaBase.address, ipfs.althea)
+    await newRepo('althea', altheaBase.address, ipfs.althea)
 
     // Make sure that these addresses are correct for the corresponding network
     
