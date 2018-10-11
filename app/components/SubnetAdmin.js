@@ -151,11 +151,15 @@ class SubnetAdmin extends React.Component {
     this.setState({ ethAddress })
   }
 
+  hexIp = ip =>
+    '0x' + (new Address6(ip)).canonicalForm().replace(new RegExp(':', 'g'), '')
+
+
   ipExists = ip => {
     let { nodes } = this.props
 
     if (nodes)
-      return nodes.findIndex(n => n.ipAddress === hexIp) > -1
+      return nodes.findIndex(n => n.ipAddress === this.hexIp(ip)) > -1
 
     return false
   } 
@@ -164,7 +168,6 @@ class SubnetAdmin extends React.Component {
     let ipAddress = e.target.value
     let ipValid = (new Address6(ipAddress)).isValid()
 
-    let hexIp = '0x' + ipAddress.replace(new RegExp(':', 'g'), '')
     let ipExists = this.ipExists()
 
     this.setState({ ipAddress, ipExists, ipValid })
@@ -173,7 +176,7 @@ class SubnetAdmin extends React.Component {
   addNode = async () => {
     let { ethAddress, ipAddress, nickname } = this.state
     nickname = web3Utils.padRight(web3Utils.toHex(nickname), 32)
-    ipAddress = '0x' + (new Address6(ipAddress)).canonicalForm().replace(new RegExp(':', 'g'), '')
+    ipAddress = this.hexIp(ipAddress)
 
     try {
       let res = await new Promise((resolve, reject) => {
