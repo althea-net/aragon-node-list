@@ -63,6 +63,10 @@ Steps:
     DAO=$(aragon dao new | grep Created | cut -d' ' -f5)
     aragon dao install $DAO <pacakge name>.aragonpm.eth
 
+
+#### deploy scrip:
+`OWNER=0xb4124ceb3451635dacedd11767f004d8a28c6ee7 npm run deploy:devnet`
+
 ### Successful commands
 
 apm: `seabass.open.aragonapm.eth`
