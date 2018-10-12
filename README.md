@@ -76,3 +76,5 @@ apm: `seabass.open.aragonapm.eth`
 ```
 nogara apm publish `ADDRESS` --network sasquatch_ws --apm.ens-registry "0xfbae32d1cde62858bc45f51efc8cc4fa1415447e" --no-ipfs-check --apm.ipfs.rpc "http://ipfs.aragon.network:5001" --files build --only-content
 ```
+solc \@aragon=`readlink -f @aragon/`  --combined-json abi,asm,ast,bin,bin-runtime,clone-bin,compact-format,devdoc,hashes,interface,metadata,opcodes,srcmap,srcmap-runtime,userdoc  -o tmp AltheaDAOFactory.sol
+solc @aragon=/home/sebas/githubs/althea/aragon-node-list/node_modules/@aragon  --combined-json abi,asm,ast,bin,bin-runtime,clone-bin,compact-format,devdoc,hashes,interface,metadata,opcodes,srcmap,srcmap-runtime,userdoc  -o build contracts/AltheaDAOFactory.sol
