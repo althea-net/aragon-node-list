@@ -1,4 +1,5 @@
 const ipfs = require('./assets.json').ipfs
+const fs = require('fs')
 const w3Utils = require('web3-utils')
 const namehash = require('eth-ens-namehash').hash
 const deployApm = require('@aragon/os/scripts/deploy-beta-apm.js')
@@ -11,6 +12,10 @@ ipfs.vault = toBytes32(ipfs.vault)
 ipfs.voting = toBytes32(ipfs.voting)
 ipfs.althea = toBytes32(ipfs.althea)
 
+const saveAddresses = async assets => {
+
+}
+
 module.exports = async (
   truffleExecCallback,
   {
@@ -20,7 +25,11 @@ module.exports = async (
   } = {}
 ) => {
   try {
-
+    if(!owner) {
+      console.log('Owner not set')
+      console.log('OWNER=<owner address> npm run deploy:devnet')
+      truffleExecCallback()
+    }
     const log = (...args) => { if (verbose) console.log(...args) }
 
     const { apmFactory,
@@ -48,17 +57,14 @@ module.exports = async (
       return await apm.newRepoWithVersion(...inputs)
     }
 
-    appIds = {}
     // Aragon Apps deploys
     log('Deploying finance app...')
     const financeBase = await artifacts.require('Finance').new()
-    appIds.finance = namehash('finance')
     log(financeBase.address)
     await newRepo('finance', financeBase.address, ipfs.finance)
 
     log('Deploying token manager app...')
     const tokenManagerBase = await artifacts.require('TokenManager').new()
-    appIds.finance = namehash('finance')
     log(tokenManagerBase.address)
     await newRepo('token-manager', tokenManagerBase.address, ipfs.tokenManager)
 
@@ -95,7 +101,7 @@ module.exports = async (
       aragonId.address,
       apps.map(a => namehash(a)),
     ]
-    log('AltheaDAOFactory inputs..\n', inputs, '\n')
+    log('AltheaDAOFactory inputs..\n', inputs)
     log('Deploying AltheaDAOFactory...')
     let altheaFac = await artifacts.require('AltheaDAOFactory').new(...inputs)
     log(altheaFac.address)
