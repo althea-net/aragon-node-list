@@ -10,6 +10,7 @@ import "@aragon/os/contracts/kernel/Kernel.sol";
 import "@aragon/os/contracts/acl/ACL.sol";
 import "@aragon/apps-shared-minime/contracts/MiniMeToken.sol";
 import "@aragon/id/contracts/IFIFSResolvingRegistrar.sol";
+import "@aragon/os/contracts/common/IsContract.sol";
 
 import "@aragon/kits-bare/contracts/KitBase.sol";
 
@@ -20,20 +21,17 @@ import "@aragon/apps-finance/contracts/Finance.sol";
 
 import "./Althea.sol";
 
-contract AltheaDAOFactory is KitBase {
-  MiniMeTokenFactory public minimeFac;
-  IFIFSResolvingRegistrar public aragonID;
-  bytes32[5] public appIds;
-
-  mapping (address => address) tokenCache;
-
-    // ensure alphabetic order
-  enum Apps { Althea, Finance, TokenManager, Vault, Voting }
-
-  address public manager;
-
+contract AltheaDAOFactory is KitBase, IsContract {
   event DeployToken(address token, address indexed cacheOwner);
   event DeployInstance(address dao, address indexed token);
+
+  address public manager;
+  bytes32[5] public appIds;
+  mapping (address => address) tokenCache;
+  // ensure alphabetic order
+  MiniMeTokenFactory public minimeFac;
+  IFIFSResolvingRegistrar public aragonID;
+  enum Apps { Althea, Finance, TokenManager, Vault, Voting }
 
   constructor(
     DAOFactory _fac,
@@ -45,6 +43,7 @@ contract AltheaDAOFactory is KitBase {
     KitBase(_fac, _ens)
     public
   {
+    require(isContract(address(_fac.regFactory())));
     minimeFac = _minimeFac;
     aragonID = _aragonID;
     appIds = _appIds;
@@ -92,7 +91,15 @@ contract AltheaDAOFactory is KitBase {
     }
 
     MiniMeToken token = popTokenCache(msg.sender);
-    Voting voting = createDAO(
+
+    Kernel dao;
+    ACL acl;
+    Finance finance;
+    TokenManager tokenManager;
+    Vault vault;
+    Voting voting;
+    Althea althea;
+    (dao, acl, finance, tokenManager, vault, voting, althea) = createDAO(
       name,
       token,
       signers,
@@ -100,21 +107,28 @@ contract AltheaDAOFactory is KitBase {
       1
     );
 
-    // We are subtracting 1 because comparison in Voting app is strict,
-    // while Multisig needs to allow equal too. So for instance in 2 out of 4
-    // multisig, we would define 50 * 10 ^ 16 - 1 instead of just 50 * 10 ^ 16,
-    // so 2 signatures => 2 * 10 ^ 18 / 4 = 50 * 10 ^ 16 > 50 * 10 ^ 16 - 1 would pass
     uint256 multisigSupport = neededSignaturesE18 / signers.length - 1;
     voting.initialize(
-    token,
-    multisigSupport,
-    multisigSupport,
-    1825 days // ~5 years
+      token,
+      multisigSupport,
+      multisigSupport,
+      1825 days // ~5 years
+    );
+
+    acl.createPermission(
+      tokenManager,
+      voting,
+      voting.CREATE_VOTES_ROLE(),
+      voting
     );
 
     // Include support modification permission to handle changes to the multisig's size
-    ACL acl = ACL(Kernel(voting.kernel()).acl());
-    acl.createPermission(voting, voting, voting.MODIFY_SUPPORT_ROLE(), voting);
+    acl.createPermission(
+      voting,
+      voting,
+      voting.MODIFY_SUPPORT_ROLE(),
+      voting
+    );
 
     cleanupPermission(acl, voting, acl, acl.CREATE_PERMISSIONS_ROLE());
   }
@@ -129,15 +143,23 @@ contract AltheaDAOFactory is KitBase {
     uint256 _maxTokens
   )
     internal
-    returns (Voting)
-  {
+    returns
+  (
+      Kernel dao,
+      ACL acl,
+      Finance finance,
+      TokenManager tokenManager,
+      Vault vault,
+      Voting voting,
+      Althea althea
+  ) {
     require(holders.length == stakes.length);
 
-    Kernel dao = fac.newDAO(this);
-    ACL acl = ACL(dao.acl());
+    dao = fac.newDAO(this);
+    acl = ACL(dao.acl());
     acl.createPermission(this, dao, dao.APP_MANAGER_ROLE(), this);
 
-    Voting voting = Voting(
+    voting = Voting(
       dao.newAppInstance(
         appIds[uint8(Apps.Voting)],
         latestVersionAppBase(appIds[uint8(Apps.Voting)])
@@ -145,7 +167,7 @@ contract AltheaDAOFactory is KitBase {
     );
     emit InstalledApp(voting, appIds[uint8(Apps.Voting)]);
 
-    Vault vault = Vault(
+    vault = Vault(
       dao.newAppInstance(
         appIds[uint8(Apps.Vault)],
         latestVersionAppBase(appIds[uint8(Apps.Vault)])
@@ -153,7 +175,7 @@ contract AltheaDAOFactory is KitBase {
     );
     emit InstalledApp(vault, appIds[uint8(Apps.Vault)]);
 
-    Finance finance = Finance(
+    finance = Finance(
       dao.newAppInstance(
         appIds[uint8(Apps.Finance)],
         latestVersionAppBase(appIds[uint8(Apps.Finance)])
@@ -161,7 +183,7 @@ contract AltheaDAOFactory is KitBase {
     );
     emit InstalledApp(finance, appIds[uint8(Apps.Finance)]);
 
-    TokenManager tokenManager = TokenManager(
+    tokenManager = TokenManager(
       dao.newAppInstance(
         appIds[uint8(Apps.TokenManager)],
         latestVersionAppBase(appIds[uint8(Apps.TokenManager)])
@@ -169,7 +191,7 @@ contract AltheaDAOFactory is KitBase {
     );
     emit InstalledApp(tokenManager, appIds[uint8(Apps.TokenManager)]);
 
-    Althea althea = Althea(
+    althea = Althea(
       dao.newAppInstance(
         appIds[uint8(Apps.Althea)],
         latestVersionAppBase(appIds[uint8(Apps.Althea)])
@@ -194,12 +216,6 @@ Parameters:
     _manager - Address of the entity that will be able to grant and revoke the permission further.
   */
     // Permissions
-    acl.createPermission(
-      acl.ANY_ENTITY(),
-      voting,
-      voting.CREATE_VOTES_ROLE(),
-      voting
-    );
     acl.createPermission(
       voting,
       voting,
@@ -245,48 +261,72 @@ Parameters:
       voting
     );
 
+    // Theses permissions might not be needed since the acl is
+    // created by the same manager
     acl.createPermission(
       manager,
       althea,
       althea.ADD_MEMBER(),
-      msg.sender
+      manager
     );
-
     acl.createPermission(
       manager,
       althea,
       althea.DELETE_MEMBER(),
-      msg.sender
+      manager
     );
     acl.createPermission(
       manager,
       althea,
       althea.MANAGE_ESCROW(),
-      msg.sender
+      manager
     );
 
 
     // App inits
     vault.initialize();
-    finance.initialize(vault, uint64(-1) - uint64(now)); // yuge period
+    finance.initialize(vault, 30 days);
     tokenManager.initialize(token, _maxTokens > 1, _maxTokens);
 
     // Set up the token stakes
-    acl.createPermission(this, tokenManager, tokenManager.MINT_ROLE(), this);
+    acl.createPermission(
+      this,
+      tokenManager,
+      tokenManager.MINT_ROLE(),
+      this
+    );
 
     for (uint256 i = 0; i < holders.length; i++) {
       tokenManager.mint(holders[i], stakes[i]);
     }
 
+    // EVMScriptRegistry permissions
+    EVMScriptRegistry reg = EVMScriptRegistry(
+      dao.getApp(dao.APP_ADDR_NAMESPACE(),
+       EVMSCRIPT_REGISTRY_APP_ID)
+    );
+    acl.createPermission(
+      voting,
+      reg,
+      reg.REGISTRY_ADD_EXECUTOR_ROLE(),
+      voting
+    );
+    acl.createPermission(
+      voting,
+      reg,
+      reg.REGISTRY_MANAGER_ROLE(),
+      voting
+    );
+
+
     // Clean-up
     cleanupPermission(acl, voting, dao, dao.APP_MANAGER_ROLE());
     cleanupPermission(acl, voting, tokenManager, tokenManager.MINT_ROLE());
-
     registerAragonID(name, dao);
     emit DeployInstance(dao, token);
 
     // Voting is returned so its init can happen later
-    return voting;
+    return (dao, acl, finance, tokenManager, vault, voting, althea);
   }
 
 
@@ -309,5 +349,4 @@ Parameters:
   function registerAragonID(string name, address owner) internal {
     aragonID.register(keccak256(abi.encodePacked(name)), owner);
   }
-
 }
