@@ -107,9 +107,14 @@ module.exports = async (
     log(altheaFac.address)
 
     //Dao creation steps
+    log('Creating newToken in tokenCache...')
     let receipt = await altheaFac.newToken('XDT', 'DEV')
+    log('txn: ', receipt.tx)
+
+    log('Creating new dao Instance...')
     receipt = await altheaFac.newInstance('factory', [owner], 1)
     log(receipt)
+    log('txn: ', receipt.tx)
 
     if (! typeof truffleExecCallback === 'function') {
       return { daoAddr }
