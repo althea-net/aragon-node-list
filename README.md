@@ -7,23 +7,9 @@ For more information please read: [https://altheamesh.com/governance-paper](http
 
 ## Usage
 
-Global tools:
-
-```
-npm i -g truffle@beta //@5.0.0 because it is using web3 @1.0.28 which is awesome
-npm i -g ganache-cli
-
-// This package is using truffle@beta
-npm i -g git+https://github.com/Sebohe/aragon-cli.git
-
-// You will also now need a docker solc compiler
-docker pull ethereum/solc:0.4.18
-```
-
-Repo install:
-
 ```
 yarn install
+npm run aragon
 ```
 
 ### Running tests
@@ -35,7 +21,7 @@ ganache-cli
 truffle test
 ```
 
-### npm Scripts
+### Scripts explanations
 
 - **start**: Run the app locally
 - **clean-start**: Removes parcel cache
@@ -67,8 +53,6 @@ Steps:
 
 apm: `seabass.open.aragonapm.eth`
 
-`nogara` is just a custom `aragon` I have built. [github.com/Sebohe/aragon-cli](github.com/Sebohe/aragon-cli)
-
 ```
-nogara apm publish `ADDRESS` --network sasquatch_ws --apm.ens-registry "0xfbae32d1cde62858bc45f51efc8cc4fa1415447e" --no-ipfs-check --apm.ipfs.rpc "http://ipfs.aragon.network:5001" --files build --only-content
+aragon apm publish `ADDRESS` --network sasquatch_ws --apm.ens-registry "0xfbae32d1cde62858bc45f51efc8cc4fa1415447e" --no-ipfs-check --apm.ipfs.rpc "http://ipfs.aragon.network:5001" --files build --only-content
 ```
