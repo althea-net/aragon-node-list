@@ -3,6 +3,8 @@ const fs = require('fs')
 const w3Utils = require('web3-utils')
 const namehash = require('eth-ens-namehash').hash
 const deployApm = require('@aragon/os/scripts/deploy-beta-apm.js')
+const deployEns = require('@aragon/os/scripts/deploy-beta-ens.js')
+const deployDaoFactory = require('@aragon/os/scripts/deploy-daofactory.js')
 const deployId = require('@aragon/id/scripts/deploy-beta-aragonid.js')
 
 const toBytes32 = s => w3Utils.toHex(s)
@@ -21,34 +23,54 @@ module.exports = async (
   {
     artifacts = this.artifacts,
     owner = process.env.OWNER,
+    ensAddress = process.env.ENS,
     verbose = true
   } = {}
 ) => {
+    const ENSSubdomainRegistrar = artifacts.require('ENSSubdomainRegistrar')
   try {
     if(!owner) {
       console.log('Owner not set')
       console.log('OWNER=<owner address> npm run deploy:devnet')
       truffleExecCallback()
     }
+
+    const ENS = artifacts.require('ENS')
+
     const log = (...args) => { if (verbose) console.log(...args) }
+    let ens, ensFactory
+    log('before ens')
+    if (!ensAddress) {
+      log('Deploying ENS...')
+      let output = await deployEns(null, { artifacts, owner, verbose})
+      ens = output.ens
+      ensFactory = output.ensFactory
+      ensAddress = ens.address
+    } else {
+      ens = await ENS.at(ensAddress)
+    }
+    log('after ens')
 
-    const { apmFactory,
-      ens,
-      apm,
-      daoFactory
-    } = await deployApm(null, {
-      artifacts: this.artifacts,
-      ensAddress: null,
-      owner: owner,
-      verbose: true
+    log('before dao factory')
+    let {
+      aclBase,
+      daoFactory,
+      evmScriptRegistryFactory,
+      kernelBase
+    } = await deployDaoFactory (null, {
+      artifacts,
+      withEvmScriptRegistryFactory: true,
+      verbose
     })
+    log('after dao factory')
 
-    const { aragonId } = await deployId(null, {
-      artifacts: this.artifacts,
-      ensAddress: ens.address,
-      owner: owner,
-      verbose: true
-    })
+    log('before apm')
+    const {apmFactory, apm} = await deployApm(null, 
+      {artifacts, ensAddress, ensFactoryAddress: ensFactory.address, daoFactory, owner, verbose}
+    )
+    log('after apm')
+
+    const {aragonId} = await deployId(null, {artifacts, ensAddress, owner, verbose})
 
     const newRepo = async(name, address, ipfs, ) => {
       log(`Creating Repo for ${name}`)
