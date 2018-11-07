@@ -1,10 +1,9 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.24;
 
 import "@aragon/os/contracts/apps/AragonApp.sol";
 import "@aragon/os/contracts/lib/math/SafeMath.sol";
 
 import "@aragon/os/contracts/common/IVaultRecoverable.sol";
-import "@aragon/os/contracts/apm/APMNamehash.sol";
 
 contract Althea is AragonApp {
   using SafeMath for uint;
@@ -97,10 +96,10 @@ contract Althea is AragonApp {
     if (billMapping[msg.sender].lastUpdated == 0) {
       billMapping[msg.sender] = Bill(msg.value, perBlockFee, block.number);
       subnetSubscribers.push(msg.sender);
-      NewBill(msg.sender, paymentAddress);
+      emit NewBill(msg.sender, paymentAddress);
     } else {
       billMapping[msg.sender].account = billMapping[msg.sender].account.add(msg.value);
-      BillUpdated(msg.sender, paymentAddress);
+      emit BillUpdated(msg.sender, paymentAddress);
     }
   }
 
@@ -122,7 +121,7 @@ contract Althea is AragonApp {
     require(amount > 0);
     billMapping[msg.sender].account = 0;
     address(msg.sender).transfer(amount);
-    BillUpdated(msg.sender, paymentAddress);
+    emit BillUpdated(msg.sender, paymentAddress);
   }
 
   function processBills(address _subscriber) internal returns(uint) {
@@ -138,9 +137,7 @@ contract Althea is AragonApp {
       billMapping[_subscriber].account = 0;
     }
     billMapping[_subscriber].lastUpdated = block.number;
-    BillUpdated(_subscriber, paymentAddress);
+    emit BillUpdated(_subscriber, paymentAddress);
     return transferValue;
   }
-
 }
-
