@@ -39,6 +39,14 @@ truffle test
 
 ### Successful commands
 
+#### Contract deploy
+
+    source .flags
+    aragon deploy --enviroment rinkeby --apm.ens-registry $ENS --network rinkeby
+
+* Rinkeby
+Althea contract address: 0x5370c54979297b1BfB0d0A161fdC5A8CC1ab89f5
+
 apm: `seabass.open.aragonapm.eth`
 
 ```
