@@ -1,6 +1,4 @@
 {
-  "appName": "althea.aragonpm.eth",
-  "version": "1.0.0",
   "roles": [
     {
       "name": "Add a new ETH address and IP address to list",
@@ -18,5 +16,22 @@
       "params": []
     }
   ],
-  "path": "contracts/Althea.sol"
+  "path": "contracts/Althea.sol",
+  "enviroments": {
+    "default": {
+      "network": "development",
+      "version": "1.0.0",
+      "appName": "althea.aragonpm.eth"
+    },
+    "rinkeby": {
+      "network": "rinkeby",
+      "version": "1.0.0",
+      "appName": "althea.open.aragonpm.eth"
+    },
+    "infura": {
+      "network": "infura",
+      "version": "1.0.0",
+      "appName": "althea.open.aragonpm.eth"
+    }
+  }
 }

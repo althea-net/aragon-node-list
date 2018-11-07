@@ -1,3 +1,3 @@
-export ENS='"0xfbae32d1cde62858bc45f51efc8cc4fa1415447e"'
+export ENS='"0x98df287b6c145399aaa709692c8d308357bc085d"'
 export IPFS='"http://ipfs.aragon.network:5001"'
-export RINKEBY='--apm.ens-registry '$ENS' --no-ipfs-check --apm.ipfs.rpc '$IPFS
+export RINKEBY='--apm.ens-registry '$ENS' --no-ipfs-check --apm.ipfs.rpc '$IPFS' --network rinkeby --enviroment rinkeby'
