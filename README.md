@@ -47,8 +47,6 @@ truffle test
 * Rinkeby
 Althea contract address: 0x5370c54979297b1BfB0d0A161fdC5A8CC1ab89f5
 
-apm: `seabass.open.aragonapm.eth`
-
 ```
 aragon apm publish `ADDRESS` --network sasquatch_ws --apm.ens-registry "0xfbae32d1cde62858bc45f51efc8cc4fa1415447e" --no-ipfs-check --apm.ipfs.rpc "http://ipfs.aragon.network:5001" --files build --only-content
 ```

@@ -1,5 +1,4 @@
 {
-  "version": "1.0.0",
   "roles": [
     {
       "name": "Add a new ETH address and IP address to list",
@@ -24,10 +23,17 @@
       "appName": "althea.aragonpm.eth"
     },
     "rinkeby": {
+      "registry": "0x98Df287B6C145399Aaa709692c8D308357bC085D",
       "network": "rinkeby",
       "appName": "althea.open.aragonpm.eth"
     },
+    "sasquatch_rpc": {
+      "registry": "0x98Df287B6C145399Aaa709692c8D308357bC085D",
+      "network": "sasquatch_rpc",
+      "appName": "althea.open.aragonpm.eth"
+    },
     "infura": {
+      "registry": "0x98Df287B6C145399Aaa709692c8D308357bC085D",
       "network": "infura",
       "appName": "althea.open.aragonpm.eth"
     }
