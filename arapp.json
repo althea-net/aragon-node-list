@@ -1,30 +1,30 @@
 {
   "roles": [
     {
-      "name": "Manages escrow contract parameters",
+      "name": "Manager of a subnetDAO",
       "id": "MANAGER",
       "params": []
     }
   ],
   "path": "contracts/Althea.sol",
-  "enviroments": {
+  "environments": {
     "default": {
       "network": "development",
       "appName": "althea.aragonpm.eth"
     },
     "rinkeby": {
-      "registry": "0x98Df287B6C145399Aaa709692c8D308357bC085D",
       "network": "rinkeby",
-      "appName": "althea.open.aragonpm.eth"
-    },
-    "sasquatch_rpc": {
       "registry": "0x98Df287B6C145399Aaa709692c8D308357bC085D",
-      "network": "sasquatch_rpc",
       "appName": "althea.open.aragonpm.eth"
     },
     "infura": {
-      "registry": "0x98Df287B6C145399Aaa709692c8D308357bC085D",
       "network": "infura",
+      "registry": "0x98Df287B6C145399Aaa709692c8D308357bC085D",
+      "appName": "althea.open.aragonpm.eth"
+    },
+    "rinkeby2": {
+      "network": "rinkeby2",
+      "registry": "0x98Df287B6C145399Aaa709692c8D308357bC085D",
       "appName": "althea.open.aragonpm.eth"
     }
   }
