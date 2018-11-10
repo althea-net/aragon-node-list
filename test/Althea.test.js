@@ -59,8 +59,8 @@ contract('Althea', accounts => {
     )
     paymentAddress = await web3.eth.personal.newAccount()
     perBlockFee = toBN(web3.utils.toWei('0.0000001', 'gwei'))
-    await althea.setPerBlockFee(perBlockFee)
     await althea.initialize(paymentAddress)
+    await althea.setPerBlockFee(perBlockFee)
   })
 
   context('Node List', () => {

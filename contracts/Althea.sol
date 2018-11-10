@@ -36,6 +36,7 @@ contract Althea is AragonApp {
   mapping (address => Bill) public billMapping;
 
   function initialize(address _addr) external onlyInit {
+    paymentAddress = _addr;
     initialized();
   }
 
