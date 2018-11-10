@@ -56,7 +56,7 @@ contract Althea is AragonApp {
     external 
     auth(MANAGER)
   {
-    require(nodeList[_ip] == address(0));
+    require(nodeList[_ip] == address(0), "Member already exists");
     nodeList[_ip] = _ethAddr;
     nickName[_ip] = _nick;
     subnetSubscribers.push(_ethAddr);
@@ -66,11 +66,11 @@ contract Althea is AragonApp {
   function deleteMember(bytes16 _ip) external auth(MANAGER) {
     MemberRemoved(nodeList[_ip], _ip, nickName[_ip]);
     address toDelete = nodeList[_ip];
-    nodeList[_ip] = address(0);
-    nickName[_ip] = bytes16(0);
+    delete nodeList[_ip];
+    delete nickName[_ip];
     for (uint i = 0; i < subnetSubscribers.length; i++) {
       if (toDelete == subnetSubscribers[i]) {
-        subnetSubscribers[i] = subnetSubscribers[subnetSubscribers.length];
+        subnetSubscribers[i] = subnetSubscribers[subnetSubscribers.length-1];
         subnetSubscribers.length--;
       }
     }
@@ -95,7 +95,7 @@ contract Althea is AragonApp {
   }
 
   function addBill() external payable {
-    require(msg.value > perBlockFee);
+    require(msg.value > perBlockFee, "Message value not enough");
 
     if (billMapping[msg.sender].lastUpdated == 0) {
       billMapping[msg.sender] = Bill(msg.value, perBlockFee, block.number);
@@ -122,7 +122,7 @@ contract Althea is AragonApp {
   function withdrawFromBill() external {
     payMyBills();
     uint amount = billMapping[msg.sender].account;
-    require(amount > 0);
+    require(amount > 0, "Amount to payout is no more than zero, aborting");
     billMapping[msg.sender].account = 0;
     address(msg.sender).transfer(amount);
     emit BillUpdated(msg.sender, paymentAddress);
