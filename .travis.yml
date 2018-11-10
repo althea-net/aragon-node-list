@@ -13,8 +13,10 @@ addons:
 
 install:
   - yarn install
+  - npm i -g truffle@beta
+  - npm i -g ganache-cli
 
 script:
-  - npm run ganache > /dev/null &
+  - ganache-cli > /dev/null &
   - sleep 5
-  - npm run test
+  - truffle test
