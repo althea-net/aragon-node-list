@@ -1,18 +1,8 @@
 {
   "roles": [
     {
-      "name": "Add a new ETH address and IP address to list",
-      "id": "ADD_MEMBER",
-      "params": []
-    },
-    {
-      "name": "Remove an IP address from list",
-      "id": "DELETE_MEMBER",
-      "params": []
-    },
-    {
       "name": "Manages escrow contract parameters",
-      "id": "MANAGE_ESCROW",
+      "id": "MANAGER",
       "params": []
     }
   ],

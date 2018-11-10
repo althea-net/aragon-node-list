@@ -2,7 +2,6 @@ pragma solidity ^0.4.24;
 
 import "@aragon/os/contracts/apps/AragonApp.sol";
 import "@aragon/os/contracts/lib/math/SafeMath.sol";
-
 import "@aragon/os/contracts/common/IVaultRecoverable.sol";
 
 contract Althea is AragonApp {
@@ -21,9 +20,7 @@ contract Althea is AragonApp {
   event NewBill(address payer, address collector);
   event BillUpdated(address payer, address collector);
  
-  bytes32 constant public ADD_MEMBER = keccak256("ADD_MEMBER");
-  bytes32 constant public DELETE_MEMBER = keccak256("DELETE_MEMBER");
-  bytes32 constant public MANAGE_ESCROW = keccak256("MANAGE_ESCROW");
+  bytes32 constant public MANAGER = keccak256("MANAGER");
 
   struct Bill {
     uint account;
@@ -57,7 +54,7 @@ contract Althea is AragonApp {
     bytes16 _nick
   )
     external 
-    auth(ADD_MEMBER)
+    auth(MANAGER)
   {
     require(nodeList[_ip] == address(0));
     nodeList[_ip] = _ethAddr;
@@ -66,7 +63,7 @@ contract Althea is AragonApp {
     NewMember(_ethAddr, _ip, _nick);
   }
 
-  function deleteMember(bytes16 _ip) external auth(DELETE_MEMBER) {
+  function deleteMember(bytes16 _ip) external auth(MANAGER) {
     MemberRemoved(nodeList[_ip], _ip, nickName[_ip]);
     nodeList[_ip] = address(0);
     nickName[_ip] = bytes16(0);
@@ -78,11 +75,11 @@ contract Althea is AragonApp {
 
 
   // Escrow leasing functionality till EOF
-  function setPerBlockFee(uint _newFee) external auth(MANAGE_ESCROW) {
+  function setPerBlockFee(uint _newFee) external auth(MANAGER) {
     perBlockFee = _newFee;
   }
 
-  function setPaymentAddress(address _addr) external auth(MANAGE_ESCROW) {
+  function setPaymentAddress(address _addr) external auth(MANAGER) {
     paymentAddress = _addr;
   }
 
@@ -103,7 +100,7 @@ contract Althea is AragonApp {
     }
   }
 
-  function collectBills() external auth(MANAGE_ESCROW) {
+  function collectBills() external auth(MANAGER) {
     uint transferValue = 0;
     for (uint i = 0; i < subnetSubscribers.length; i++) {
       transferValue = transferValue.add(processBills(subnetSubscribers[i]));
