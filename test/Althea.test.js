@@ -1,6 +1,6 @@
 const Althea = artifacts.require('./Althea.sol')
 Althea.numberFormat = 'BN'
-const BN = web3.utils.BN
+const toBN = web3.utils.toBN
 
 require('chai').should()
 
@@ -14,7 +14,7 @@ const ZERO = '0x0000000000000000000000000000000000000000'
 
 contract('Althea', accounts => {
 
-  let daoFact, altheaBase, althea, paymentAddress
+  let daoFact, altheaBase, althea, paymentAddress, perBlockFee
   let MANAGER
   const root = accounts[0]
 
@@ -57,15 +57,17 @@ contract('Althea', accounts => {
       root,
       { from: root }
     )
-    await althea.initialize(ZERO, 100000)
     paymentAddress = await web3.eth.personal.newAccount()
+    perBlockFee = toBN(web3.utils.toWei('0.0000001', 'gwei'))
+    await althea.initialize(paymentAddress, perBlockFee)
   })
 
   context('Node List', () => {
     let ipv6 = web3.utils.padRight('0xc0a8010ac0a8010a', 32)
     let nick = web3.utils.padRight(web3.utils.toHex('Nick Hoggle'), 32)
 
-    it.only('Adds a new member to the list', async () => {
+    it('Adds a new member to the list', async () => {
+      //console.log('vault', await althea.vaultAddress())
       let init = await althea.hasInitialized()
       let petri = await althea.isPetrified()
       await althea.addMember(accounts[1], ipv6, nick)
@@ -107,37 +109,31 @@ contract('Althea', accounts => {
     it('Should have a NewMember event', async () => {
       const receipt = await althea.addMember(accounts[1], ipv6, nick)
       const event = await expectEvent.inLogs(receipt.logs, 'NewMember', {
-        ethNodeAddress: accounts[1],
+        ethAddress: accounts[1],
         ipAddress: ipv6,
-        nickName: nick
+        nickname: nick
       })
-      event.args.ethNodeAddress.should.eql(accounts[1])
+      event.args.ethAddress.should.eql(accounts[1])
       event.args.ipAddress.should.eql(ipv6)
-      event.args.nickName.should.eql(nick)
+      event.args.nickname.should.eql(nick)
     })
 
     it('Should have a MemberRemoved event', async () => {
       await althea.addMember(accounts[1], ipv6, nick)
       const receipt = await althea.deleteMember(ipv6)
       const event = await expectEvent.inLogs(receipt.logs, 'MemberRemoved', {
-        ethNodeAddress: accounts[1],
+        ethAddress: accounts[1],
         ipAddress: ipv6,
-        nickName: nick
+        nickname: nick
       })
-      event.args.ethNodeAddress.should.eql(accounts[1])
+      event.args.ethAddress.should.eql(accounts[1])
       event.args.ipAddress.should.eql(ipv6)
-      event.args.nickName.should.eql(nick)
+      event.args.nickname.should.eql(nick)
     })
 
   })
 
   describe('addBill', async () => {
-
-    beforeEach(async () => {
-      althea = await Althea.new()
-      await althea.initialize(paymentAddress, 10**10)
-    })
-
     it('Revert when no value is sent', async () => {
       assertRevert(althea.addBill())
     })
@@ -165,7 +161,7 @@ contract('Althea', accounts => {
       let account =  2*(10**10)
       await althea.addBill({value: account})
       await althea.addBill({value: account})
-      let total = new BN(account*2)
+      let total = toBN(account*2)
       let bill = await althea.billMapping(accounts[0])
       assert(bill.account.eq(total))
     })
@@ -173,11 +169,6 @@ contract('Althea', accounts => {
 
 
   describe('getCountOfSubscribers', async () => {
-
-    beforeEach(async () => {
-      althea = await Althea.new()
-      await althea.initialize(paymentAddress, 10**10)
-    })
 
     it('Should have the right length', async () => {
 
@@ -195,24 +186,15 @@ contract('Althea', accounts => {
 
   describe('setPerBlockFee', async () => {
 
-    beforeEach(async () => {
-      althea = await Althea.new()
-      await althea.initialize(paymentAddress, 10**10)
-    })
-
     it('Should set a new perBlockFee', async() => {
       let newFee = 10**7
       await althea.setPerBlockFee(newFee)
-      let nn = await althea.perBlockFee()
+      nn = await althea.perBlockFee()
       nn.toNumber().should.eql(newFee)
     })
   })
 
   describe('setPaymentAddress', async () => {
-    beforeEach(async () => {
-      althea = await Althea.new()
-      await althea.initialize(paymentAddress, 10**10)
-    })
 
     it('Should set a new paymentAddress', async() => {
       let newAddress = await web3.eth.personal.newAccount()
@@ -225,16 +207,11 @@ contract('Althea', accounts => {
 
   describe('collectBills', async () => {
 
-    beforeEach(async () => {
-      althea = await Althea.new()
-      await althea.initialize(paymentAddress, 10**10)
-    })
-
     it('Bill lastUpdated should equal current block number', async () => {
       await althea.addBill({value: 1*(10**18)})
       await althea.collectBills()
       let bill = await althea.billMapping(accounts[0])
-      let blockNumber = new BN(await web3.eth.getBlockNumber())
+      let blockNumber = toBN(await web3.eth.getBlockNumber())
       bill.lastUpdated.toString().should.eql(blockNumber.toString())
     })
 
@@ -242,17 +219,17 @@ contract('Althea', accounts => {
 
       await althea.addBill({value: 1*(10**18)})
       
-      let previousBalance = new BN(await web3.eth.getBalance(paymentAddress))
+      let previousBalance = toBN(await web3.eth.getBalance(paymentAddress))
       let bill = await althea.billMapping(accounts[0])
 
       await althea.collectBills()
 
       // this block number needs to be after the collectSubetFees call
-      let blockDelta = new BN(await web3.eth.getBlockNumber()).sub(bill.lastUpdated)
+      let blockDelta = toBN(await web3.eth.getBlockNumber()).sub(bill.lastUpdated)
       let expectedRevenue = bill.perBlock.mul(blockDelta)
       let expectedBalance = expectedRevenue.add(previousBalance)
 
-      new BN(await web3.eth.getBalance(paymentAddress))
+      toBN(await web3.eth.getBalance(paymentAddress))
         .eq(expectedBalance).should.eql(true)
     })
 
@@ -266,11 +243,10 @@ contract('Althea', accounts => {
 
       await althea.collectBills()
 
-      const billCount = new BN(summation(subscribersCount))
-      const perBlockFee = await althea.perBlockFee()
+      const billCount = toBN(summation(subscribersCount))
       let expectedBalance = perBlockFee.mul(billCount)
 
-      new BN(await web3.eth.getBalance(paymentAddress))
+      toBN(await web3.eth.getBalance(paymentAddress))
         .eq(expectedBalance).should.eql(true)
     })
 
@@ -294,20 +270,13 @@ contract('Althea', accounts => {
   })
 
   describe('payMyBills', async () => {
-
-    beforeEach(async () => {
-      althea = await Althea.new()
-      await althea.initialize(paymentAddress, 10**10)
-    })
-
     it('Bill should have lastUpdated with same blockNumber', async () => {
 
       let accountOne = 2*(10**10)
       await althea.addBill({value: accountOne})
       await althea.payMyBills()
       let bill = await althea.billMapping(accounts[0])
-
-      assert(bill.lastUpdated.eq(new BN(await web3.eth.getBlockNumber())))
+      assert(bill.lastUpdated.eq(toBN(await web3.eth.getBlockNumber())))
     })
 
     it('Payment address should have increased balance', async () => {
@@ -326,17 +295,16 @@ contract('Althea', accounts => {
       }
 
       // the +1 is for the payMyBills txn block number
-      const perBlockFee = await althea.perBlockFee()
-      let expectedBalance = perBlockFee.mul(new BN(blockCount + 1))
-      // the i prefix is for inplace
-      await althea.payMyBills()
-      let currentBalance = new BN(await web3.eth.getBalance(paymentAddress))
+      let expectedBalance = perBlockFee.mul(toBN(blockCount + 1))
+      let txn = await althea.payMyBills()
+      let currentBalance = toBN(await web3.eth.getBalance(paymentAddress))
       currentBalance.eq(expectedBalance).should.eql(true)
     })
 
     it('Account of bill should be zero when it runs out', async () => {
 
-      let accountOne = 2*(10**10)
+      // the two is the amount of blocks to pass
+      let accountOne = toBN(2).mul(perBlockFee)
       await althea.addBill({value: accountOne})
 
       // extra txns to run up the counter
@@ -355,12 +323,6 @@ contract('Althea', accounts => {
   })
 
   describe('withdrawFromBill', async () => {
-111
-    beforeEach(async () => {
-      althea = await Althea.new()
-      await althea.initialize(paymentAddress, 10**10)
-    })
-
     it('Increases the balance of the subscriber', async () => {
 
       let accountOne = 1*(10**16)
@@ -376,16 +338,15 @@ contract('Althea', accounts => {
         })
       }
 
-      const oldBalance = new BN(await web3.eth.getBalance(accounts[1]))
+      const oldBalance = toBN(await web3.eth.getBalance(accounts[1]))
       let txn = await althea.withdrawFromBill({from: accounts[1]})
-      let txnCost = new BN(txn.receipt.gasUsed*(await web3.eth.getGasPrice()))
+      let txnCost = toBN(txn.receipt.gasUsed*(await web3.eth.getGasPrice()))
      
       // for some reason the normal new BN() doesn't work here
-      const perBlockFee = await althea.perBlockFee()
       let expectedBalance = web3.utils
         .toBN(accountOne - perBlockFee*(blockCount+1))
         .add(oldBalance).sub(txnCost)
-      const current = new BN(await web3.eth.getBalance(accounts[1]))
+      const current = toBN(await web3.eth.getBalance(accounts[1]))
       expectedBalance.eq(current).should.eql(true)
     })
     
