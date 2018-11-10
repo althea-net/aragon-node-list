@@ -65,8 +65,15 @@ contract Althea is AragonApp {
 
   function deleteMember(bytes16 _ip) external auth(MANAGER) {
     MemberRemoved(nodeList[_ip], _ip, nickName[_ip]);
+    address toDelete = nodeList[_ip];
     nodeList[_ip] = address(0);
     nickName[_ip] = bytes16(0);
+    for (uint i = 0; i < subnetSubscribers.length; i++) {
+      if (toDelete == subnetSubscribers[i]) {
+        subnetSubscribers[i] = subnetSubscribers[subnetSubscribers.length];
+        subnetSubscribers.length--;
+      }
+    }
   }
 
   function getMember(bytes16 _ip) external view returns(address addr) {
