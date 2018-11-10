@@ -28,8 +28,6 @@ contract Althea is AragonApp {
     uint lastUpdated;
   }
 
-  IVaultRecoverable public vault;
-
   uint public perBlockFee;
   address public paymentAddress;
   address[] public subnetSubscribers;
@@ -39,10 +37,6 @@ contract Althea is AragonApp {
 
   function initialize(address _addr) external onlyInit {
     initialized();
-  }
-
-  function vaultAddress() public returns (address) {
-    return vault.getRecoveryVault();
   }
 
   // Node list funtionality from here till next comment
@@ -77,7 +71,6 @@ contract Althea is AragonApp {
   function getMember(bytes16 _ip) external view returns(address addr) {
     addr = nodeList[_ip]; 
   }
-
 
   // Escrow leasing functionality till EOF
   function setPerBlockFee(uint _newFee) external auth(MANAGER) {
