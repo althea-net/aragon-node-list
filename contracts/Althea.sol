@@ -37,9 +37,7 @@ contract Althea is AragonApp {
   mapping(bytes16 => bytes16) public nickName;
   mapping (address => Bill) public billMapping;
 
-  function initialize(address _addr, uint _fee) external onlyInit {
-    perBlockFee = _fee;
-    paymentAddress = _addr;
+  function initialize(address _addr) external onlyInit {
     initialized();
   }
 
@@ -84,10 +82,6 @@ contract Althea is AragonApp {
   // Escrow leasing functionality till EOF
   function setPerBlockFee(uint _newFee) external auth(MANAGER) {
     perBlockFee = _newFee;
-  }
-
-  function setPaymentAddress(address _addr) external auth(MANAGER) {
-    paymentAddress = _addr;
   }
 
   function getCountOfSubscribers() external view returns (uint) {
