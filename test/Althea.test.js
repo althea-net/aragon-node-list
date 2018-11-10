@@ -195,17 +195,6 @@ contract('Althea', accounts => {
     })
   })
 
-  describe('setPaymentAddress', async () => {
-
-    it('Should set a new paymentAddress', async() => {
-      let newAddress = await web3.eth.personal.newAccount()
-      await althea.setPaymentAddress(newAddress)
-      let addr = await althea.paymentAddress()
-      addr.should.eql(newAddress)
-    })
-
-  })
-
   describe('collectBills', async () => {
 
     it('Bill lastUpdated should equal current block number', async () => {
@@ -326,7 +315,7 @@ contract('Althea', accounts => {
   describe('withdrawFromBill', async () => {
     it('Increases the balance of the subscriber', async () => {
 
-      let accountOne = 1*(10**16)
+      let accountOne = toBN(10).mul(perBlockFee)
       await althea.addBill({from: accounts[1], value: accountOne})
 
       // extra txns to run up the counter
