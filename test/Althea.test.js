@@ -141,7 +141,8 @@ contract('Althea', accounts => {
 
     it('Adds a new bill to mapping', async () => {
 
-      const receipt = await althea.addBill({value: 2*(10**10)})
+      let amount = toBN(2).mul(perBlockFee)
+      const receipt = await althea.addBill({value: amount})
       const event = await expectEvent.inLogs(receipt.logs, 'NewBill', { 
         payer: accounts[0],
         collector: paymentAddress
@@ -151,18 +152,17 @@ contract('Althea', accounts => {
     })
 
     it('Contract ether balance should increase', async () => {
-      let balance = 2*(10**10)
+      let balance = toBN(10).mul(perBlockFee)
       await althea.addBill({value: balance})
-
       let altheaBalance = await web3.eth.getBalance(althea.address)
       altheaBalance.should.eql(web3.utils.toBN(balance).toString())
     })
 
     it('Increase bill by corresponding amount', async () => {
-      let account =  2*(10**10)
-      await althea.addBill({value: account})
-      await althea.addBill({value: account})
-      let total = toBN(account*2)
+      let amount = toBN(2).mul(perBlockFee)
+      await althea.addBill({value: amount})
+      await althea.addBill({value: amount})
+      let total = amount.mul(toBN(2))
       let bill = await althea.billMapping(accounts[0])
       assert(bill.account.eq(total))
     })
@@ -177,8 +177,9 @@ contract('Althea', accounts => {
       let max = Math.floor(2)
       let subnetDAOUsers = Math.floor(Math.random() * (max - min)) + min
 
+      let value = toBN(2).mul(perBlockFee)
       for (let i = 0; i < subnetDAOUsers; i++) {
-        await althea.addBill({from: accounts[i], value: 2*(10**10)})
+        await althea.addBill({from: accounts[i], value: value})
       }
       let subscribers = await althea.getCountOfSubscribers()
       subscribers.toNumber().should.eql(subnetDAOUsers)
@@ -198,7 +199,8 @@ contract('Althea', accounts => {
   describe('collectBills', async () => {
 
     it('Bill lastUpdated should equal current block number', async () => {
-      await althea.addBill({value: 1*(10**18)})
+      let amount = toBN(2).mul(perBlockFee)
+      await althea.addBill({value: amount})
       await althea.collectBills()
       let bill = await althea.billMapping(accounts[0])
       let blockNumber = toBN(await web3.eth.getBlockNumber())
@@ -207,6 +209,7 @@ contract('Althea', accounts => {
 
     it('Subnet should have an expected balance for single account', async () => {
 
+      let amount = toBN(2).mul(perBlockFee)
       await althea.addBill({value: 1*(10**18)})
       
       let previousBalance = toBN(await web3.eth.getBalance(paymentAddress))
@@ -341,8 +344,8 @@ contract('Althea', accounts => {
     })
     
     it('It reverts (saves gas) when the account has 0', async () => {
-      let accountOne = 2*(10**10)
 
+      let accountOne = toBN(2).mul(perBlockFee)
       await althea.addBill({from: accounts[1], value: accountOne})
 
       // extra txns to run up the counter
