@@ -41,7 +41,8 @@ truffle test
 
 #### Contract deploy
 
-* Rinkeby
+##### Rinkeby
+* Publish
 ```
 $ aragon apm publish major --environment infura
  ✔ Check IPFS
@@ -59,4 +60,11 @@ $ aragon apm publish major --environment infura
  ℹ Contract address: 0x02b9eD3b7c087B57Cb46341D06ae73ab3182507F
  ℹ Content (ipfs): QmNkEvkH7sWqC2keUzfb9GRRu6BuHEWNKYcAfavUkPoecH
  ℹ Transaction hash: 0x1fd267ff84b7371aeb8bba153ac6962455af3fc5b132ea019c463a1f2c585a80
+```
+* Install
+
+Make sure that `ipfs daemon` is running
+```
+dao install seabass althea.open.aragonpm.eth --environment infura --app-init-args 0x30c11FC7678A0Da212d79940f4b74774c6580418
+
 ```
