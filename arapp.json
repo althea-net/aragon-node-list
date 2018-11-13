@@ -20,7 +20,8 @@
     "infura": {
       "network": "infura",
       "registry": "0x98Df287B6C145399Aaa709692c8D308357bC085D",
-      "appName": "althea.open.aragonpm.eth"
+      "appName": "althea.open.aragonpm.eth",
+      "wsRPC": "wss://rinkeby.eth.aragon.network/ws"
     },
     "rinkeby2": {
       "network": "rinkeby2",
