@@ -41,12 +41,22 @@ truffle test
 
 #### Contract deploy
 
-    source .flags
-    aragon deploy --enviroment rinkeby --apm.ens-registry $ENS --network rinkeby
-
 * Rinkeby
-Althea contract address: 0x5370c54979297b1BfB0d0A161fdC5A8CC1ab89f5
-
 ```
-aragon apm publish `ADDRESS` --network sasquatch_ws --apm.ens-registry "0xfbae32d1cde62858bc45f51efc8cc4fa1415447e" --no-ipfs-check --apm.ipfs.rpc "http://ipfs.aragon.network:5001" --files build --only-content
+$ aragon apm publish major --environment infura
+ ✔ Check IPFS
+ ✔ Check IPFS
+ ✔ Applying version bump (major)
+ ✔ Deploy contract
+ ✔ Determine contract address for version
+ ✔ Building frontend
+ ✔ Prepare files for publishing
+ ✔ Generate application artifact
+ ✔ Publish althea.open.aragonpm.eth
+ ✔ Fetch published repo
+
+ ✔ Successfully published althea.open.aragonpm.eth v1.0.0:
+ ℹ Contract address: 0x02b9eD3b7c087B57Cb46341D06ae73ab3182507F
+ ℹ Content (ipfs): QmNkEvkH7sWqC2keUzfb9GRRu6BuHEWNKYcAfavUkPoecH
+ ℹ Transaction hash: 0x1fd267ff84b7371aeb8bba153ac6962455af3fc5b132ea019c463a1f2c585a80
 ```

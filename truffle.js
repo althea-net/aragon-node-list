@@ -18,7 +18,7 @@ module.exports = {
       port: 9545,
       network_id: '4'
     },
-    sasquatch_rpc: {
+    rinkeby2: {
       provider: function() {
        return new HDWalletProvider(
          process.env.MNEMONIC,
