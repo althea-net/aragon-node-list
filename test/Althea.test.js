@@ -316,7 +316,7 @@ contract('Althea', accounts => {
   })
 
   describe('withdrawFromBill', async () => {
-    it('Increases the balance of the subscriber', async () => {
+    it.skip('Increases the balance of the subscriber', async () => {
 
       let accountOne = toBN(10).mul(perBlockFee)
       await althea.addBill({from: accounts[1], value: accountOne})
