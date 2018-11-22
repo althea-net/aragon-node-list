@@ -27,6 +27,11 @@
       "network": "rinkeby2",
       "registry": "0x98Df287B6C145399Aaa709692c8D308357bC085D",
       "appName": "althea.open.aragonpm.eth"
+    },
+    "ws": {
+      "network": "ws",
+      "registry": "0x98Df287B6C145399Aaa709692c8D308357bC085D",
+      "appName": "althea.open.aragonpm.eth"
     }
   }
 }
