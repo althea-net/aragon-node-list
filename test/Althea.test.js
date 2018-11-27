@@ -6,6 +6,7 @@ require('chai').should()
 
 const expectEvent = require('./helpers/expectEvent.js')
 const { assertRevert } = require('./helpers/assertRevert.js')
+const { assertGasCost } = require('./helpers/assertGasCost.js')
 const { summation } = require('./helpers/summation.js')
 const getContract = name => artifacts.require(name)
 
@@ -58,9 +59,8 @@ contract('Althea', accounts => {
       { from: root }
     )
     paymentAddress = await web3.eth.personal.newAccount()
-     // the per block fee is .50 usd a day at 200usd ETH
-    //perBlockFee = toBN(web3.utils.toWei('0.000000405'))
-    perBlockFee = toBN(1)
+    // the per block fee is .50 usd a day at 200usd ETH
+    perBlockFee = toBN(web3.utils.toWei('0.000000405'))
     await althea.initialize(paymentAddress)
     await althea.setPerBlockFee(perBlockFee)
   })
@@ -136,7 +136,7 @@ contract('Althea', accounts => {
 
   })
 
-  describe('addBill', async () => {
+  context('addBill', async () => {
     it('Revert when no value is sent', async () => {
       assertRevert(althea.addBill())
     })
@@ -171,7 +171,7 @@ contract('Althea', accounts => {
   })
 
 
-  describe('getCountOfSubscribers', async () => {
+  context('getCountOfSubscribers', async () => {
 
     it('Should have the right length', async () => {
       let min = Math.ceil(7)
@@ -187,7 +187,7 @@ contract('Althea', accounts => {
     })
   })
 
-  describe('setPerBlockFee', async () => {
+  context('setPerBlockFee', async () => {
 
     it('Should set a new perBlockFee', async() => {
       let newFee = 10**7
@@ -197,7 +197,7 @@ contract('Althea', accounts => {
     })
   })
 
-  describe('collectBills', async () => {
+  context('collectBills', async () => {
 
     it('Bill lastUpdated should equal current block number', async () => {
       let amount = toBN(2).mul(perBlockFee)
@@ -246,7 +246,7 @@ contract('Althea', accounts => {
 
     it('Set bill account to zero', async () => {
 
-      let accountOne = 2*(10**10)
+      let accountOne = perBlockFee.mul(toBN(2))
       await althea.addBill({value: accountOne})
 
       // extra txns to run up the counter
@@ -263,10 +263,10 @@ contract('Althea', accounts => {
     })
   })
 
-  describe('payMyBills', async () => {
+  context('payMyBills', async () => {
     it('Bill should have lastUpdated with same blockNumber', async () => {
 
-      let accountOne = 2*(10**10)
+      let accountOne = perBlockFee.mul(toBN(2))
       await althea.addBill({value: accountOne})
       await althea.payMyBills()
       let bill = await althea.billMapping(accounts[0])
@@ -316,46 +316,15 @@ contract('Althea', accounts => {
     })
   })
 
-  describe('withdrawFromBill', async () => {
-    it.only('Increases the balance of the subscriber', async () => {
+  context('withdrawFromBill', async () => {
+    it('Increases the balance of the subscriber', async () => {
 
-
-      console.log('before   ', await web3.eth.getBlockNumber())
       const A = accounts[8]
-      let oldBalance = toBN(await web3.eth.getBalance(A))
-      let value = toBN(2).mul(perBlockFee)
-      // only txn
-      let txn = await althea.addBill({from: A, value: value})
-      console.log('middle ', await web3.eth.getBlockNumber())
-      //only txn in this process
-      let gasPrice = toBN(await web3.eth.getGasPrice())
-      let txnCost = toBN(txn.receipt.gasUsed).mul(gasPrice)
+      let deposit = 10
+      let value = toBN(deposit).mul(perBlockFee)
 
-      console.log(txn.tx)
-      console.log('price     ', gasPrice.toString())
-      console.log('used      ', txn.receipt.gasUsed)
-      let current = toBN(await web3.eth.getBalance(A))
+      await althea.addBill({from: A, value: value})
 
-      let totalNeg = txnCost.add(value)
-      let expected = oldBalance.sub(totalNeg)
-      let sub = oldBalance.sub(current)
-      
-
-      console.log('costs     ', totalNeg.toString())
-      console.log('oldBalance', oldBalance.toString())
-      console.log('current   ', current.toString())
-      console.log('sub       ', oldBalance.sub(current).toString())
-      console.log('expected  ', expected.toString())
-      console.log('sub       ', oldBalance.sub(expected).toString())
-      console.log('contract  ', await web3.eth.getBalance(althea.address))
-      console.log('after     ', await web3.eth.getBlockNumber())
-
-
-      assert.equal(current.toString(), expected.toString())
-
-
-      /*
-      // extra txns to run up the counter
       const blockCount = 5
       for (var i = 0; i < blockCount; i++) {
         await  web3.eth.sendTransaction({
@@ -366,23 +335,20 @@ contract('Althea', accounts => {
       }
 
       const oldBalance = toBN(await web3.eth.getBalance(A))
-
-      let txn = await althea.withdrawFromBill({from: A})
-
-      let txnCost = toBN(txn.receipt.gasUsed*(await web3.eth.getGasPrice()))
-      let expectedBalance = accountOne
-        .sub(toBN(perBlockFee*(blockCount+1)))
-        .add(oldBalance)
-        .sub(txnCost)
+      let receipt = await althea.withdrawFromBill({from: A})
+      let txn = await web3.eth.getTransaction(receipt.tx)
+      let cost = toBN(receipt.receipt.gasUsed*txn.gasPrice)
      
       let expectedBalance = oldBalance
-        .sub(toBN(perBlockFee*(blockCount+1)))
-        .add(oldBalance)
-        .sub(txnCost)
+        // The total deposit at the beggining
+        .add(value)
+        // the amount of blocks that have passed times the perBlcok fee
+        .sub(perBlockFee.mul(toBN(blockCount + 1)))
+        // txn cost
+        .sub(cost)
 
       const current = toBN(await web3.eth.getBalance(A))
       expectedBalance.eq(current).should.eql(true)
-      */
     })
     
     it('It reverts (saves gas) when the account has 0', async () => {
