@@ -41,6 +41,16 @@ truffle test
 
 #### Contract deploy
 
+Gas costs on rinkeby:
+
+Deploying dao:
+
+ * [1723324](https://rinkeby.etherscan.io/tx/0x52c67744471aa648afd67705f54c3d79e5a59c8f1ce37b852d3d213e8333c001)
+
+Deploying multisig and token:
+
+ * [4813913](https://rinkeby.etherscan.io/tx/0xad3b43a2161263d72027a4181af2616fe78c29f33d1b0a442f9813f64eb1ad98)
+
 ##### Rinkeby
 * Publish
 
