@@ -41,7 +41,7 @@ app.store(async (state, { event, returnValues }) => {
       let { payer, collector } = returnValues
       let bill = await getBill(payer)
       let node = state.nodes.find(n => n.ethAddress === payer)
-      node.funds = bill.account
+      node.funds = bill.balance
     break;
   } 
 

@@ -20,23 +20,23 @@ class BillManagement extends React.Component {
     super()
     this.state = { 
       amount: '',
-      account: 0,
-      balance: 0,
+      escrowBalance: 0,
+      ethBalance: 0,
       days: 0
     }
   } 
 
   async componentDidMount() {
     let address = (await this.getAccounts())[0]
-    let balance = await this.getBalance(address)
+    let ethBalance = await this.getBalance(address)
     let currentBlock = (await this.getLatestBlock()).number
     let bill = await this.getBill(address)
-    let { account, lastUpdated, perBlock } = bill
+    let { balance, lastUpdated, perBlock } = bill
     let blocksElapsed = currentBlock - lastUpdated
     if (blocksElapsed > 0) blocksElapsed++
-    let days = (account / (perBlock * BLOCKS_PER_DAY)).toFixed(4)
+    let days = (balance / (perBlock * BLOCKS_PER_DAY)).toFixed(4)
     if (isNaN(days)) days = 0
-    this.setState({ account, balance, days })
+    this.setState({ escrowBalance: balance, ethBalance: balance, days })
   } 
 
   addBill = async () => {
@@ -86,7 +86,7 @@ class BillManagement extends React.Component {
 
   render() {
     let { t } = this.props;
-    let { amount, account, balance, days } = this.state;
+    let { amount, escrowBalance, ethBalance, days } = this.state;
 
     return (
       <React.Fragment>
@@ -94,7 +94,7 @@ class BillManagement extends React.Component {
           <Col xs={12}>
             <StyledCard>
               <Text.Block>
-                Your current balance is <strong>&Xi;{account}</strong>.
+                Your current balance is <strong>&Xi;{escrowBalance}</strong>.
                 This will pay your subnet DAO fees for <strong>{days} days</strong>.
               </Text.Block>
             </StyledCard>
