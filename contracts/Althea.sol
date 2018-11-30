@@ -44,7 +44,7 @@ contract Althea is AragonApp {
 
   function addMember(address _ethAddr, bytes16 _ip, bytes16 _nick)
     external 
-    auth(DELETE)
+    auth(ADD)
   {
     require(nodeList[_ip] == address(0), "Member already exists");
     nodeList[_ip] = _ethAddr;
@@ -53,7 +53,7 @@ contract Althea is AragonApp {
     NewMember(_ethAddr, _ip, _nick);
   }
 
-  function deleteMember(bytes16 _ip) external auth(MANAGER) {
+  function deleteMember(bytes16 _ip) external auth(DELETE) {
     MemberRemoved(nodeList[_ip], _ip, nickName[_ip]);
     address toDelete = nodeList[_ip];
     delete nodeList[_ip];
@@ -133,7 +133,7 @@ contract Althea is AragonApp {
     return transferValue;
   }
 
-  function() payable public {
+  function() payable external {
     require(billMapping[msg.sender].balance != 0, "Bill doesn't exist yet");
     addBill();
   }
