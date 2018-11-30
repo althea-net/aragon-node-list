@@ -33,6 +33,7 @@ contract Althea is AragonApp {
   uint public perBlockFee;
   address public paymentAddress;
   address[] public subnetSubscribers;
+  mapping(bytes16 => address) public nodeList;
   mapping(bytes16 => bytes16) public nickName;
   mapping (address => Bill) public billMapping;
 
@@ -42,10 +43,9 @@ contract Althea is AragonApp {
     initialized();
   }
 
-  // Node list funtionality from here till next comment
   function addMember(address _ethAddr, bytes16 _ip, bytes16 _nick)
     external 
-    auth(MANAGER)
+    auth(ADD)
   {
     require(nodeList[_ip] == address(0), "Member already exists");
     nodeList[_ip] = _ethAddr;
@@ -54,7 +54,7 @@ contract Althea is AragonApp {
     NewMember(_ethAddr, _ip, _nick);
   }
 
-  function deleteMember(bytes16 _ip) external auth(ADD) {
+  function deleteMember(bytes16 _ip) external auth(DELETE) {
     MemberRemoved(nodeList[_ip], _ip, nickName[_ip]);
     address toDelete = nodeList[_ip];
     delete nodeList[_ip];
@@ -128,5 +128,8 @@ contract Althea is AragonApp {
     billMapping[_subscriber].lastUpdated = block.number;
     emit BillUpdated(_subscriber, paymentAddress);
     return transferValue;
+  }
+
+  function () payable {
   }
 }
