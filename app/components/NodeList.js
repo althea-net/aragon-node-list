@@ -4,6 +4,8 @@ import { translate } from 'react-i18next'
 import styled from 'styled-components'
 import { Address6 } from 'ip-address'
 import BigInteger from 'jsbn'
+import web3Utils from 'web3-utils'
+
 
 const Abbr = styled.abbr`
   cursor: pointer;
@@ -36,7 +38,7 @@ export default translate()(({ app, nodes, t }) => {
         {nodes.map((d, i) => {
           let {nickname, funds, ethAddress, ipAddress} = d;
           let trunc = (s, n) => `${s.substr(0,n)}...${s.substr(-n)}`
-          nickname = web3.toUtf8(nickname)
+          nickname = web3Utils.toUtf8(nickname)
           let addr = Address6.fromBigInteger(new BigInteger(ipAddress.substr(2), 16))
           let ip = addr.correctForm() + '/64'
 
