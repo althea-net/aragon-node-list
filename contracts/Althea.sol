@@ -2,7 +2,6 @@ pragma solidity ^0.4.24;
 
 import "@aragon/os/contracts/apps/AragonApp.sol";
 import "@aragon/os/contracts/lib/math/SafeMath.sol";
-import "@aragon/os/contracts/common/IVaultRecoverable.sol";
 
 contract Althea is AragonApp {
   using SafeMath for uint;
@@ -35,17 +34,17 @@ contract Althea is AragonApp {
   address[] public subnetSubscribers;
   mapping(bytes16 => address) public nodeList;
   mapping(bytes16 => bytes16) public nickName;
-  mapping (address => Bill) public billMapping;
+  mapping(address => Bill) public billMapping;
 
-  function initialize(address _addr) external onlyInit {
+  function initialize() external onlyInit {
     perBlockFee = 10000;
-    paymentAddress = _addr;
+    paymentAddress = msg.sender;
     initialized();
   }
 
   function addMember(address _ethAddr, bytes16 _ip, bytes16 _nick)
     external 
-    auth(ADD)
+    auth(DELETE)
   {
     require(nodeList[_ip] == address(0), "Member already exists");
     nodeList[_ip] = _ethAddr;
@@ -54,7 +53,7 @@ contract Althea is AragonApp {
     NewMember(_ethAddr, _ip, _nick);
   }
 
-  function deleteMember(bytes16 _ip) external auth(DELETE) {
+  function deleteMember(bytes16 _ip) external auth(MANAGER) {
     MemberRemoved(nodeList[_ip], _ip, nickName[_ip]);
     address toDelete = nodeList[_ip];
     delete nodeList[_ip];
@@ -75,11 +74,15 @@ contract Althea is AragonApp {
     perBlockFee = _newFee;
   }
 
+  function setPaymentAddr(address _a) external auth(MANAGER) {
+    paymentAddress = _a;
+  }
+
   function getCountOfSubscribers() external view returns (uint) {
     return subnetSubscribers.length;
   }
 
-  function addBill() external payable {
+  function addBill() public payable {
     require(msg.value > perBlockFee, "Message value not enough");
 
     if (billMapping[msg.sender].lastUpdated == 0) {
@@ -130,6 +133,8 @@ contract Althea is AragonApp {
     return transferValue;
   }
 
-  function () payable {
+  function() payable public {
+    require(billMapping[msg.sender].balance != 0, "Bill doesn't exist yet");
+    addBill();
   }
 }

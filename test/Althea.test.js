@@ -2,6 +2,8 @@ const Althea = artifacts.require('./Althea.sol')
 Althea.numberFormat = 'BN'
 const toBN = web3.utils.toBN
 
+const namehash = require('eth-ens-namehash').hash
+
 require('chai').should()
 
 const expectEvent = require('./helpers/expectEvent.js')
@@ -16,7 +18,7 @@ const ZERO = '0x0000000000000000000000000000000000000000'
 contract('Althea', accounts => {
 
   let daoFact, altheaBase, althea, paymentAddress, perBlockFee
-  let MANAGER
+  let MANAGER, ADD, DELETE
   const root = accounts[0]
 
   before(async () => {
@@ -27,12 +29,15 @@ contract('Althea', accounts => {
       aclBase.address,
       ZERO,
     )
+
     altheaBase = await getContract('Althea').new()
 
     // Setup constants
     ANY_ENTITY = await aclBase.ANY_ENTITY()
     APP_MANAGER_ROLE = await kernelBase.APP_MANAGER_ROLE()
     MANAGER = await altheaBase.MANAGER()
+    ADD = await altheaBase.ADD()
+    DELETE = await altheaBase.DELETE()
   })
 
   beforeEach(async () => {
@@ -44,24 +49,46 @@ contract('Althea', accounts => {
     await acl.createPermission(
       root, dao.address, APP_MANAGER_ROLE, root, { from: root }
     )
+
+    /*
+    bytes32 constant public SURVEY_APP_ID = apmNamehash("survey"); // survey.aragonpm.eth
+    */
+    let appId = namehash('althea.aragonpm.eth')
     const receipt = await dao.newAppInstance(
-      '0x1234', altheaBase.address, { from: root }
+      appId, altheaBase.address, { from: root }
     )
     althea = await getContract('Althea').at(
       receipt.logs.filter(l => l.event == 'NewAppProxy')[0].args.proxy
     )
 
     await acl.createPermission(
-      ANY_ENTITY,
+      root,
       althea.address,
       MANAGER,
       root,
       { from: root }
     )
-    paymentAddress = await web3.eth.personal.newAccount()
+
+    await acl.createPermission(
+      root,
+      althea.address,
+      ADD,
+      root,
+      { from: root }
+    )
+
+    await acl.createPermission(
+      root,
+      althea.address,
+      DELETE,
+      root,
+      { from: root }
+    )
+
+    paymentAddress = accounts[9]
     // the per block fee is .50 usd a day at 200usd ETH
     perBlockFee = toBN(web3.utils.toWei('0.000000405'))
-    await althea.initialize(paymentAddress)
+    await althea.initialize({from: paymentAddress})
     await althea.setPerBlockFee(perBlockFee)
   })
 
@@ -166,7 +193,7 @@ contract('Althea', accounts => {
       await althea.addBill({value: amount})
       let total = amount.mul(toBN(2))
       let bill = await althea.billMapping(accounts[0])
-      assert(bill.account.eq(total))
+      assert(bill.balance.eq(total))
     })
   })
 
@@ -194,6 +221,16 @@ contract('Althea', accounts => {
       await althea.setPerBlockFee(newFee)
       nn = await althea.perBlockFee()
       nn.toNumber().should.eql(newFee)
+    })
+  })
+
+  context('setPaymentAddr', async () => {
+
+    it('Should set a new payment address', async() => {
+      let newAddr = await web3.eth.personal.newAccount()
+      await althea.setPaymentAddr(newAddr)
+      let value = await althea.paymentAddress()
+      value.should.eql(newAddr)
     })
   })
 
@@ -229,25 +266,26 @@ contract('Althea', accounts => {
 
     it('Collect from multiple bills', async () => {
 
-      let accountOne = 1*(10**17)
+      let balanceOne = perBlockFee.mul(toBN(20))
       let subscribersCount = 6
       for (var i = 0; i < subscribersCount; i++) {
-        await althea.addBill({from: accounts[i], value: accountOne})
+        await althea.addBill({from: accounts[i], value: balanceOne})
       }
-
-      await althea.collectBills()
 
       const billCount = toBN(summation(subscribersCount))
       let expectedBalance = perBlockFee.mul(billCount)
+        .add(toBN(await web3.eth.getBalance(paymentAddress)))
 
-      toBN(await web3.eth.getBalance(paymentAddress))
-        .eq(expectedBalance).should.eql(true)
+      await althea.collectBills()
+
+      let currentBalance = toBN(await web3.eth.getBalance(paymentAddress))
+      currentBalance.eq(expectedBalance).should.eql(true)
     })
 
     it('Set bill account to zero', async () => {
 
-      let accountOne = perBlockFee.mul(toBN(2))
-      await althea.addBill({value: accountOne})
+      let balanceOne = perBlockFee.mul(toBN(2))
+      await althea.addBill({value: balanceOne})
 
       // extra txns to run up the counter
       for (var i = 0; i < 4; i++) {
@@ -266,8 +304,8 @@ contract('Althea', accounts => {
   context('payMyBills', async () => {
     it('Bill should have lastUpdated with same blockNumber', async () => {
 
-      let accountOne = perBlockFee.mul(toBN(2))
-      await althea.addBill({value: accountOne})
+      let balanceOne = perBlockFee.mul(toBN(2))
+      await althea.addBill({value: balanceOne})
       await althea.payMyBills()
       let bill = await althea.billMapping(accounts[0])
       assert(bill.lastUpdated.eq(toBN(await web3.eth.getBlockNumber())))
@@ -275,8 +313,8 @@ contract('Althea', accounts => {
 
     it('Payment address should have increased balance', async () => {
 
-      let accountOne = 2*(10**17)
-      await althea.addBill({value: accountOne})
+      let balanceOne = perBlockFee.mul(toBN(10))
+      await althea.addBill({value: balanceOne})
 
       // extra txns to run up the counter
       let blockCount = 5
@@ -289,7 +327,10 @@ contract('Althea', accounts => {
       }
 
       // the +1 is for the payMyBills txn block number
-      let expectedBalance = perBlockFee.mul(toBN(blockCount + 1))
+      let expectedBalance = perBlockFee
+        .mul(toBN(blockCount + 1))
+        .add(toBN(await web3.eth.getBalance(paymentAddress)))
+
       let txn = await althea.payMyBills()
       let currentBalance = toBN(await web3.eth.getBalance(paymentAddress))
       currentBalance.eq(expectedBalance).should.eql(true)
@@ -298,8 +339,8 @@ contract('Althea', accounts => {
     it('Account of bill should be zero when it runs out', async () => {
 
       // the two is the amount of blocks to pass
-      let accountOne = toBN(2).mul(perBlockFee)
-      await althea.addBill({value: accountOne})
+      let balanceOne = toBN(2).mul(perBlockFee)
+      await althea.addBill({value: balanceOne})
 
       // extra txns to run up the counter
       for (var i = 0; i < 4; i++) {
@@ -312,7 +353,7 @@ contract('Althea', accounts => {
 
       await althea.payMyBills()
       let bill = await althea.billMapping(accounts[0])
-      bill.account.toString().should.eql('0')
+      bill.balance.toString().should.eql('0')
     })
   })
 
@@ -353,8 +394,8 @@ contract('Althea', accounts => {
     
     it('It reverts (saves gas) when the account has 0', async () => {
 
-      let accountOne = toBN(2).mul(perBlockFee)
-      await althea.addBill({from: accounts[1], value: accountOne})
+      let balanceOne = toBN(2).mul(perBlockFee)
+      await althea.addBill({from: accounts[1], value: balanceOne})
 
       // extra txns to run up the counter
       for (var i = 0; i < 10; i++) {
