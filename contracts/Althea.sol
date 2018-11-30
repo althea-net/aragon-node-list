@@ -21,9 +21,11 @@ contract Althea is AragonApp {
   event BillUpdated(address payer, address collector);
  
   bytes32 constant public MANAGER = keccak256("MANAGER");
+  bytes32 constant public DELETE = keccak256("DELETE");
+  bytes32 constant public ADD = keccak256("ADD");
 
   struct Bill {
-    uint account;
+    uint balance;
     uint perBlock;
     uint lastUpdated;
   }
@@ -31,7 +33,6 @@ contract Althea is AragonApp {
   uint public perBlockFee;
   address public paymentAddress;
   address[] public subnetSubscribers;
-  mapping(bytes16 => address) public nodeList;
   mapping(bytes16 => bytes16) public nickName;
   mapping (address => Bill) public billMapping;
 
@@ -42,11 +43,7 @@ contract Althea is AragonApp {
   }
 
   // Node list funtionality from here till next comment
-  function addMember(
-    address _ethAddr,
-    bytes16 _ip,
-    bytes16 _nick
-  )
+  function addMember(address _ethAddr, bytes16 _ip, bytes16 _nick)
     external 
     auth(MANAGER)
   {
@@ -57,7 +54,7 @@ contract Althea is AragonApp {
     NewMember(_ethAddr, _ip, _nick);
   }
 
-  function deleteMember(bytes16 _ip) external auth(MANAGER) {
+  function deleteMember(bytes16 _ip) external auth(ADD) {
     MemberRemoved(nodeList[_ip], _ip, nickName[_ip]);
     address toDelete = nodeList[_ip];
     delete nodeList[_ip];
@@ -74,7 +71,6 @@ contract Althea is AragonApp {
     addr = nodeList[_ip]; 
   }
 
-  // Escrow leasing functionality till EOF
   function setPerBlockFee(uint _newFee) external auth(MANAGER) {
     perBlockFee = _newFee;
   }
@@ -91,7 +87,7 @@ contract Althea is AragonApp {
       subnetSubscribers.push(msg.sender);
       emit NewBill(msg.sender, paymentAddress);
     } else {
-      billMapping[msg.sender].account = billMapping[msg.sender].account.add(msg.value);
+      billMapping[msg.sender].balance = billMapping[msg.sender].balance.add(msg.value);
       emit BillUpdated(msg.sender, paymentAddress);
     }
   }
@@ -110,9 +106,9 @@ contract Althea is AragonApp {
 
   function withdrawFromBill() external {
     payMyBills();
-    uint amount = billMapping[msg.sender].account;
+    uint amount = billMapping[msg.sender].balance;
     require(amount > 0, "Amount to payout is no more than zero, aborting");
-    billMapping[msg.sender].account = 0;
+    billMapping[msg.sender].balance= 0;
     address(msg.sender).transfer(amount);
     emit BillUpdated(msg.sender, paymentAddress);
   }
@@ -122,12 +118,12 @@ contract Althea is AragonApp {
     Bill memory bill = billMapping[_subscriber];
     uint amountOwed = block.number.sub(bill.lastUpdated).mul(bill.perBlock);
 
-    if (amountOwed <= bill.account) {
-      billMapping[_subscriber].account = bill.account.sub(amountOwed);
+    if (amountOwed <= bill.balance) {
+      billMapping[_subscriber].balance= bill.balance.sub(amountOwed);
       transferValue = amountOwed;
     } else {
-      transferValue = bill.account;
-      billMapping[_subscriber].account = 0;
+      transferValue = bill.balance;
+      billMapping[_subscriber].balance = 0;
     }
     billMapping[_subscriber].lastUpdated = block.number;
     emit BillUpdated(_subscriber, paymentAddress);
