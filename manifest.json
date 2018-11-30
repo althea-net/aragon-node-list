@@ -1,6 +1,6 @@
 {
-  "name": "Node List",
-  "description": "An application for administrating althea subnetDAOs",
+  "name": "Althea",
+  "description": "An application for administrating Althea subnetDAOs",
   "icons": [{
     "src": "/dist/images/icon.png",
     "sizes": "22x22"

@@ -22,7 +22,7 @@ const AltheaAppBar = styled(AppBar)`
   border-radius: 5px;
   padding: 0;
   margin: 20px 0;
-  height: 100%;
+  height: 5em; 
 `
 
 const OrganizerModeLink = styled.a`

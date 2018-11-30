@@ -1,8 +1,18 @@
 {
   "roles": [
     {
-      "name": "Manager of a subnetDAO",
+      "name": "Manager of a Althea parameters",
       "id": "MANAGER",
+      "params": []
+    },
+    {
+      "name": "Delete users from roster",
+      "id": "DELETE",
+      "params": []
+    },
+    {
+      "name": "Add users to roster",
+      "id": "ADD",
       "params": []
     }
   ],
