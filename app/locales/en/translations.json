@@ -28,5 +28,7 @@
   "noNodes": "No nodes were found",
   "organizerMode": "organizer mode",
   "organizerModeLink": "Organizer mode (advanced)",
-  "backToUserMode": "Back to user mode"
+  "backToUserMode": "Back to user mode",
+  "updatePaymentAddr": "Update payment address",
+  "enterPaymentAddr": "Enter the new payment address (preferably the finance app)"
 }

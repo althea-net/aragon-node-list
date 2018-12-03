@@ -45,7 +45,10 @@ class SubnetAdmin extends React.Component {
       ipAddress: '',
       ipValid: true,
       nickname: '',
-      scanning: false
+      scanning: false,
+      paymentAddr: '',
+      newPaymentAddr: '',
+      paymentAddrResult: null,
     } 
   } 
 
@@ -67,7 +70,6 @@ class SubnetAdmin extends React.Component {
   async componentDidMount() {
     let currentBlock = (await this.getLatestBlock()).number
     let { nodes } = this.props
-
     let bills = 0
 
     if (nodes && nodes.length) {
@@ -76,29 +78,40 @@ class SubnetAdmin extends React.Component {
       }))
     }
 
+    let paymentAddr = await this.getPaymentAddress()
     this.generateIp()
-    this.setState({ bills, currentBlock })
+    this.setState({ bills, currentBlock, paymentAddr })
   } 
 
   collectBills = async () => {
     await new Promise(resolve => {
       this.props.app.collectBills().subscribe(resolve)
     }) 
-
     this.componentDidMount()
   } 
 
   checkNode = () => {
     let { nodes } = this.props
     let { checkAddress } = this.state
-
     let checkResult = false
-
     if (nodes)
       checkResult = nodes.findIndex(n => n.ethAddress.toLowerCase() === checkAddress.toLowerCase()) > -1
 
     this.setState({ checkResult })
   } 
+
+  setPaymentAddr = async () => {
+    let { newPaymentAddr } = this.state
+    try {
+      await new Promise((resolve, reject) => {
+        this.props.app.setPaymentAddr(newPaymentAddr)
+          .subscribe(resolve, reject)
+      })
+      this.setState({ paymentAddrResult: true })
+    } catch (e) {
+      console.log(e)
+    }
+  }
 
   removeNode = async () => {
     let { nodes } = this.props
@@ -207,6 +220,14 @@ class SubnetAdmin extends React.Component {
     console.error(err)
   }
 
+  getPaymentAddress = async () => {
+    return new Promise(resolve =>{
+      this.props.app.call('paymentAddress').subscribe(v => {
+        resolve(v)
+      })
+    })
+  }
+
   render() {
     let { t } = this.props;
     let { 
@@ -219,7 +240,8 @@ class SubnetAdmin extends React.Component {
       ipValid,
       ipExists,
       removeResult,
-      scanning
+      scanning,
+      paymentAddrResult,
     } = this.state
 
     /*
@@ -334,6 +356,25 @@ class SubnetAdmin extends React.Component {
                 />
               </Field>
               <Button onClick={this.removeNode} mode="outline">{t('removeNodeFromSubnetDAO')}</Button>
+            </StyledCard>
+            <StyledCard>
+              <Text size="xlarge">{t('updatePaymentAddr')}</Text>
+              <br />
+              <Text size="large">{'Current: ' + this.state.paymentAddr}</Text>
+              {paymentAddrResult && <Info title="Payment Address succesfully updated" />}
+              {paymentAddrResult !== null && !paymentAddrResult && <Info title="Can't find node" />}
+              <Field label={t('ethAddress')}>
+                <TextInput wide
+                  type="text"
+                  name="address"
+                  placeholder={t('enterPaymentAddr')}
+                  onChange={e => {
+                    this.setState( { newPaymentAddr: e.target.value })
+                  }}
+                  value={this.state.newPaymentAddr}
+                />
+              </Field>
+              <Button onClick={this.setPaymentAddr} mode="outline">{t('updatePaymentAddr')}</Button>
             </StyledCard>
           </Col>
         </Row>
