@@ -44,8 +44,8 @@
   },
   "scripts": {
     "start": "npm run start:aragon:ipfs",
-    "start:aragon:ipfs": "aragon run --app-init-args 0xe743212601fFDF381d6cD68af1C4D6E8355e205D --enviroment default",
-    "start:aragon:http": "aragon run --http localhost:8001 --http-served-from ./dist --app-init-args 0xe743212601fFDF381d6cD68af1C4D6E8355e205D",
+    "start:aragon:ipfs": "aragon run",
+    "start:aragon:http": "aragon run --http localhost:8001 --http-served-from ./dist",
     "start:app": "npm run sync-assets && npm run build:script -- --no-minify && parcel serve app/index.html -p 8001 --out-dir dist/ --no-cache",
     "test": "truffle test",
     "compile": "truffle compile",
