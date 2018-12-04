@@ -49,6 +49,9 @@ class SubnetAdmin extends React.Component {
       paymentAddr: '',
       newPaymentAddr: '',
       paymentAddrResult: null,
+      perBlockFee: '',
+      newPerBlockFee: '',
+      perBlockFeeResult: null,
     } 
   } 
 
@@ -67,6 +70,22 @@ class SubnetAdmin extends React.Component {
     this.setState({ ipAddress })
   } 
 
+  getPaymentAddress = async () => {
+    return new Promise(resolve =>{
+      this.props.app.call('paymentAddress').subscribe(v => {
+        resolve(v)
+      })
+    })
+  }
+
+  getPerBlockFee = async () => {
+    return new Promise(resolve =>{
+      this.props.app.call('perBlockFee').subscribe(v => {
+        resolve(v)
+      })
+    })
+  }
+
   async componentDidMount() {
     let currentBlock = (await this.getLatestBlock()).number
     let { nodes } = this.props
@@ -79,8 +98,9 @@ class SubnetAdmin extends React.Component {
     }
 
     let paymentAddr = await this.getPaymentAddress()
+    let perBlockFee = await this.getPerBlockFee()
     this.generateIp()
-    this.setState({ bills, currentBlock, paymentAddr })
+    this.setState({ bills, currentBlock, paymentAddr, perBlockFee })
   } 
 
   collectBills = async () => {
@@ -111,8 +131,22 @@ class SubnetAdmin extends React.Component {
     } catch (e) {
       console.log(e)
     }
+    await this.componentDidMount()
   }
 
+  setPerBlockFee = async () => {
+    let { newPerBlockFee } = this.state
+    try {
+      await new Promise((resolve, reject) => {
+        this.props.app.setPerBlockFee(newPerBlockFee)
+          .subscribe(resolve, reject)
+      })
+      this.setState({ perBlockFeeResult: true })
+    } catch (e) {
+      console.log(e)
+    }
+    await this.componentDidMount()
+  }
   removeNode = async () => {
     let { nodes } = this.props
     let { removeAddress } = this.state
@@ -220,14 +254,6 @@ class SubnetAdmin extends React.Component {
     console.error(err)
   }
 
-  getPaymentAddress = async () => {
-    return new Promise(resolve =>{
-      this.props.app.call('paymentAddress').subscribe(v => {
-        resolve(v)
-      })
-    })
-  }
-
   render() {
     let { t } = this.props;
     let { 
@@ -242,6 +268,7 @@ class SubnetAdmin extends React.Component {
       removeResult,
       scanning,
       paymentAddrResult,
+      perBlockFeeResult,
     } = this.state
 
     /*
@@ -375,6 +402,27 @@ class SubnetAdmin extends React.Component {
                 />
               </Field>
               <Button onClick={this.setPaymentAddr} mode="outline">{t('updatePaymentAddr')}</Button>
+            </StyledCard>
+            <StyledCard>
+              <Text size="xlarge">{t('updatePerBlockFee')}</Text>
+              <br />
+              <Text size="large">{'Current: ' + this.state.perBlockFee}</Text>
+              {perBlockFeeResult && <Info title="Per block fee succesfully updated" />}
+              {perBlockFeeResult !== null && !perBlockFeeResult && <Info title="Can't find node" />}
+              <Field>
+                <TextInput
+                  wide
+                  type="text"
+                  name="address"
+                  placeholder={t('enterPerBlockFee')}
+                  onChange={e => {this.setState({ newPerBlockFee : e.target.value })}}
+                  value={this.state.newPerBlockFee}
+                />
+              </Field>
+              <Button
+                onClick={this.setPerBlockFee}
+                mode="outline">{t('updatePerBlockFee')}
+              </Button>
             </StyledCard>
           </Col>
         </Row>
