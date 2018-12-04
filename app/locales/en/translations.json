@@ -29,6 +29,7 @@
   "organizerMode": "organizer mode",
   "organizerModeLink": "Organizer mode (advanced)",
   "backToUserMode": "Back to user mode",
+  "paymentAddress": "Payment Address",
   "updatePaymentAddr": "Update payment address",
   "enterPaymentAddr": "Enter the new payment address (preferably the finance app)",
   "updatePerBlockFee": "Update the escrow fee",

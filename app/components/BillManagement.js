@@ -3,6 +3,7 @@ import { Card, TextInput, Field, Button, Text } from '@aragon/ui'
 import { Row, Col } from 'react-flexbox-grid'
 import styled from 'styled-components'
 import { translate } from 'react-i18next'
+import QrCode from 'qrcode.react'
 
 const StyledCard = styled(Card)`
   width: 100%;
@@ -13,6 +14,19 @@ const StyledCard = styled(Card)`
   padding: 20px;
 `
 
+const QrCard = styled(Card)`
+  width: 100%;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: center;
+  height: auto;
+  padding: 15px;
+  margin: 15px 0;
+`
+
+
+//https://api.etherscan.io/api?module=stats&action=ethprice
 const BLOCKS_PER_DAY = 6000
 
 class BillManagement extends React.Component {
@@ -22,13 +36,13 @@ class BillManagement extends React.Component {
       amount: '',
       escrowBalance: 0,
       ethBalance: 0,
-      days: 0
+      days: 0,
+      paymentAddr: ''
     }
   } 
 
-  async componentDidMount() {
+  async getValues() {
     let address = (await this.getAccounts())[0]
-    let ethBalance = await this.getBalance(address)
     let currentBlock = (await this.getLatestBlock()).number
     let bill = await this.getBill(address)
     let { balance, lastUpdated, perBlock } = bill
@@ -36,8 +50,17 @@ class BillManagement extends React.Component {
     if (blocksElapsed > 0) blocksElapsed++
     let days = (balance / (perBlock * BLOCKS_PER_DAY)).toFixed(4)
     if (isNaN(days)) days = 0
-    this.setState({ escrowBalance: balance, ethBalance: balance, days })
-  } 
+    return {
+      escrowBalance: balance,
+      ethBalance: await this.getBalance(address),
+      days,
+      paymentAddr: await this.getPaymentAddress()
+    }
+  }
+
+  async componentDidMount() { this.setState(await this.getValues())} 
+
+  componentDidUpdate = async () => this.setState(await this.getValues())
 
   addBill = async () => {
     await new Promise(resolve => {
@@ -58,6 +81,15 @@ class BillManagement extends React.Component {
       this.props.app.call('billMapping', address).subscribe(resolve)
     }) 
   } 
+
+  getPaymentAddress = async () => {
+    return new Promise(resolve =>{
+      this.props.app.call('paymentAddress').subscribe(v => {
+        console.log('FUUUUCK', v)
+        resolve(v)
+      })
+    })
+  }
 
   getLatestBlock = () => {
     return new Promise(resolve => {
@@ -86,7 +118,13 @@ class BillManagement extends React.Component {
 
   render() {
     let { t } = this.props;
-    let { amount, escrowBalance, ethBalance, days } = this.state;
+    let {
+      amount,
+      escrowBalance,
+      ethBalance,
+      days,
+      paymentAddr,
+    } = this.state;
 
     return (
       <React.Fragment>
@@ -99,6 +137,22 @@ class BillManagement extends React.Component {
               </Text.Block>
             </StyledCard>
           </Col>
+        </Row>
+        <Row>
+          <QrCard>
+            <Col md={6}>
+              <Text size="xlarge">
+                {t('paymentAddress')}: {paymentAddr}
+              </Text>
+            </Col>
+            <Col md={6}>
+              <QrCode
+                value={paymentAddr}
+                size={250}
+                style={{height: 250, marginTop: 15}}
+              />
+            </Col>
+          </QrCard>
         </Row>
         <Row>
           <Col xs={6}>

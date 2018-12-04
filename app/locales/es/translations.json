@@ -29,6 +29,7 @@
   "organizerMode": "modo organizador",
   "organizerModeLink": "Modo organizador (avanzado)",
   "backToUserMode": "Volver al modo de usuario",
+  "paymentAddress": "Cuenta de pago",
   "updatePaymentAddr": "Actualizar cuenta para pagos",
   "enterPaymentAddr": "Introduzca la cuenta de (preferiblemente la applicación de finanza)",
   "updatePerBlockFee": "Actualizar tarifa de adminastración",
