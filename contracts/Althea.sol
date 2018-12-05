@@ -133,10 +133,9 @@ contract Althea is AragonApp {
     return transferValue;
   }
 
-  //fallback currently isn't wokring in the aragon cli.
-  //Moving this under the carpet
-  //function() payable external {
-  //  require(billMapping[msg.sender].balance != 0, "Bill doesn't exist yet");
-  //  addBill();
-  //}
+  // leave a space between `function` and `(` or else the parser doesn't work
+  function () payable external {
+    require(billMapping[msg.sender].balance != 0, "Bill doesn't exist yet");
+    addBill();
+  }
 }

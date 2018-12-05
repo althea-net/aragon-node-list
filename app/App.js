@@ -53,12 +53,24 @@ class App extends React.Component {
     return (
       <AppContainer>
         <Grid fluid>
-          <AltheaAppBar title={title} endContent={<Nav mode={mode} setMode={this.setMode} setPage={this.setPage} />} />
+          <AltheaAppBar
+            title={title}
+            endContent={
+              <Nav
+                mode={mode}
+                setMode={this.setMode}
+                setPage={this.setPage}
+              />
+            } 
+          />
           {this.state.page && <Page app={app} nodes={nodes} />}
 
           {mode === 'user' &&
           <Text.Block style={{marginTop: '20px'}}>
-            <OrganizerModeLink onClick={() => this.setMode('organizer')}>{t('organizerModeLink')}</OrganizerModeLink>
+            <OrganizerModeLink
+              onClick={() => this.setMode('organizer')}>
+              {t('organizerModeLink')}
+            </OrganizerModeLink>
           </Text.Block>
           }
         </Grid>

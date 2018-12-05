@@ -58,9 +58,15 @@ class BillManagement extends React.Component {
     }
   }
 
-  async componentDidMount() { this.setState(await this.getValues())} 
+  async componentDidMount() { 
+    console.log('DIDMOUNT')
+    this.setState(await this.getValues())
+  } 
 
-  componentDidUpdate = async () => this.setState(await this.getValues())
+  componentWillUpdate = async () => {
+    console.log('DIDUPDATE')
+    this.setState(await this.getValues())
+  }
 
   addBill = async () => {
     await new Promise(resolve => {
@@ -84,10 +90,7 @@ class BillManagement extends React.Component {
 
   getPaymentAddress = async () => {
     return new Promise(resolve =>{
-      this.props.app.call('paymentAddress').subscribe(v => {
-        console.log('FUUUUCK', v)
-        resolve(v)
-      })
+      this.props.app.call('paymentAddress').subscribe(resolve)
     })
   }
 

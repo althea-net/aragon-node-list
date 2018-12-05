@@ -5,6 +5,10 @@ import { of } from 'rxjs/observable/of'
 
 const app = new Aragon()
 
+app.init(() => {
+  aragon.apps.subscribe(apps => console.log('RICKITY', apps))
+})
+
 const INITIALIZATION_TRIGGER = Symbol('INITIALIZATION_TRIGGER')
 
 const initialState = {
