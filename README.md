@@ -28,18 +28,8 @@ truffle test
 - **compile**: Compile the smart contracts
 - **build**: Compiles the contracts and builds the front-end
 
-### Links
 
-[http://aragon.aragonpm.com/#/sasquatch.aragonid.eth/](http://aragon.aragonpm.com/#/sasquatch.aragonid.eth/)
-
-### Deploying with APM
-
-#### Configuring `~/.aragon
-
-
-### Successful commands
-
-#### Contract deploy
+## Gas costs
 
 Gas costs on rinkeby:
 
@@ -51,34 +41,62 @@ Deploying multisig and token:
 
  * [4813913](https://rinkeby.etherscan.io/tx/0xad3b43a2161263d72027a4181af2616fe78c29f33d1b0a442f9813f64eb1ad98)
 
-##### Rinkeby
-* Publish
 
-This is a minor package update to just push new ipfs content
+## Aragon-cli usage for dao install
 
-```
-$ aragon apm publish minor --environment infura --apm.ipfs.rpc http://sasquatch.network:5001
- ❯ Check IPFS
-   ⠧ Start IPFS
-     Add local files
-   Applying version bump (minor)
- ✔ Check IPFS
- ✔ Applying version bump (minor)
- ✔ Determine contract address for version
- ✔ Building frontend
- ✔ Prepare files for publishing
- ✔ Generate application artifact
- ✔ Publish althea.open.aragonpm.eth
- ✔ Fetch published repo
-
- ✔ Successfully published althea.open.aragonpm.eth v1.1.0:
- ℹ Contract address: 0x02b9eD3b7c087B57Cb46341D06ae73ab3182507F
- ℹ Content (ipfs): QmNpa2tmeXL2zeGVjN8SDTvmVVCszExR4dJZkE3X6U4Btg
- ℹ Transaction hash: 0x21d6400b9c6ba9ab205c9a7f21f028f7001
-```
-* Install
+### Publish
 
 ```
-dao install seabass althea.open.aragonpm.eth --environment infura --app-init-args 0x30c11FC7678A0Da212d79940f4b74774c6580418
+aragon apm publish minor --environment infura --apm.ipfs.rpc http://sasquatch.network:5001
+```
+
+### Install
+
+This needs the special [branch](###-Live-dao-installs-branch)
+
+```
+aragon-live dao install seabass althea.open.aragonpm.eth --environment infura --app-init-args 0x30c11FC7678A0Da212d79940f4b74774c6580418 --apm.ipfs.rpc https://ipfs.eth.aragon.network/ipfs
+
+```
+
+### Permissions
+
+This needs the special [branch](###-Live-dao-installs-branch)
+
+```
+aragon-live dao acl create clatskanie.aragonid.eth \ # dao ens
+  0x97895FDBdEFdB4F68985d000D421573446d87892 \  # app proxy address obtained by going to the DAO address on etherscan and looking at internal txns
+  0xaf290d8680820aad922855f39b306097b20e28774d6c1ad35a20325630c3a02c \ # MANAFER
+  0x8191399d0c13A2ED477bC68B70e8A8814E287C6C \ # Voting address
+  0x8191399d0c13A2ED477bC68B70e8A8814E287C6C \ # Voting address
+  --environment infura
+```
+#### Roles:
+
+* MANAGER: `0xaf290d8680820aad922855f39b306097b20e28774d6c1ad35a20325630c3a02c`
+
+* ADD: `0x9ea0cf9577cabd8688fb70d8a8c076ffb703a26054de703e8da063dc72300137`
+
+* DELETE: `0x19a34d8f52981d070368ff4b59a2a8a437917058fabecd70f237af13f0425463`
+
+### Upgrade
+
+```
+aragon dao upgrade seabass.aragonid.eth althea.open.aragonpm.eth 2.0.0 --environment infura --apm.ipfs.rpc https://ipfs.eth.aragon.network/ipfs
+```
+
+
+## Live dao installs branch
+
+The current aragon-cli doesn't have the capability of installing new apps to a dao. So for now one can use this [version](https://github.com/sebohe/aragon-cli/tree/live-dao-installs).
+
+Once this [PR](https://github.com/aragon/aragon-cli/pull/270) gets merged then the live-install branch isn't needed
+
+For setting up this live install version I usually do the following:
+
+```
+git clone https://github.com/sebohe/aragon-cli --branch live-dao-installs
+cd aragon-cli && yarn install && yarn build
+ln -s `readlink -f dist/cli.js` ~/.local/bin/aragon-live # or any directory in your $PATH env var
 
 ```

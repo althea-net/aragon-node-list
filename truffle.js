@@ -13,24 +13,14 @@ module.exports = {
       port: 8545,
       network_id: '*'
     },
-    rinkeby: {
-      host: 'sasquatch.network',
-      port: 19545,
-      network_id: '4'
-    },
-    ws: {
-      host: 'sasquatch.network',
-      port: 19546,
-      network_id: '4'
-    },
     rinkeby2: {
-      provider: function() {
-       return new HDWalletProvider(
+      provider: new HDWalletProvider(
          process.env.MNEMONIC,
          "http://sasquatch.network:19545"
-        )
-      },
-      network_id: '4'
+      ),
+      network_id: '4',
+      gas: 6.9e5,
+      gasPrice: 150000000
     },
     infura: {
       provider: function() {
