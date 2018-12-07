@@ -1,7 +1,7 @@
 {
   "roles": [
     {
-      "name": "Manager of a Althea parameters",
+      "name": "Manager of Althea parameters",
       "id": "MANAGER",
       "params": []
     },

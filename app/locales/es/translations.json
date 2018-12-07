@@ -30,9 +30,9 @@
   "organizerModeLink": "Modo organizador (avanzado)",
   "backToUserMode": "Volver al modo de usuario",
   "paymentAddress": "Cuenta de pago",
-  "updatePaymentAddr": "Actualizar cuenta para pagos",
-  "enterPaymentAddr": "Introduzca la cuenta de (preferiblemente la applicación de finanza)",
-  "updatePerBlockFee": "Actualizar tarifa de adminastración",
-  "enterPerBlockFee": "Instroduzca la nueva tarifa"
+  "updatePaymentAddr": "Actualizar dirección de la aplicación de finanzas",
+  "enterPaymentAddr": "Introduzca la dirección de ethereum",
+  "updatePerBlockFee": "Actualizar tarifa de administración",
+  "enterPerBlockFee": "Instroduzca la nueva tarifa de administración"
 }
 

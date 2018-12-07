@@ -30,8 +30,8 @@
   "organizerModeLink": "Organizer mode (advanced)",
   "backToUserMode": "Back to user mode",
   "paymentAddress": "Payment Address",
-  "updatePaymentAddr": "Update payment address",
-  "enterPaymentAddr": "Enter the new payment address (preferably the finance app)",
-  "updatePerBlockFee": "Update the escrow fee",
-  "enterPerBlockFee": "Enter the new escrow fee"
+  "updatePaymentAddr": "Update finance app address",
+  "enterPaymentAddr": "Enter the new address",
+  "updatePerBlockFee": "Update the dao subscription fee",
+  "enterPerBlockFee": "Enter the new dao subscription fee"
 }
