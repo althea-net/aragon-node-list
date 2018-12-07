@@ -16,11 +16,11 @@
     "react-flexbox-grid": "^2.1.2",
     "react-i18next": "^7.12.0",
     "react-qr-reader": "^2.1.0",
-    "styled-components": "^3.4.9",
+    "styled-components": "^3.4.10",
     "web3": "^1.0.0-beta.36"
   },
   "devDependencies": {
-    "@aragon/cli": "^5.2.0",
+    "@aragon/cli": "^5.2.1",
     "@babel/core": "^7.1.2",
     "@babel/plugin-proposal-class-properties": "^7.1.0",
     "@babel/polyfill": "^7.0.0",
@@ -50,6 +50,7 @@
     "test": "truffle test",
     "compile": "truffle compile",
     "ganache": "ganache-cli -m \"explain tackle mirror kit van hammer degree position ginger unfair soup bonus\"",
+    "devchain": "aragon devchain",
     "sync-assets": "copy-aragon-ui-assets -n aragon-ui ./dist",
     "build:app": "parcel build app/index.html -d dist/ --public-url '.' --no-cache",
     "build:script": "parcel build app/script.js -d dist/ --no-cache",
