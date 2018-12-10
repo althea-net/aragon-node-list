@@ -56,15 +56,8 @@ class BillManagement extends React.Component {
     }
   }
 
-  async componentDidMount() { 
-    console.log('DIDMOUNT')
-    this.setState(await this.getValues())
-  } 
-
-  componentWillUpdate = async () => {
-    console.log('DIDUPDATE')
-    this.setState(await this.getValues())
-  }
+  componentDidMount = async () => this.setState(await this.getValues())
+  componentDidUpdate = async () => this.setState(await this.getValues())
 
   addBill = async () => {
     await new Promise(resolve => {
