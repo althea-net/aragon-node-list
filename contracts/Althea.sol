@@ -134,8 +134,7 @@ contract Althea is AragonApp {
   }
 
   // leave a space between `function` and `(` or else the parser doesn't work
-  function () payable external {
-    require(billMapping[msg.sender].balance != 0, "Bill doesn't exist yet");
+  function () external payable isInitialized {
     addBill();
   }
 }

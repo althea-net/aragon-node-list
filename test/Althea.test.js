@@ -1,13 +1,12 @@
 const Althea = artifacts.require('./Althea.sol')
 Althea.numberFormat = 'BN'
 const toBN = web3.utils.toBN
-
 const namehash = require('eth-ens-namehash').hash
 
 require('chai').should()
 
 const expectEvent = require('./helpers/expectEvent.js')
-const { assertRevert } = require('./helpers/assertRevert.js')
+const { shouldFailWithMessage, reverting } = require('./helpers/shouldFail.js')
 const { assertGasCost } = require('./helpers/assertGasCost.js')
 const { summation } = require('./helpers/summation.js')
 const getContract = name => artifacts.require(name)
@@ -50,9 +49,6 @@ contract('Althea', accounts => {
       root, dao.address, APP_MANAGER_ROLE, root, { from: root }
     )
 
-    /*
-    bytes32 constant public SURVEY_APP_ID = apmNamehash("survey"); // survey.aragonpm.eth
-    */
     let appId = namehash('althea.aragonpm.eth')
     const receipt = await dao.newAppInstance(
       appId, altheaBase.address, { from: root }
@@ -62,27 +58,15 @@ contract('Althea', accounts => {
     )
 
     await acl.createPermission(
-      root,
-      althea.address,
-      MANAGER,
-      root,
-      { from: root }
+      root, althea.address, MANAGER, root, { from: root }
     )
 
     await acl.createPermission(
-      root,
-      althea.address,
-      ADD,
-      root,
-      { from: root }
+      root, althea.address, ADD, root, { from: root }
     )
 
     await acl.createPermission(
-      root,
-      althea.address,
-      DELETE,
-      root,
-      { from: root }
+      root, althea.address, DELETE, root, { from: root }
     )
 
     paymentAddress = accounts[9]
@@ -107,7 +91,7 @@ contract('Althea', accounts => {
 
     it('Reverts when adding an existing member to the list', async () => {
       await althea.addMember(accounts[1], ipv6, nick)
-      assertRevert(althea.addMember(accounts[1], ipv6, nick))
+      await reverting(althea.addMember(accounts[1], ipv6, nick))
     })
 
     it('Removes member from list', async () => {
@@ -163,9 +147,9 @@ contract('Althea', accounts => {
 
   })
 
-  context('addBill', async () => {
-    it('Revert when no value is sent', async () => {
-      assertRevert(althea.addBill())
+  context('addBill', () => {
+    it('Revert when no value is sent', () => {
+      reverting(althea.addBill())
     })
 
     it('Adds a new bill to mapping', async () => {
@@ -197,8 +181,42 @@ contract('Althea', accounts => {
     })
   })
 
+  context('fallback', () => {
+    it('Revert when no value is sent', async () => {
+      await reverting(althea.sendTransaction())
+    })
 
-  context('getCountOfSubscribers', async () => {
+    it('Adds a new bill to mapping', async () => {
+      let amount = toBN(2).mul(perBlockFee)
+      const receipt = await althea.sendTransaction({from: accounts[1], value: amount})
+
+      const event = await expectEvent.inLogs(receipt.logs, 'NewBill', { 
+        payer: accounts[1],
+        collector: paymentAddress
+      })
+
+      event.args.payer.should.eql(accounts[1])
+      event.args.collector.should.eql(paymentAddress)
+    })
+
+    it('Contract ether balance should increase', async () => {
+      let balance = toBN(10).mul(perBlockFee)
+      await althea.sendTransaction({value: balance})
+      let altheaBalance = await web3.eth.getBalance(althea.address)
+      altheaBalance.should.eql(web3.utils.toBN(balance).toString())
+    })
+
+    it('Increase bill by corresponding amount', async () => {
+      let amount = toBN(2).mul(perBlockFee)
+      await althea.sendTransaction({value: amount})
+      await althea.sendTransaction({value: amount})
+      let total = amount.mul(toBN(2))
+      let bill = await althea.billMapping(accounts[0])
+      assert(bill.balance.eq(total))
+    })
+  })
+
+  context('getCountOfSubscribers', () => {
 
     it('Should have the right length', async () => {
       let min = Math.ceil(7)
@@ -214,7 +232,7 @@ contract('Althea', accounts => {
     })
   })
 
-  context('setPerBlockFee', async () => {
+  context('setPerBlockFee', () => {
 
     it('Should set a new perBlockFee', async() => {
       let newFee = 10**7
@@ -224,7 +242,7 @@ contract('Althea', accounts => {
     })
   })
 
-  context('setPaymentAddr', async () => {
+  context('setPaymentAddr', () => {
 
     it('Should set a new payment address', async() => {
       let newAddr = await web3.eth.personal.newAccount()
@@ -234,7 +252,7 @@ contract('Althea', accounts => {
     })
   })
 
-  context('collectBills', async () => {
+  context('collectBills', () => {
 
     it('Bill lastUpdated should equal current block number', async () => {
       let amount = toBN(2).mul(perBlockFee)
@@ -301,7 +319,7 @@ contract('Althea', accounts => {
     })
   })
 
-  context('payMyBills', async () => {
+  context('payMyBills', () => {
     it('Bill should have lastUpdated with same blockNumber', async () => {
 
       let balanceOne = perBlockFee.mul(toBN(2))
@@ -357,7 +375,7 @@ contract('Althea', accounts => {
     })
   })
 
-  context('withdrawFromBill', async () => {
+  context('withdrawFromBill', () => {
     it('Increases the balance of the subscriber', async () => {
 
       const A = accounts[8]
@@ -405,7 +423,7 @@ contract('Althea', accounts => {
           value: 1
         })
       }
-      assertRevert(althea.withdrawFromBill({from: accounts[1]}))
+      await reverting(althea.withdrawFromBill({from: accounts[1]}))
     })
   })
 })
