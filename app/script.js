@@ -11,7 +11,7 @@ const initialState = {
   nodes: []
 }
 
-app.store(async (state, { event, returnValues }) => {
+app.store(async (state, {event, address, returnValues}) => {
   switch (event) {
     case INITIALIZATION_TRIGGER:
       state = initialState
@@ -45,6 +45,7 @@ app.store(async (state, { event, returnValues }) => {
     break;
   } 
 
+  state.appAddress = address
   return state
 }, [of({ event: INITIALIZATION_TRIGGER })])
 

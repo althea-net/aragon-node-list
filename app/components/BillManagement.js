@@ -37,7 +37,6 @@ class BillManagement extends React.Component {
       escrowBalance: 0,
       ethBalance: 0,
       days: 0,
-      paymentAddr: ''
     }
   } 
 
@@ -53,8 +52,7 @@ class BillManagement extends React.Component {
     return {
       escrowBalance: balance,
       ethBalance: await this.getBalance(address),
-      days,
-      paymentAddr: await this.getPaymentAddress()
+      days
     }
   }
 
@@ -88,12 +86,6 @@ class BillManagement extends React.Component {
     }) 
   } 
 
-  getPaymentAddress = async () => {
-    return new Promise(resolve =>{
-      this.props.app.call('paymentAddress').subscribe(resolve)
-    })
-  }
-
   getLatestBlock = () => {
     return new Promise(resolve => {
       this.props.app.web3Eth('getBlock', 'latest').subscribe(resolve)
@@ -120,13 +112,13 @@ class BillManagement extends React.Component {
   }
 
   render() {
-    let { t } = this.props;
+    let { t, appAddress } = this.props;
+    if(!appAddress) appAddress = ''
     let {
       amount,
       escrowBalance,
       ethBalance,
       days,
-      paymentAddr,
     } = this.state;
 
     return (
@@ -145,12 +137,12 @@ class BillManagement extends React.Component {
           <QrCard>
             <Col md={6}>
               <Text size="xlarge">
-                {t('paymentAddress')}: {paymentAddr}
+                {t('paymentAddress')}: {appAddress}
               </Text>
             </Col>
             <Col md={6}>
               <QrCode
-                value={paymentAddr}
+                value={appAddress}
                 size={250}
                 style={{height: 250, marginTop: 15}}
               />

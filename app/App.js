@@ -36,7 +36,7 @@ class App extends React.Component {
     super();
     this.state = { 
       mode: 'user',
-      page: null 
+      page: null
     }
   } 
 
@@ -45,7 +45,7 @@ class App extends React.Component {
 
   render() {
     const Page = this.state.page;
-    const { app, nodes, t } = this.props;
+    const { app, nodes, t, appAddress } = this.props;
     const { mode } = this.state;
     let title = t('altheaSubnetDAO')
     if (mode === 'organizer') title += ' ' + t('organizerMode')
@@ -63,12 +63,19 @@ class App extends React.Component {
               />
             } 
           />
-          {this.state.page && <Page app={app} nodes={nodes} />}
+          {this.state.page
+           && <Page
+                app={app}
+                nodes={nodes}
+                appAddress={appAddress}
+              />
+          }
 
           {mode === 'user' &&
           <Text.Block style={{marginTop: '20px'}}>
             <OrganizerModeLink
-              onClick={() => this.setMode('organizer')}>
+              onClick={() => this.setMode('organizer')}
+            >
               {t('organizerModeLink')}
             </OrganizerModeLink>
           </Text.Block>
