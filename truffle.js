@@ -1,5 +1,11 @@
 const HDWalletProvider = require('truffle-hdwallet-provider');
 
+
+let mocha = {
+  reporter: 'eth-gas-reporter',
+  reporterOptions : { currency: 'USD' }
+}
+
 module.exports = {
   networks: {
     development: {
@@ -27,10 +33,5 @@ module.exports = {
       network_id: '4'
     }
   },
-  mocha: {
-    reporter: 'eth-gas-reporter',
-    reporterOptions : {
-      currency: 'USD'
-    }
-  }
+  mocha
 }
