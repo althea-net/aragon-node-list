@@ -87,7 +87,6 @@ contract Althea is AragonApp {
 
     if (billMapping[msg.sender].lastUpdated == 0) {
       billMapping[msg.sender] = Bill(msg.value, perBlockFee, block.number);
-      subnetSubscribers.push(msg.sender);
       emit NewBill(msg.sender, paymentAddress);
     } else {
       billMapping[msg.sender].balance = billMapping[msg.sender].balance.add(msg.value);
@@ -95,7 +94,7 @@ contract Althea is AragonApp {
     }
   }
 
-  function collectBills() external auth(MANAGER) {
+  function collectBills() external {
     uint transferValue = 0;
     for (uint i = 0; i < subnetSubscribers.length; i++) {
       transferValue = transferValue.add(processBills(subnetSubscribers[i]));
@@ -133,7 +132,7 @@ contract Althea is AragonApp {
     return transferValue;
   }
 
-  // leave a space between `function` and `(` or else the parser doesn't work
+  // leave a space between `function` and `(` or else the parser won't work
   function () external payable isInitialized {
     addBill();
   }
