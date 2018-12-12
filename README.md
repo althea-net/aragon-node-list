@@ -9,7 +9,7 @@ For more information please read: [https://altheamesh.com/governance-paper](http
 
 ```
 yarn install
-npm run aragon
+npm run start
 ```
 
 ### Running tests
@@ -19,6 +19,14 @@ Use the global `truffle` and `ganache-cli` instead of the `aragon contracts` tru
 ```
 ganache-cli
 truffle test
+```
+### Developing
+
+On three seperate terminals execute the following commands
+```
+npm run devchain
+npm run start:app
+npm run start:aragon:http
 ```
 
 ### Scripts explanations
@@ -55,7 +63,7 @@ aragon apm publish minor --environment infura --apm.ipfs.rpc http://sasquatch.ne
 This needs the special [branch](###-Live-dao-installs-branch)
 
 ```
-aragon-live dao install seabass althea.open.aragonpm.eth --environment infura --app-init-args 0x30c11FC7678A0Da212d79940f4b74774c6580418 --apm.ipfs.rpc https://ipfs.eth.aragon.network/ipfs
+aragon-live dao install seabass althea.open.aragonpm.eth --environment infura --apm.ipfs.rpc https://ipfs.eth.aragon.network/ipfs
 
 ```
 
@@ -66,7 +74,7 @@ This needs the special [branch](###-Live-dao-installs-branch)
 ```
 aragon-live dao acl create clatskanie.aragonid.eth \ # dao ens
   0x97895FDBdEFdB4F68985d000D421573446d87892 \  # app proxy address obtained by going to the DAO address on etherscan and looking at internal txns
-  0xaf290d8680820aad922855f39b306097b20e28774d6c1ad35a20325630c3a02c \ # MANAFER
+  0xaf290d8680820aad922855f39b306097b20e28774d6c1ad35a20325630c3a02c \ # MANAGER
   0x8191399d0c13A2ED477bC68B70e8A8814E287C6C \ # Voting address
   0x8191399d0c13A2ED477bC68B70e8A8814E287C6C \ # Voting address
   --environment infura
