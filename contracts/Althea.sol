@@ -38,7 +38,7 @@ contract Althea is AragonApp {
   uint public perBlockFee;
   address public paymentAddress;
   bytes16[] public subnetSubscribers;
-  mapping(bytes16 => User) public userList;
+  mapping(bytes16 => User) public userMapping;
   mapping(address => Bill) public billMapping;
 
   function initialize() external onlyInit {
@@ -51,16 +51,15 @@ contract Althea is AragonApp {
     external 
     auth(ADD)
   {
-    require(userList[_ip].ethAddr== address(0), "Member already exists");
-    userList[_ip].ethAddr = _ethAddr;
-    userList[_ip].nick = _nick;
+    require(userMapping[_ip].ethAddr== address(0), "Member already exists");
+    userMapping[_ip] = User(_ethAddr, _nick);
     subnetSubscribers.push(_ip);
     NewMember(_ethAddr, _ip, _nick);
   }
 
   function deleteMember(bytes16 _ip) external auth(DELETE) {
-    MemberRemoved(userList[_ip].ethAddr, _ip, userList[_ip].nick);
-    delete userList[_ip];
+    MemberRemoved(userMapping[_ip].ethAddr, _ip, userMapping[_ip].nick);
+    delete userMapping[_ip];
     for (uint i = 0; i < subnetSubscribers.length; i++) {
       if (_ip == subnetSubscribers[i]) {
         subnetSubscribers[i] = subnetSubscribers[subnetSubscribers.length-1];
@@ -70,7 +69,7 @@ contract Althea is AragonApp {
   }
 
   function getMember(bytes16 _ip) external view returns(address addr) {
-    addr = userList[_ip].ethAddr;
+    addr = userMapping[_ip].ethAddr;
   }
 
   function setPerBlockFee(uint _newFee) external auth(MANAGER) {
@@ -102,7 +101,7 @@ contract Althea is AragonApp {
     for (uint i = 0; i < subnetSubscribers.length; i++) {
 
       transferValue = transferValue.add(
-        processBills(userList[subnetSubscribers[i]].ethAddr)
+        processBills(userMapping[subnetSubscribers[i]].ethAddr)
       );
     }
     address(paymentAddress).transfer(transferValue);

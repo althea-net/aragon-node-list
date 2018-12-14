@@ -83,7 +83,7 @@ contract('Althea', accounts => {
     it('Adds a new member to the list', async () => {
       let petri = await althea.isPetrified()
       await althea.addMember(accounts[1], ipv6, nick)
-      let values = await althea.userList(ipv6)
+      let values = await althea.userMapping(ipv6)
       assert.equal(values.ethAddr, accounts[1])
       assert.equal(values.nick, nick)
     })
@@ -104,11 +104,11 @@ contract('Althea', accounts => {
 
     it('Removes member from list', async () => {
       await althea.addMember(accounts[1], ipv6, nick)
-      let value = await althea.userList(ipv6)
+      let value = await althea.userMapping(ipv6)
       assert.equal(value.ethAddr, accounts[1])
 
       await althea.deleteMember(ipv6)
-      let value2 = await althea.userList(ipv6)
+      let value2 = await althea.userMapping(ipv6)
       assert.equal(value2.ethAddr, ZERO)
       assert.equal(value2.nick, web3.utils.padRight('0x', 32))
     })
