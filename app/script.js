@@ -88,7 +88,7 @@ async function getEverythingFromUser(index) {
   let {ethAddr, nick } = await getUser(ipAddress)
   let {balance, lastUpdated, perBlock } = await getBill(ethAddr)
   return {
-    ethAddr,
+    ethAddress: ethAddr,
     nickname: nick,
     ipAddress,
     bill: {balance, lastUpdated, perBlock}
