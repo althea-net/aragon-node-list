@@ -13,24 +13,23 @@ const initialState = {
 
 app.store(async (state, {event, address, returnValues}) => {
 
+  console.log('STATE', state)
   console.log('EVENT', event)
+  let bill = {}
   switch (event) {
     case INITIALIZATION_TRIGGER:
+      console.log('INIT TRIGGER')
       state = initialState
-      let count = await getCountOfSubscribers()
-      for (var i = 0; i < count; i++) {
-        state.nodes.push(await getEverythingFromUser(i))
-      }
       break
     case 'NewMember':
       let { nickname, ethAddress, ipAddress } = returnValues
-
+      bill = await getBill(ethAddress)
       state.nodes.push(
         {
           nickname,
           ethAddress,
           ipAddress,
-          bill: {balance, lastUpdated, perBlock} = await getBill(ethAddress)
+          bill
         }
       )
       break
@@ -40,13 +39,12 @@ app.store(async (state, {event, address, returnValues}) => {
       break
     case 'BillUpdated':
       let { payer, collector } = returnValues
-      let bill = await getBill(payer)
+      bill = await getBill(payer)
       let node = state.nodes.find(n => n.ethAddress === payer)
       node.funds = bill.balance
       break
-  } 
+  }
 
-  console.log('STATE', state.nodes)
   state.appAddress = address
   return state
 }, [of({ event: INITIALIZATION_TRIGGER })])
