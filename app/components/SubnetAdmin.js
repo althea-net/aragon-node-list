@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import { Card, TextInput, Info, Field, Button, Text } from '@aragon/ui'
 import { Row, Col } from 'react-flexbox-grid'
@@ -29,53 +29,51 @@ const QrCard = styled(Card)`
   margin: 15px 0;
 `
 
-class Popup extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    this.containerEl = document.createElement('div');
-    this.externalWindow = null;
-  }
+class SubnetAdmin extends Component {
+  state = {
+    bills: 0,
+    checkAddress: '',
+    checkResult: null,
+    currentBlock: 0,
+    delay: 300,
+    ethAddress: '',
+    ipAddress: '',
+    ipExists: false,
+    ipValid: true,
+    newPaymentAddr: '',
+    newPerBlockFee: '',
+    nickname: '',
+    paymentAddr: '',
+    paymentAddrResult: null,
+    perBlockFee: '',
+    perBlockFeeResult: null,
+    removeAddress: '',
+    removeResult: null,
+    scanning: false,
+  } 
 
-  render() {
-    return ReactDOM.createPortal(this.props.children, this.containerEl);
-  }
-
-  componentDidMount() {
+  startScanning = () => {
     let w = Math.min(screen.height, screen.width)
-    this.externalWindow = window.open('', 'Scan QR Code', `width=${w / 2},height=${w / 2 },left=${w / 4},top=${w / 4},scrollbar=0,menubar=0,toolbar=0,status=0,location=0,directories=0,scrollbars=0`)
-    this.externalWindow.document.body.appendChild(this.containerEl);
-  }
+    let specs = `
+      width=${w / 2},
+      height=${w / 2 },
+      left=${w / 4},
+      top=${w / 4},
+      scrollbar=0,
+      menubar=0,
+      toolbar=0,
+      status=0,
+      location=0,
+      directories=0,
+      scrollbars=0
+    `
 
-  componentWillUnmount() {
-    this.externalWindow.close();
-  }
-}
+    let url = location.href.replace('index.html', '')
+    url += 'qrscan.html'
 
-class SubnetAdmin extends React.Component {
-  constructor() {
-    super()
+    window.open(url, 'Scan QR Code', specs)
 
-    this.state = {
-      bills: 0,
-      delay: 300,
-      currentBlock: 0,
-      checkAddress: '',
-      checkResult: null,
-      ipExists: false,
-      removeAddress: '',
-      removeResult: null,
-      ethAddress: '',
-      ipAddress: '',
-      ipValid: true,
-      nickname: '',
-      scanning: false,
-      paymentAddr: '',
-      newPaymentAddr: '',
-      paymentAddrResult: null,
-      perBlockFee: '',
-      newPerBlockFee: '',
-      perBlockFeeResult: null,
-    } 
+    this.setState({ scanning: true })
   } 
 
   generateIp = () => {
@@ -109,7 +107,14 @@ class SubnetAdmin extends React.Component {
     })
   }
 
+  messageHandler = ({ data }) => {
+    if (data.toString().startsWith('qr:'))
+      this.setState({ ethAddress: data.replace('qr:', ''), scanning: false })
+  } 
+
   async componentDidMount() {
+    window.addEventListener('message', this.messageHandler)
+
     let currentBlock = (await this.getLatestBlock()).number
     let { nodes } = this.props
     let bills = 0
@@ -125,6 +130,10 @@ class SubnetAdmin extends React.Component {
     this.generateIp()
     this.setState({ bills, currentBlock, paymentAddr, perBlockFee })
   } 
+
+  componentWillUnmount() {
+    window.removeEventListener('message', this.messageHandler)
+  }
 
   collectBills = async () => {
     await new Promise(resolve => {
@@ -212,7 +221,7 @@ class SubnetAdmin extends React.Component {
 
   setEthAddress = e => { 
     let ethAddress = e.target.value
-    this.setState({ ethAddress })
+    this.setState({ ethAddress, scanning: false })
   }
 
   hexIp = ip =>
@@ -259,36 +268,22 @@ class SubnetAdmin extends React.Component {
     if (addr.isValid()) this.setState({ ipAddress: addr.correctForm() + addr.subnet })
   } 
 
-  startScanning = () => this.setState({ scanning: true })
-
-  handleScan = result => {
-    if (web3Utils.isAddress(result)) {
-      this.setState({ ethAddress: result, scanning: false })
-    }
-  }
-
   render() {
     let { app, t } = this.props;
     let { 
       bills, 
       checkResult, 
       currentBlock, 
-      nickname, 
       ethAddress, 
       ipAddress, 
-      ipValid,
       ipExists,
-      removeResult,
-      scanning,
+      ipValid,
+      nickname, 
       paymentAddrResult,
       perBlockFeeResult,
+      removeResult,
+      scanning,
     } = this.state
-
-    /*
-    const billCount = new BN(summation(subscribersCount))
-    const perBlockFee = await contract.perBlockFee()
-    let expectedBalance = perBlockFee.mul(billCount).add(new BN(0))
-    */
 
     return (
       <React.Fragment>
@@ -340,20 +335,10 @@ class SubnetAdmin extends React.Component {
                     />
                   </Col>
                   <Col md={4} style={{ textAlign: 'center' }}>
-                    {scanning || <Button mode="outline" onClick={() => this.setState({ scanning: true })}>Scan QR</Button>}
-                    {scanning && (
-                      <React.Fragment>
-                        <Popup>
-                          <QrReader
-                            delay={this.state.delay}
-                            onError={e => console.log(e)}
-                            onScan={this.handleScan}
-                            style={{ width: '100%' }}
-                          />
-                        </Popup>
-                        <Button mode="outline" onClick={() => this.setState({ scanning: false })}>Stop Scanning</Button>
-                      </React.Fragment>
-                    )}
+                    <React.Fragment>
+                      {scanning || <Button mode="outline" onClick={this.startScanning}>Scan QR</Button>}
+                      {scanning && <Button mode="outline" onClick={() => this.setState({ scanning: false })}>Stop Scanning</Button>}
+                    </React.Fragment>
                   </Col>
                 </Row>
               </Field>

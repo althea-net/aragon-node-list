@@ -11,6 +11,7 @@ class ConnectedApp extends React.Component {
     app: new Aragon(new providers.WindowMessage(window.parent)),
     observable: null,
     userAccount: '',
+    
   }
   componentDidMount() {
     window.addEventListener('message', this.handleWrapperMessage)

@@ -53,7 +53,7 @@
     "ganache": "ganache-cli -m \"explain tackle mirror kit van hammer degree position ginger unfair soup bonus\"",
     "devchain": "aragon devchain",
     "sync-assets": "copy-aragon-ui-assets -n aragon-ui ./dist",
-    "build:app": "parcel build app/index.html -d dist/ --public-url '.' --no-cache",
+    "build:app": "parcel build app/index.html app/qrscan.html -d dist/ --public-url '.' --no-cache",
     "build:script": "parcel build app/script.js -d dist/ --no-cache",
     "build": "npm run sync-assets && npm run build:app && npm run build:script",
     "publish": "aragon apm publish"
