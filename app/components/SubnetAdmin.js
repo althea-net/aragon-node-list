@@ -1,4 +1,5 @@
 import React from 'react'
+import ReactDOM from 'react-dom'
 import { Card, TextInput, Info, Field, Button, Text } from '@aragon/ui'
 import { Row, Col } from 'react-flexbox-grid'
 import styled from 'styled-components'
@@ -27,6 +28,28 @@ const QrCard = styled(Card)`
   padding: 15px;
   margin: 15px 0;
 `
+
+class Popup extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.containerEl = document.createElement('div');
+    this.externalWindow = null;
+  }
+
+  render() {
+    return ReactDOM.createPortal(this.props.children, this.containerEl);
+  }
+
+  componentDidMount() {
+    let w = Math.min(screen.height, screen.width)
+    this.externalWindow = window.open('', 'Scan QR Code', `width=${w / 2},height=${w / 2 },left=${w / 4},top=${w / 4},scrollbar=0,menubar=0,toolbar=0,status=0,location=0,directories=0,scrollbars=0`)
+    this.externalWindow.document.body.appendChild(this.containerEl);
+  }
+
+  componentWillUnmount() {
+    this.externalWindow.close();
+  }
+}
 
 class SubnetAdmin extends React.Component {
   constructor() {
@@ -128,9 +151,7 @@ class SubnetAdmin extends React.Component {
           .subscribe(resolve, reject)
       })
       this.setState({ paymentAddrResult: true })
-    } catch (e) {
-      console.log(e)
-    }
+    } catch (e) { console.log(e) }
     await this.componentDidMount()
   }
 
@@ -142,9 +163,7 @@ class SubnetAdmin extends React.Component {
           .subscribe(resolve, reject)
       })
       this.setState({ perBlockFeeResult: true })
-    } catch (e) {
-      console.log(e)
-    }
+    } catch (e) { console.log(e) }
     await this.componentDidMount()
   }
   removeNode = async () => {
@@ -163,9 +182,7 @@ class SubnetAdmin extends React.Component {
         this.props.app.deleteMember(node.ipAddress).subscribe(resolve, reject)
       }) 
       this.setState({ removeResult: true })
-    } catch (e) {
-      console.log(e)
-    } 
+    } catch (e) { console.log(e) } 
   } 
 
   getOwing = async (currentBlock, node) => {
@@ -250,12 +267,8 @@ class SubnetAdmin extends React.Component {
     }
   }
 
-  handleError = err => {
-    console.error(err)
-  }
-
   render() {
-    let { t } = this.props;
+    let { app, t } = this.props;
     let { 
       bills, 
       checkResult, 
@@ -327,23 +340,23 @@ class SubnetAdmin extends React.Component {
                     />
                   </Col>
                   <Col md={4} style={{ textAlign: 'center' }}>
-                    <React.Fragment>
-                      {scanning || <Button mode="outline" onClick={() => this.setState({ scanning: true })}>Scan QR</Button>}
-                      {scanning && <Button mode="outline" onClick={() => this.setState({ scanning: false })}>Stop Scanning</Button>}
-                    </React.Fragment>
+                    {scanning || <Button mode="outline" onClick={() => this.setState({ scanning: true })}>Scan QR</Button>}
+                    {scanning && (
+                      <React.Fragment>
+                        <Popup>
+                          <QrReader
+                            delay={this.state.delay}
+                            onError={e => console.log(e)}
+                            onScan={this.handleScan}
+                            style={{ width: '100%' }}
+                          />
+                        </Popup>
+                        <Button mode="outline" onClick={() => this.setState({ scanning: false })}>Stop Scanning</Button>
+                      </React.Fragment>
+                    )}
                   </Col>
                 </Row>
               </Field>
-              {scanning && 
-                <QrCard>
-                  <QrReader
-                    delay={this.state.delay}
-                    onError={this.handleError}
-                    onScan={this.handleScan}
-                    style={{ width: '300px' }}
-                  />
-                </QrCard>
-              }
               <Field>
                 <Button onClick={this.addNode} mode="outline">{t('addNode')}</Button>
               </Field>
