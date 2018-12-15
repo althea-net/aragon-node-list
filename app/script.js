@@ -12,38 +12,38 @@ const initialState = {
 }
 
 app.store(async (state, {event, address, returnValues}) => {
+
+  console.log('STATE', state)
+  console.log('EVENT', event)
+  let bill = {}
   switch (event) {
     case INITIALIZATION_TRIGGER:
+      console.log('INIT TRIGGER')
       state = initialState
-      let count = await getCountOfSubscribers()
-      for (let i; i < count; i++) {
-        let node = await getNode(i)
-        state.nodes.push({ address: node[0], ip: node[1] })
-      } 
-    break;
+      break
     case 'NewMember':
       let { nickname, ethAddress, ipAddress } = returnValues
+      bill = await getBill(ethAddress)
       state.nodes.push(
         {
           nickname,
           ethAddress,
           ipAddress,
-          funds: 0
+          bill
         }
       )
-    break;
+      break
     case 'MemberRemoved':
       let i = state.nodes.findIndex(n => n.ipAddress === returnValues.ipAddress)
       state.nodes.splice(i, 1)
-    break;
-    case 'NewBill':
+      break
     case 'BillUpdated':
       let { payer, collector } = returnValues
-      let bill = await getBill(payer)
+      bill = await getBill(payer)
       let node = state.nodes.find(n => n.ethAddress === payer)
       node.funds = bill.balance
-    break;
-  } 
+      break
+  }
 
   state.appAddress = address
   return state
@@ -57,18 +57,38 @@ function getBill(address) {
   })
 }
 
-function getNode(i) {
+function getUser(ip) {
   return new Promise(resolve => {
     app
-    .nodeList(i)
+    .call('userMapping', ip)
     .subscribe(resolve)
   })
 }
 
-function getCountOfSubscribers(i) {
+function getIp(index) {
   return new Promise(resolve => {
     app
-    .getCountOfSubscribers()
+    .call('subnetSubscribers', index)
     .subscribe(resolve)
   })
+}
+
+function getCountOfSubscribers() {
+  return new Promise(resolve => {
+    app
+    .call('getCountOfSubscribers')
+    .subscribe(resolve)
+  })
+}
+
+async function getEverythingFromUser(index) {
+  let ipAddress = await getIp(index)
+  let {ethAddr, nick } = await getUser(ipAddress)
+  let {balance, lastUpdated, perBlock } = await getBill(ethAddr)
+  return {
+    ethAddress: ethAddr,
+    nickname: nick,
+    ipAddress,
+    bill: {balance, lastUpdated, perBlock}
+  }
 }

@@ -16,8 +16,9 @@ contract Althea is AragonApp {
     bytes16 ipAddress,
     bytes16 nickname
   );
+
   event NewBill(address payer, address collector);
-  event BillUpdated(address payer, address collector);
+  event BillUpdated(address payer);
  
   bytes32 constant public MANAGER = keccak256("MANAGER");
   bytes32 constant public DELETE = keccak256("DELETE");
@@ -29,11 +30,15 @@ contract Althea is AragonApp {
     uint lastUpdated;
   }
 
+  struct User {
+    address ethAddr;
+    bytes16 nick;
+  }
+
   uint public perBlockFee;
   address public paymentAddress;
-  address[] public subnetSubscribers;
-  mapping(bytes16 => address) public nodeList;
-  mapping(bytes16 => bytes16) public nickName;
+  bytes16[] public subnetSubscribers;
+  mapping(bytes16 => User) public userMapping;
   mapping(address => Bill) public billMapping;
 
   function initialize() external onlyInit {
@@ -46,20 +51,17 @@ contract Althea is AragonApp {
     external 
     auth(ADD)
   {
-    require(nodeList[_ip] == address(0), "Member already exists");
-    nodeList[_ip] = _ethAddr;
-    nickName[_ip] = _nick;
-    subnetSubscribers.push(_ethAddr);
+    require(userMapping[_ip].ethAddr== address(0), "Member already exists");
+    userMapping[_ip] = User(_ethAddr, _nick);
+    subnetSubscribers.push(_ip);
     NewMember(_ethAddr, _ip, _nick);
   }
 
   function deleteMember(bytes16 _ip) external auth(DELETE) {
-    MemberRemoved(nodeList[_ip], _ip, nickName[_ip]);
-    address toDelete = nodeList[_ip];
-    delete nodeList[_ip];
-    delete nickName[_ip];
+    MemberRemoved(userMapping[_ip].ethAddr, _ip, userMapping[_ip].nick);
+    delete userMapping[_ip];
     for (uint i = 0; i < subnetSubscribers.length; i++) {
-      if (toDelete == subnetSubscribers[i]) {
+      if (_ip == subnetSubscribers[i]) {
         subnetSubscribers[i] = subnetSubscribers[subnetSubscribers.length-1];
         subnetSubscribers.length--;
       }
@@ -67,7 +69,7 @@ contract Althea is AragonApp {
   }
 
   function getMember(bytes16 _ip) external view returns(address addr) {
-    addr = nodeList[_ip]; 
+    addr = userMapping[_ip].ethAddr;
   }
 
   function setPerBlockFee(uint _newFee) external auth(MANAGER) {
@@ -90,14 +92,17 @@ contract Althea is AragonApp {
       emit NewBill(msg.sender, paymentAddress);
     } else {
       billMapping[msg.sender].balance = billMapping[msg.sender].balance.add(msg.value);
-      emit BillUpdated(msg.sender, paymentAddress);
+      emit BillUpdated(msg.sender);
     }
   }
 
   function collectBills() external {
     uint transferValue = 0;
     for (uint i = 0; i < subnetSubscribers.length; i++) {
-      transferValue = transferValue.add(processBills(subnetSubscribers[i]));
+
+      transferValue = transferValue.add(
+        processBills(userMapping[subnetSubscribers[i]].ethAddr)
+      );
     }
     address(paymentAddress).transfer(transferValue);
   }
@@ -110,9 +115,9 @@ contract Althea is AragonApp {
     payMyBills();
     uint amount = billMapping[msg.sender].balance;
     require(amount > 0, "Amount to payout is no more than zero, aborting");
-    billMapping[msg.sender].balance= 0;
+    billMapping[msg.sender].balance = 0;
     address(msg.sender).transfer(amount);
-    emit BillUpdated(msg.sender, paymentAddress);
+    emit BillUpdated(msg.sender);
   }
 
   function processBills(address _subscriber) internal returns(uint) {
@@ -128,7 +133,7 @@ contract Althea is AragonApp {
       billMapping[_subscriber].balance = 0;
     }
     billMapping[_subscriber].lastUpdated = block.number;
-    emit BillUpdated(_subscriber, paymentAddress);
+    emit BillUpdated(_subscriber);
     return transferValue;
   }
 

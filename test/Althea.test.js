@@ -83,39 +83,9 @@ contract('Althea', accounts => {
     it('Adds a new member to the list', async () => {
       let petri = await althea.isPetrified()
       await althea.addMember(accounts[1], ipv6, nick)
-      let address = await althea.nodeList(ipv6)
-      assert.equal(await althea.nodeList(ipv6), address)
-    })
-
-    it('Reverts when adding an existing member to the list', async () => {
-      await althea.addMember(accounts[1], ipv6, nick)
-      await reverting(althea.addMember(accounts[1], ipv6, nick))
-    })
-
-    it('Removes member from list', async () => {
-      await althea.addMember(accounts[1], ipv6, nick)
-      let value = await althea.nodeList(ipv6)
-      assert.equal(value, accounts[1])
-
-      await althea.deleteMember(ipv6)
-      let value2 = await althea.nodeList(ipv6)
-      assert.equal(value2, ZERO)
-    })
-
-    it('Saves the proper nick name', async () => {
-      await althea.addMember(accounts[1], ipv6, nick)
-      let value = await althea.nickName(ipv6)
-      assert.equal(value, nick)
-    })
-
-    it('Deletes nick name from mapping', async () => {
-      await althea.addMember(accounts[1], ipv6, nick)
-      let value = await althea.nickName(ipv6)
-      assert.equal(value, nick)
-
-      await althea.deleteMember(ipv6)
-      let value2 = await althea.nickName(ipv6)
-      assert.equal(value2, web3.utils.padRight('0x', 32))
+      let values = await althea.userMapping(ipv6)
+      assert.equal(values.ethAddr, accounts[1])
+      assert.equal(values.nick, nick)
     })
 
     it('Should have a NewMember event', async () => {
@@ -126,6 +96,23 @@ contract('Althea', accounts => {
         nickname: nick
       })
     })
+
+    it('Reverts when adding an existing member to the list', async () => {
+      await althea.addMember(accounts[1], ipv6, nick)
+      await reverting(althea.addMember(accounts[1], ipv6, nick))
+    })
+
+    it('Removes member from list', async () => {
+      await althea.addMember(accounts[1], ipv6, nick)
+      let value = await althea.userMapping(ipv6)
+      assert.equal(value.ethAddr, accounts[1])
+
+      await althea.deleteMember(ipv6)
+      let value2 = await althea.userMapping(ipv6)
+      assert.equal(value2.ethAddr, ZERO)
+      assert.equal(value2.nick, web3.utils.padRight('0x', 32))
+    })
+
 
     it('Should have a MemberRemoved event', async () => {
       await althea.addMember(accounts[1], ipv6, nick)
@@ -205,7 +192,6 @@ contract('Althea', accounts => {
   })
 
   context('getCountOfSubscribers', () => {
-
 
     let nick = web3.utils.padRight(web3.utils.toHex('Nick Hoggle'), 32)
 

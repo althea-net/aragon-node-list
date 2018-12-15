@@ -36,7 +36,7 @@ export default translate()(({ app, nodes, t }) => {
         }
       >
         {nodes.map((d, i) => {
-          let {nickname, funds, ethAddress, ipAddress} = d;
+          let {nickname, bill, ethAddress, ipAddress} = d;
           let trunc = (s, n) => `${s.substr(0,n)}...${s.substr(-n)}`
           nickname = web3Utils.toUtf8(nickname)
           let addr = Address6.fromBigInteger(new BigInteger(ipAddress.substr(2), 16))
@@ -48,7 +48,7 @@ export default translate()(({ app, nodes, t }) => {
                 <Text>{nickname}</Text>
               </TableCell>
               <TableCell>
-                <Text color={fundsColor(funds)}>&Xi;{funds}</Text>
+                <Text color={fundsColor(bill.balance)}>&Xi;{bill.balance}</Text>
               </TableCell>
               <TableCell>
                 <Text><Abbr title={ethAddress}>{trunc(ethAddress, 6)}</Abbr></Text>
