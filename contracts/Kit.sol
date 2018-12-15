@@ -16,120 +16,92 @@ import "@aragon/os/contracts/lib/ens/ENS.sol";
 import "@aragon/os/contracts/lib/ens/PublicResolver.sol";
 import "@aragon/os/contracts/apm/APMNamehash.sol";
 
-import "@aragon/kits-base/contracts/KitBase.sol";
-
-import "@aragon/os/contracts/common/IsContract.sol";
-
-import "@aragon/apps-voting/contracts/Voting.sol";
 import "@aragon/apps-finance/contracts/Finance.sol";
-import "@aragon/apps-vault/contracts/Vault.sol";
-import "@aragon/apps-token-manager/contracts/TokenManager.sol";
-import "@aragon/apps-shared-minime/contracts/MiniMeToken.sol";
+import "@aragon/apps-voting/contracts/Voting.sol";
 
 import "./Althea.sol";
 
-contract Kit is KitBase, APMNamehash {
-	MiniMeTokenFactory tokenFactory;
+contract KitBase is APMNamehash {
+  ENS public ens;
+  DAOFactory public fac;
 
-	address constant ANY_ENTITY = address(-1);
-	address root;
+  event DeployInstance(address dao);
+  event InstalledApp(address appProxy, bytes32 appId);
 
-	constructor(ENS ens) KitBase(DAOFactory(0), ens) {
-    tokenFactory = new MiniMeTokenFactory();
-    root = msg.sender;
-	}
+  function KitBase(DAOFactory _fac, ENS _ens) {
+    ens = _ens;
 
-  function deployApps(Kernel dao) internal returns
-  (
-    Althea althea,
-    Voting voting,
-    Vault vault,
-    Finance finance,
-    TokenManager tokenManager,
-    MiniMeToken token
-  ) {
-		bytes32 altheaId = apmNamehash("althea");
-		bytes32 votingAppId = apmNamehash("voting");
-		bytes32 tokenManagerId = apmNamehash("token-manager");
-		bytes32 financeId = apmNamehash("finance");
-		bytes32 vaultId = apmNamehash("vault");
-
-		althea = Althea(
-			dao.newAppInstance(altheaId, latestVersionAppBase(altheaId))
-		);
-
-		voting = Voting(
-			dao.newAppInstance(votingAppId, latestVersionAppBase(votingAppId))
-		);
-
-    vault = Vault(
-      dao.newAppInstance(
-        vaultId, latestVersionAppBase(vaultId)
-      )
-    );
-
-    finance = Finance(
-      dao.newAppInstance(
-        financeId, latestVersionAppBase(financeId)
-      )
-    );
-
-		tokenManager = TokenManager(
-      dao.newAppInstance(
-        tokenManagerId, latestVersionAppBase(tokenManagerId)
-      )
-    );
-
-		token = tokenFactory.createCloneToken(
-      MiniMeToken(0), 0, "App token", 0, "APP", true
-    );
+    // If no factory is passed, get it from on-chain bare-kit
+    if (address(_fac) == address(0)) {
+        bytes32 bareKit = apmNamehash("bare-kit");
+        fac = KitBase(latestVersionAppBase(bareKit)).fac();
+    } else {
+        fac = _fac;
+    }
   }
 
-	function newInstance() {
-		Kernel dao = fac.newDAO(this);
-		ACL acl = ACL(dao.acl());
-		acl.createPermission(this, dao, dao.APP_MANAGER_ROLE(), this);
+  function latestVersionAppBase(bytes32 appId) public view returns (address base) {
+    Repo repo = Repo(PublicResolver(ens.resolver(appId)).addr(appId));
+    (,base,) = repo.getLatest();
 
-    Althea althea;
-    Voting voting;
-    Vault vault;
-    Finance finance;
-    TokenManager tokenManager;
-    MiniMeToken token;
+    return base;
+  }
+}
 
-    (althea,voting,vault,finance,tokenManager,token) = deployApps(dao);
+contract Kit is KitBase {
+  MiniMeTokenFactory tokenFactory;
 
-		token.changeController(tokenManager);
+  uint64 constant PCT = 10 ** 16;
+  address constant ANY_ENTITY = address(-1);
 
-		tokenManager.initialize(token, true, 0);
-		// Initialize apps
+  function Kit(ENS ens) KitBase(DAOFactory(0), ens) {
+      tokenFactory = new MiniMeTokenFactory();
+  }
 
-		voting.initialize(token, 50*10**16, 20*10*16, 1 days);
+  function newInstance() {
+    Kernel dao = fac.newDAO(this);
+    ACL acl = ACL(dao.acl());
+    acl.createPermission(this, dao, dao.APP_MANAGER_ROLE(), this);
 
-		acl.createPermission(this, tokenManager, tokenManager.MINT_ROLE(), this);
-		tokenManager.mint(root, 1); // Give one token to root
+    address root = msg.sender;
+    bytes32 altheaId = apmNamehash("althea");
+    bytes32 vaultId = apmNamehash("vault");
+    bytes32 financeId = apmNamehash("finance");
 
-		acl.createPermission(
-      ANY_ENTITY, voting, voting.CREATE_VOTES_ROLE(), root
+    Althea althea = Althea(
+      dao.newAppInstance(altheaId, latestVersionAppBase(altheaId))
     );
 
-		althea.initialize(finance);
+    Vault vault = Vault(
+      dao.newAppInstance(vaultId, latestVersionAppBase(vaultId))
+    );
 
-		acl.createPermission(voting, althea, althea.MANAGER(), root);
-		acl.createPermission(voting, althea, althea.ADD(), root);
-		acl.createPermission(voting, althea, althea.DELETE(), root);
+    Finance finance = Finance(
+      dao.newAppInstance(financeId, latestVersionAppBase(financeId))
+    );
 
-		acl.grantPermission(voting, tokenManager, tokenManager.MINT_ROLE());
+    acl.createPermission(root, althea, althea.MANAGER(), root);
+    acl.createPermission(ANY_ENTITY, althea, althea.ADD(), root);
+    acl.createPermission(root, althea, althea.DELETE(), root);
 
-		// Clean up permissions
-		acl.grantPermission(root, dao, dao.APP_MANAGER_ROLE());
-		acl.revokePermission(this, dao, dao.APP_MANAGER_ROLE());
-		acl.setPermissionManager(root, dao, dao.APP_MANAGER_ROLE());
+    acl.createPermission(finance, vault, vault.TRANSFER_ROLE(), root);
+    acl.createPermission(root, finance, finance.CREATE_PAYMENTS_ROLE(), root);
+    acl.createPermission(root, finance, finance.EXECUTE_PAYMENTS_ROLE(), root);
+    acl.createPermission(root, finance, finance.MANAGE_PAYMENTS_ROLE(), root);
 
-		acl.grantPermission(root, acl, acl.CREATE_PERMISSIONS_ROLE());
-		acl.revokePermission(this, acl, acl.CREATE_PERMISSIONS_ROLE());
-		acl.setPermissionManager(root, acl, acl.CREATE_PERMISSIONS_ROLE());
+    vault.initialize();
+    finance.initialize(vault, 30 days);
+    althea.initialize(finance);
 
-		emit DeployInstance(dao);
-	}
+    // Clean up permissions
+    acl.grantPermission(root, dao, dao.APP_MANAGER_ROLE());
+    acl.revokePermission(this, dao, dao.APP_MANAGER_ROLE());
+    acl.setPermissionManager(root, dao, dao.APP_MANAGER_ROLE());
+
+    acl.grantPermission(root, acl, acl.CREATE_PERMISSIONS_ROLE());
+    acl.revokePermission(this, acl, acl.CREATE_PERMISSIONS_ROLE());
+    acl.setPermissionManager(root, acl, acl.CREATE_PERMISSIONS_ROLE());
+
+    emit DeployInstance(dao);
+  }
 }
