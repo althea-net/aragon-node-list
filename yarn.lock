@@ -128,13 +128,6 @@
   resolved "https://registry.yarnpkg.com/@aragon/core/-/core-2.0.1.tgz#b0ebf4f549a10ba20a07ce6ca4d1a1e09c05cf0d"
   integrity sha512-o2SPNW2H5HlWxgVK+jJ5cpMBjXUwZHbFytjJqySSJkX1mYX+6+9tgH3HAwCXWk7nc7yo/fE22NM60IcDPUZnfA==
 
-"@aragon/kits-base@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@aragon/kits-base/-/kits-base-1.0.0.tgz#debbc199a0c4eaef66aecbede681694b16276a9c"
-  integrity sha512-V9+t3BeqSppVCVhUwx8P4Zh6Ue1o0znjmQrseCX4vSex8NQuAkUC0jqAj5ukAZdsMPQAUNyhqkWFo6mLDxo4hg==
-  dependencies:
-    "@aragon/os" "^4.0.0"
-
 "@aragon/messenger@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@aragon/messenger/-/messenger-1.0.0.tgz#2860fbd055f38d3656efd4997982ec1eb4b31581"

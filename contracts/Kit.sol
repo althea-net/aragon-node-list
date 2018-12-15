@@ -17,7 +17,7 @@ import "@aragon/os/contracts/lib/ens/PublicResolver.sol";
 import "@aragon/os/contracts/apm/APMNamehash.sol";
 
 import "@aragon/apps-finance/contracts/Finance.sol";
-import "@aragon/apps-voting/contracts/Voting.sol";
+import "@aragon/apps-vault/contracts/Vault.sol";
 
 import "./Althea.sol";
 
@@ -49,13 +49,11 @@ contract KitBase is APMNamehash {
 }
 
 contract Kit is KitBase {
-  MiniMeTokenFactory tokenFactory;
 
   uint64 constant PCT = 10 ** 16;
   address constant ANY_ENTITY = address(-1);
 
   function Kit(ENS ens) KitBase(DAOFactory(0), ens) {
-      tokenFactory = new MiniMeTokenFactory();
   }
 
   function newInstance() {
@@ -91,7 +89,7 @@ contract Kit is KitBase {
 
     vault.initialize();
     finance.initialize(vault, 30 days);
-    althea.initialize(finance);
+    althea.initialize(vault);
 
     // Clean up permissions
     acl.grantPermission(root, dao, dao.APP_MANAGER_ROLE());
