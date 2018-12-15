@@ -21,12 +21,33 @@
     "@aragon/apps-vault" "^2.0.0"
     "@aragon/os" "^3.1.1"
 
+"@aragon/apps-finance@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@aragon/apps-finance/-/apps-finance-2.1.0.tgz#58f18fd3c5359d235025ea1128343748f2d8b671"
+  integrity sha512-CXsjYfF5bKErQORsyGk7JbqJYQH0oqTr9hn0TRA+p40l77eX+eMgz7Af4HPQqx9bmU1zgFt+ayVBHVklQHI22g==
+  dependencies:
+    "@aragon/apps-vault" "^4.0.0"
+    "@aragon/os" "4.0.0"
+
+"@aragon/apps-shared-minime@1.0.0", "@aragon/apps-shared-minime@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@aragon/apps-shared-minime/-/apps-shared-minime-1.0.0.tgz#9667d52b2b719b33835b944e82757d29849f7f52"
+  integrity sha512-DC0ylnEcsqED8eQIxriDbRTmSmqdUYWJrGmysI/UTuHvdSfsAy9awbx4Ea6To1Acd3F6kca5oPn6m9WjCAhlxQ==
+
 "@aragon/apps-token-manager@^1.0.0":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@aragon/apps-token-manager/-/apps-token-manager-1.0.1.tgz#bfb312658bd5469a647efba42bd264e43585b0fc"
   integrity sha512-2EktscZ7VNivFg4pEZjFSePY8HU6rKZQ7dGQN8YreJHAPz4x44rBygBQIUDskV80MJtO5NaQo8fRB8di2rfSrA==
   dependencies:
     "@aragon/core" "^2.0.0"
+
+"@aragon/apps-token-manager@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@aragon/apps-token-manager/-/apps-token-manager-2.0.0.tgz#7ff1b74c4ead2b0e99448512d5eaa1396537f785"
+  integrity sha512-h0R9Pegod3Re3sPNx1EmzlampYoJDIyKYeR7Ziky+2ZN2pm6om/bjDfXZKGCmCEPpy/4ttIR8FayVvCuKCuw4A==
+  dependencies:
+    "@aragon/apps-shared-minime" "1.0.0"
+    "@aragon/os" "4.0.0"
 
 "@aragon/apps-vault@^1.0.0":
   version "1.0.0"
@@ -42,12 +63,27 @@
   dependencies:
     "@aragon/os" "^3.1.1"
 
+"@aragon/apps-vault@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@aragon/apps-vault/-/apps-vault-4.0.0.tgz#68707cf9b1755de12dd1ffa508e6645b09840338"
+  integrity sha512-S+u2NyZhNliZTQ6VHRtILUO/gJ/5mjPhYArPS1WkDPfLQyOOU4Y2kgXUGDCFTkfal89NMN0KM1mfjq4YOgpXNQ==
+  dependencies:
+    "@aragon/os" "4.0.0"
+
 "@aragon/apps-voting@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@aragon/apps-voting/-/apps-voting-1.0.0.tgz#e8c34643b070471423e4280fd4645a4f3fdac0f7"
   integrity sha512-+Z1o6rSdXrRbDYRoSaoh3PaNzHQt+u7YY0BLUL55/nlZct+tkZM7uIq8Qsk33IZDxr0S58jDB6zNsiR5yXE5TA==
   dependencies:
     "@aragon/os" "^3.0.8"
+
+"@aragon/apps-voting@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@aragon/apps-voting/-/apps-voting-2.0.0.tgz#38f76e865076e221018be8f6539c2738e0d09962"
+  integrity sha512-6lmRwKScqYMRGvrj0B04fMY8mtoUQ3pt8fBTBWKXpDPBkHdPesT7ra6GP6fXPLBIhyEw4f/9JWlm5UIeAwiMhw==
+  dependencies:
+    "@aragon/apps-shared-minime" "1.0.0"
+    "@aragon/os" "4.0.0"
 
 "@aragon/aragen@^2.0.3":
   version "2.0.3"
@@ -113,6 +149,13 @@
   resolved "https://registry.yarnpkg.com/@aragon/core/-/core-2.0.1.tgz#b0ebf4f549a10ba20a07ce6ca4d1a1e09c05cf0d"
   integrity sha512-o2SPNW2H5HlWxgVK+jJ5cpMBjXUwZHbFytjJqySSJkX1mYX+6+9tgH3HAwCXWk7nc7yo/fE22NM60IcDPUZnfA==
 
+"@aragon/kits-base@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@aragon/kits-base/-/kits-base-1.0.0.tgz#debbc199a0c4eaef66aecbede681694b16276a9c"
+  integrity sha512-V9+t3BeqSppVCVhUwx8P4Zh6Ue1o0znjmQrseCX4vSex8NQuAkUC0jqAj5ukAZdsMPQAUNyhqkWFo6mLDxo4hg==
+  dependencies:
+    "@aragon/os" "^4.0.0"
+
 "@aragon/messenger@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@aragon/messenger/-/messenger-1.0.0.tgz#2860fbd055f38d3656efd4997982ec1eb4b31581"
@@ -121,6 +164,17 @@
     "@babel/runtime" "^7.1.2"
     rxjs "^5.5.6"
     uuid "^3.2.1"
+
+"@aragon/os@4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@aragon/os/-/os-4.0.0.tgz#fcc132e3e6d4d02c65208590e8320f0c4373dd54"
+  integrity sha512-Y/2TklROeX7ZWhSMIAwhjo5T3PUCMaq/N0hj1LgdaTn1C7f48mcOG3ZhcgYR7VWCpvS2gJpcEsuVC+6o3KuXDQ==
+  dependencies:
+    homedir "^0.6.0"
+    mkdirp "^0.5.1"
+    truffle-flattener "^1.2.9"
+    truffle-hdwallet-provider "0.0.3"
+    truffle-hdwallet-provider-privkey "0.3.0"
 
 "@aragon/os@^3.0.8", "@aragon/os@^3.1.1", "@aragon/os@^3.1.2":
   version "3.1.12"
