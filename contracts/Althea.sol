@@ -41,9 +41,9 @@ contract Althea is AragonApp {
   mapping(bytes16 => User) public userMapping;
   mapping(address => Bill) public billMapping;
 
-  function initialize(address _finance) external onlyInit {
+  function initialize(address _vault) external onlyInit {
     perBlockFee = 10000;
-    paymentAddress = _finance;
+    paymentAddress = _vault;
     initialized();
   }
 
