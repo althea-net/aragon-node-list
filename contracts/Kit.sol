@@ -32,52 +32,72 @@ contract Kit is KitBase, APMNamehash {
 	MiniMeTokenFactory tokenFactory;
 
 	address constant ANY_ENTITY = address(-1);
+	address root;
 
 	constructor(ENS ens) KitBase(DAOFactory(0), ens) {
     tokenFactory = new MiniMeTokenFactory();
+    root = msg.sender;
 	}
 
-	function newInstance() {
-		Kernel dao = fac.newDAO(this);
-		ACL acl = ACL(dao.acl());
-		acl.createPermission(this, dao, dao.APP_MANAGER_ROLE(), this);
-
-		address root = msg.sender;
+  function deployApps(Kernel dao) internal returns
+  (
+    Althea althea,
+    Voting voting,
+    Vault vault,
+    Finance finance,
+    TokenManager tokenManager,
+    MiniMeToken token
+  ) {
 		bytes32 altheaId = apmNamehash("althea");
 		bytes32 votingAppId = apmNamehash("voting");
 		bytes32 tokenManagerId = apmNamehash("token-manager");
 		bytes32 financeId = apmNamehash("finance");
 		bytes32 vaultId = apmNamehash("vault");
 
-		Althea althea = Althea(
+		althea = Althea(
 			dao.newAppInstance(altheaId, latestVersionAppBase(altheaId))
 		);
 
-		Voting voting = Voting(
+		voting = Voting(
 			dao.newAppInstance(votingAppId, latestVersionAppBase(votingAppId))
 		);
 
-    Vault vault = Vault(
+    vault = Vault(
       dao.newAppInstance(
         vaultId, latestVersionAppBase(vaultId)
       )
     );
 
-    Finance finance = Finance(
+    finance = Finance(
       dao.newAppInstance(
         financeId, latestVersionAppBase(financeId)
       )
     );
 
-		TokenManager tokenManager = TokenManager(
+		tokenManager = TokenManager(
       dao.newAppInstance(
         tokenManagerId, latestVersionAppBase(tokenManagerId)
       )
     );
 
-		MiniMeToken token = tokenFactory.createCloneToken(
+		token = tokenFactory.createCloneToken(
       MiniMeToken(0), 0, "App token", 0, "APP", true
     );
+  }
+
+	function newInstance() {
+		Kernel dao = fac.newDAO(this);
+		ACL acl = ACL(dao.acl());
+		acl.createPermission(this, dao, dao.APP_MANAGER_ROLE(), this);
+
+    Althea althea;
+    Voting voting;
+    Vault vault;
+    Finance finance;
+    TokenManager tokenManager;
+    MiniMeToken token;
+
+    (althea,voting,vault,finance,tokenManager,token) = deployApps(dao);
 
 		token.changeController(tokenManager);
 
