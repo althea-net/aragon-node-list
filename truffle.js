@@ -17,7 +17,7 @@ module.exports = {
       provider: function() {
         return new HDWalletProvider(
           process.env.MNEMONIC,
-          "http://sasquatch.network:19545"
+          "https://sasquatch.network/rinkeby"
       )},
       network_id: '4',
       gas: 6.9e5,
