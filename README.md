@@ -63,9 +63,10 @@ aragon apm publish minor --environment infura --apm.ipfs.rpc http://sasquatch.ne
 This needs the special [branch](###-Live-dao-installs-branch)
 
 ```
-aragon-live dao install seabass althea.open.aragonpm.eth --environment infura --apm.ipfs.rpc https://ipfs.eth.aragon.network/ipfs
-
+aragon-live dao install test2 althea.open.aragonpm.eth --environment rinkeby2 --apm.ipfs.rpc https://gateway.ipfs.io/ipfs --app-init-args 0x72436347C3DD7Ad26D2fad5Ea62B3aB37771DbAF
 ```
+
+The address at the end is the vault address obtained from running `node ./scripts/getVaultAddress.js`
 
 ### Permissions
 
@@ -74,11 +75,14 @@ This needs the special [branch](###-Live-dao-installs-branch)
 ```
 aragon-live dao acl create clatskanie.aragonid.eth \ # dao ens
   0x97895FDBdEFdB4F68985d000D421573446d87892 \  # app proxy address obtained by going to the DAO address on etherscan and looking at internal txns
-  0xaf290d8680820aad922855f39b306097b20e28774d6c1ad35a20325630c3a02c \ # MANAGER
+  0xaf290d8680820aad922855f39b306097b20e28774d6c1ad35a20325630c3a02c \ # keccak256("MANAGER")
   0x8191399d0c13A2ED477bC68B70e8A8814E287C6C \ # Voting address
   0x8191399d0c13A2ED477bC68B70e8A8814E287C6C \ # Voting address
   --environment infura
 ```
+
+After setting the first permission the other 2 can be set from the ui of the DAO
+
 #### Roles:
 
 * MANAGER: `0xaf290d8680820aad922855f39b306097b20e28774d6c1ad35a20325630c3a02c`
