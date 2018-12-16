@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "description": "",
   "dependencies": {
+    "@aragon/apps-finance": "^2.1.0",
+    "@aragon/apps-vault": "^4.0.0",
     "@aragon/client": "^1.0.0-beta.9",
     "@aragon/os": "^4.0.1",
     "@aragon/ui": "^0.16.0",
@@ -46,7 +48,7 @@
   "scripts": {
     "start": "npm run start:aragon:ipfs",
     "start:aragon:ipfs": "aragon run",
-    "start:aragon:http": "aragon run --http localhost:8001 --http-served-from ./dist",
+    "start:aragon:http": "aragon run --http localhost:8001 --http-served-from ./dist --kit Kit --kit-init 0x5f6f7e8cc7346a11ca2def8f827b7a0b612c56a1",
     "start:app": "npm run sync-assets && npm run build:script -- --no-minify && parcel serve app/index.html -p 8001 --out-dir dist/ --no-cache",
     "test": "truffle test",
     "compile": "truffle compile",

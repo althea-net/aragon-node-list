@@ -16,7 +16,7 @@ const ZERO = '0x0000000000000000000000000000000000000000'
 
 contract('Althea', accounts => {
 
-  let daoFact, altheaBase, althea, paymentAddress, perBlockFee
+  let daoFact, altheaBase, althea, perBlockFee, vaultBase, vault
   let MANAGER, ADD, DELETE
   const root = accounts[0]
 
@@ -30,6 +30,7 @@ contract('Althea', accounts => {
     )
 
     altheaBase = await getContract('Althea').new()
+    vaultBase = await getContract('Vault').new()
 
     // Setup constants
     ANY_ENTITY = await aclBase.ANY_ENTITY()
@@ -50,29 +51,34 @@ contract('Althea', accounts => {
     )
 
     let appId = namehash('althea.aragonpm.eth')
-    const receipt = await dao.newAppInstance(
+    let receipt = await dao.newAppInstance(
       appId, altheaBase.address, { from: root }
     )
     althea = await getContract('Althea').at(
       receipt.logs.filter(l => l.event == 'NewAppProxy')[0].args.proxy
     )
-
     await acl.createPermission(
       root, althea.address, MANAGER, root, { from: root }
     )
-
     await acl.createPermission(
       root, althea.address, ADD, root, { from: root }
     )
-
     await acl.createPermission(
       root, althea.address, DELETE, root, { from: root }
     )
 
-    paymentAddress = accounts[9]
+    let vaultId = namehash('vault.aragonpm.eth')
+    receipt = await dao.newAppInstance(
+      vaultId, vaultBase.address, { from: root }
+    )
+    vault = await getContract('Vault').at(
+      receipt.logs.filter(l => l.event == 'NewAppProxy')[0].args.proxy
+    )
+    await vault.initialize()
+
     // the per block fee is .50 usd a day at 200usd ETH
+    await althea.initialize(vault.address)
     perBlockFee = toBN(web3.utils.toWei('0.000000405'))
-    await althea.initialize({from: paymentAddress})
     await althea.setPerBlockFee(perBlockFee)
   })
 
@@ -136,7 +142,7 @@ contract('Althea', accounts => {
       const receipt = await althea.addBill({value: amount})
       await expectEvent.inLogs(receipt.logs, 'NewBill', { 
         payer: accounts[0],
-        collector: paymentAddress
+        collector: vault.address
       })
     })
 
@@ -147,7 +153,7 @@ contract('Althea', accounts => {
       altheaBalance.should.eql(web3.utils.toBN(balance).toString())
     })
 
-    it('Increase bill by corresponding amount', async () => {
+    it('Increase bill when more amount is sent', async () => {
       let amount = toBN(2).mul(perBlockFee)
       await althea.addBill({value: amount})
       await althea.addBill({value: amount})
@@ -170,7 +176,16 @@ contract('Althea', accounts => {
 
       await expectEvent.inLogs(receipt.logs, 'NewBill', { 
         payer: accounts[1],
-        collector: paymentAddress
+        collector: vault.address
+      })
+
+      it('Increase bill when more amount is sent', async () => {
+        let amount = toBN(2).mul(perBlockFee)
+        await althea.addBill({value: amount})
+        await althea.addBill({value: amount})
+        let total = amount.mul(toBN(2))
+        let bill = await althea.billMapping(accounts[0])
+        assert(bill.balance.eq(total))
       })
     })
 
@@ -223,16 +238,6 @@ contract('Althea', accounts => {
     })
   })
 
-  context('setPaymentAddr', () => {
-
-    it('Should set a new payment address', async() => {
-      let newAddr = await web3.eth.personal.newAccount()
-      await althea.setPaymentAddr(newAddr)
-      let value = await althea.paymentAddress()
-      value.should.eql(newAddr)
-    })
-  })
-
   context('collectBills', () => {
 
     let nick = web3.utils.padRight(web3.utils.toHex('Nick Hoggle'), 32)
@@ -240,6 +245,7 @@ contract('Althea', accounts => {
     it('Bill lastUpdated should equal current block number', async () => {
       let amount = toBN(2).mul(perBlockFee)
       await althea.addMember(accounts[0], web3.utils.randomHex(32), nick)
+      await althea.addBill({value: amount})
       await althea.collectBills()
       let bill = await althea.billMapping(accounts[0])
       let blockNumber = toBN(await web3.eth.getBlockNumber())
@@ -253,7 +259,7 @@ contract('Althea', accounts => {
         .receipt.blockNumber
       // we need to add member to add it to the subnetSubscribers
       await althea.addMember(accounts[0], web3.utils.randomHex(32), nick)
-      let previousBalance = toBN(await web3.eth.getBalance(paymentAddress))
+      let previousBalance = toBN(await web3.eth.getBalance(vault.address))
 
       let lastBlock = (await althea.collectBills()).receipt.blockNumber
 
@@ -261,7 +267,7 @@ contract('Althea', accounts => {
         .add(toBN(lastBlock - billBlock).mul(perBlockFee))
 
       assert.equal(
-        toBN(await web3.eth.getBalance(paymentAddress)),
+        toBN(await web3.eth.getBalance(vault.address)),
         expectedBalance.toString()
       )
     })
@@ -279,11 +285,11 @@ contract('Althea', accounts => {
 
       const billCount = toBN(summation(subscribersCount))
       let expectedBalance = perBlockFee.mul(billCount)
-        .add(toBN(await web3.eth.getBalance(paymentAddress)))
+        .add(toBN(await web3.eth.getBalance(vault.address)))
 
       await althea.collectBills()
 
-      let currentBalance = toBN(await web3.eth.getBalance(paymentAddress))
+      let currentBalance = toBN(await web3.eth.getBalance(vault.address))
       currentBalance.eq(expectedBalance).should.eql(true)
     })
 
@@ -335,10 +341,10 @@ contract('Althea', accounts => {
       // the +1 is for the payMyBills txn block number
       let expectedBalance = perBlockFee
         .mul(toBN(blockCount + 1))
-        .add(toBN(await web3.eth.getBalance(paymentAddress)))
+        .add(toBN(await web3.eth.getBalance(vault.address)))
 
       let txn = await althea.payMyBills()
-      let currentBalance = toBN(await web3.eth.getBalance(paymentAddress))
+      let currentBalance = toBN(await web3.eth.getBalance(vault.address))
       currentBalance.eq(expectedBalance).should.eql(true)
     })
 

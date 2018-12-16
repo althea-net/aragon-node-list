@@ -40,11 +40,8 @@ class SubnetAdmin extends Component {
     ipAddress: '',
     ipExists: false,
     ipValid: true,
-    newPaymentAddr: '',
     newPerBlockFee: '',
     nickname: '',
-    paymentAddr: '',
-    paymentAddrResult: null,
     perBlockFee: '',
     perBlockFeeResult: null,
     removeAddress: '',
@@ -91,14 +88,6 @@ class SubnetAdmin extends Component {
     this.setState({ ipAddress })
   } 
 
-  getPaymentAddress = async () => {
-    return new Promise(resolve =>{
-      this.props.app.call('paymentAddress').subscribe(v => {
-        resolve(v)
-      })
-    })
-  }
-
   getPerBlockFee = async () => {
     return new Promise(resolve =>{
       this.props.app.call('perBlockFee').subscribe(v => {
@@ -125,10 +114,9 @@ class SubnetAdmin extends Component {
       }))
     }
 
-    let paymentAddr = await this.getPaymentAddress()
     let perBlockFee = await this.getPerBlockFee()
     this.generateIp()
-    this.setState({ bills, currentBlock, paymentAddr, perBlockFee })
+    this.setState({ bills, currentBlock, perBlockFee })
   } 
 
   componentWillUnmount() {
@@ -151,18 +139,6 @@ class SubnetAdmin extends Component {
 
     this.setState({ checkResult })
   } 
-
-  setPaymentAddr = async () => {
-    let { newPaymentAddr } = this.state
-    try {
-      await new Promise((resolve, reject) => {
-        this.props.app.setPaymentAddr(newPaymentAddr)
-          .subscribe(resolve, reject)
-      })
-      this.setState({ paymentAddrResult: true })
-    } catch (e) { console.log(e) }
-    await this.componentDidMount()
-  }
 
   setPerBlockFee = async () => {
     let { newPerBlockFee } = this.state
@@ -279,7 +255,6 @@ class SubnetAdmin extends Component {
       ipExists,
       ipValid,
       nickname, 
-      paymentAddrResult,
       perBlockFeeResult,
       removeResult,
       scanning,
@@ -381,25 +356,6 @@ class SubnetAdmin extends Component {
                 />
               </Field>
               <Button onClick={this.removeNode} mode="outline">{t('removeNodeFromSubnetDAO')}</Button>
-            </StyledCard>
-            <StyledCard>
-              <Text size="xlarge">{t('updatePaymentAddr')}</Text>
-              <br />
-              <Text size="large">{'Current: ' + this.state.paymentAddr}</Text>
-              {paymentAddrResult && <Info title="Payment Address succesfully updated" />}
-              {paymentAddrResult !== null && !paymentAddrResult && <Info title="Can't find node" />}
-              <Field label={t('ethAddress')}>
-                <TextInput wide
-                  type="text"
-                  name="address"
-                  placeholder={t('enterPaymentAddr')}
-                  onChange={e => {
-                    this.setState( { newPaymentAddr: e.target.value })
-                  }}
-                  value={this.state.newPaymentAddr}
-                />
-              </Field>
-              <Button onClick={this.setPaymentAddr} mode="outline">{t('updatePaymentAddr')}</Button>
             </StyledCard>
             <StyledCard>
               <Text size="xlarge">{t('updatePerBlockFee')}</Text>

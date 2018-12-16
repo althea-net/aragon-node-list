@@ -3,7 +3,10 @@ pragma solidity ^0.4.24;
 import "@aragon/os/contracts/apps/AragonApp.sol";
 import "@aragon/os/contracts/lib/math/SafeMath.sol";
 
-contract Althea is AragonApp {
+import "@aragon/os/contracts/common/EtherTokenConstant.sol";
+import "@aragon/apps-vault/contracts/Vault.sol";
+
+contract Althea is EtherTokenConstant, AragonApp {
   using SafeMath for uint;
 
   event NewMember(
@@ -36,14 +39,14 @@ contract Althea is AragonApp {
   }
 
   uint public perBlockFee;
-  address public paymentAddress;
+  Vault public vault;
   bytes16[] public subnetSubscribers;
   mapping(bytes16 => User) public userMapping;
   mapping(address => Bill) public billMapping;
 
-  function initialize() external onlyInit {
+  function initialize(Vault _vault) external onlyInit {
     perBlockFee = 10000;
-    paymentAddress = msg.sender;
+    vault = _vault;
     initialized();
   }
 
@@ -76,10 +79,6 @@ contract Althea is AragonApp {
     perBlockFee = _newFee;
   }
 
-  function setPaymentAddr(address _a) external auth(MANAGER) {
-    paymentAddress = _a;
-  }
-
   function getCountOfSubscribers() external view returns (uint) {
     return subnetSubscribers.length;
   }
@@ -89,7 +88,7 @@ contract Althea is AragonApp {
 
     if (billMapping[msg.sender].lastUpdated == 0) {
       billMapping[msg.sender] = Bill(msg.value, perBlockFee, block.number);
-      emit NewBill(msg.sender, paymentAddress);
+      emit NewBill(msg.sender, vault);
     } else {
       billMapping[msg.sender].balance = billMapping[msg.sender].balance.add(msg.value);
       emit BillUpdated(msg.sender);
@@ -99,16 +98,16 @@ contract Althea is AragonApp {
   function collectBills() external {
     uint transferValue = 0;
     for (uint i = 0; i < subnetSubscribers.length; i++) {
-
       transferValue = transferValue.add(
         processBills(userMapping[subnetSubscribers[i]].ethAddr)
       );
     }
-    address(paymentAddress).transfer(transferValue);
+    vault.deposit.value(transferValue)(ETH, transferValue);
   }
 
   function payMyBills() public {
-    address(paymentAddress).transfer(processBills(msg.sender));
+    uint amount = processBills(msg.sender);
+    vault.deposit.value(amount)(ETH, amount);
   }
 
   function withdrawFromBill() external {
