@@ -47,8 +47,8 @@
   },
   "scripts": {
     "start": "npm run start:aragon:ipfs",
-    "start:aragon:ipfs": "aragon run",
-    "start:aragon:http": "aragon run --http localhost:8001 --http-served-from ./dist --kit Kit --kit-init 0x5f6f7e8cc7346a11ca2def8f827b7a0b612c56a1",
+    "start:aragon:ipfs": "aragon run --kit Kit --kit-init @ARAGON_ENS",
+    "start:aragon:http": "aragon run --http localhost:8001 --http-served-from ./dist --kit Kit --kit-init @ARAGON_ENS",
     "start:app": "npm run sync-assets && npm run build:script -- --no-minify && parcel serve app/index.html -p 8001 --out-dir dist/ --no-cache",
     "test": "truffle test",
     "compile": "truffle compile",
