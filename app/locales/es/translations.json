@@ -28,6 +28,7 @@
   "noNodes": "No se encontraron nodos",
   "organizerMode": "modo organizador",
   "organizerModeLink": "Modo organizador (avanzado)",
+  "userMode": "modo usuario",
   "backToUserMode": "Volver al modo de usuario",
   "paymentAddress": "Cuenta de pago",
   "updatePaymentAddr": "Actualizar dirección de la aplicación de finanzas",

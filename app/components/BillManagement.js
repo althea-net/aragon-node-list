@@ -90,7 +90,6 @@ class BillManagement extends React.Component {
       this.props.app.web3Eth('getBalance', address).subscribe(resolve)
     }) 
   } 
-
   setAmount = (e) => {
     let amount = e.target.value
     this.setState({ amount })
@@ -102,6 +101,32 @@ class BillManagement extends React.Component {
     })
 
     this.componentDidMount()
+  }
+
+  renderQR(t, appAddress) {
+    // This just checks if the address exist.
+    // When there are no events ever on the contract
+    // the address cannot be acquired in the current
+    // work around in script.js
+    if(appAddress !== '') {
+      return(
+        <QrCard>
+          <Col md={6}>
+            <Text size="xlarge">
+              {t('paymentAddress')}: {appAddress}
+            </Text>
+          </Col>
+          <Col md={6}>
+            <QrCode
+              value={appAddress}
+              size={250}
+              style={{height: 250, marginTop: 15}}
+            />
+          </Col>
+        </QrCard>
+      )
+    }
+    return(<div></div>)
   }
 
   render() {
@@ -127,20 +152,7 @@ class BillManagement extends React.Component {
           </Col>
         </Row>
         <Row>
-          <QrCard>
-            <Col md={6}>
-              <Text size="xlarge">
-                {t('paymentAddress')}: {appAddress}
-              </Text>
-            </Col>
-            <Col md={6}>
-              <QrCode
-                value={appAddress}
-                size={250}
-                style={{height: 250, marginTop: 15}}
-              />
-            </Col>
-          </QrCard>
+        {this.renderQR(t, appAddress)}
         </Row>
         <Row>
           <Col xs={6}>
