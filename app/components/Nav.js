@@ -27,11 +27,23 @@ class Nav extends React.Component {
       subnetAdmin: SubnetAdmin, 
       billManagement: BillManagement 
     } 
+    this.renderOrganizer = this.renderOrganizer.bind(this)
+    this.renderUser = this.renderUser.bind(this)
   } 
 
   componentDidMount() {
     this.props.setPage(BillManagement)
   } 
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.mode !== nextProps.mode) {
+      if(this.props.mode === 'organizer'){
+        this.props.setPage(BillManagement)
+      } else {
+        this.props.setPage(SubnetAdmin)
+      }
+    }
+  }
 
   setLocale = i => {
     let locale = this.locales[i]
@@ -41,27 +53,31 @@ class Nav extends React.Component {
 
   active = () => this.locales.findIndex(e => e === this.state.locale)
 
-  render() {
-    let { mode, setMode, setPage, t } = this.props;
-    let pages = Object.keys(this.pages);
+  renderOrganizer = () => {
+    return(
+      <React.Fragment>
+        <NavButton onClick={() => this.props.setPage(NodeList)}> 
+          {this.props.t('nodeList')}
+        </NavButton>
+        <NavButton onClick={() => this.props.setPage(SubnetAdmin)}>
+          {this.props.t('subnetAdmin')}
+        </NavButton>
+      </React.Fragment>
+    )
+  }
 
+  renderUser = () => {
+    return(
+      <NavButton onClick={() => this.props.setPage(BillManagement)}>
+        {this.props.t('billManagement')}
+      </NavButton>
+    )
+  }
+
+  render() {
     return (
       <div>
-        {(mode === 'organizer') ?
-          (
-            <React.Fragment>
-              <NavButton onClick={() => setPage(NodeList)}>{t('nodeList')}</NavButton>
-              <NavButton onClick={() => setPage(SubnetAdmin)}>{t('subnetAdmin')}</NavButton>
-              <NavButton onClick={() => setPage(BillManagement)}>{t('billManagement')}</NavButton>
-              <NavButton onClick={() => { setPage(BillManagement); setMode('user'); }}>{t('backToUserMode')}</NavButton>
-            </React.Fragment>
-          )
-        :
-          (
-            <NavButton onClick={() => setPage(BillManagement)}>{t('billManagement')}</NavButton>
-          )
-        }
-
+        {this.props.mode === 'organizer' ? this.renderOrganizer() : this.renderUser()}
         <DropDown items={this.locales} onChange={this.setLocale} active={this.active()} />
       </div>
     );
