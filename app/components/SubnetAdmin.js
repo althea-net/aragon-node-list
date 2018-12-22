@@ -34,6 +34,7 @@ class SubnetAdmin extends Component {
     bills: 0,
     checkAddress: '',
     checkResult: null,
+    contractAddress: '',
     currentBlock: 0,
     delay: 300,
     ethAddress: '',
@@ -115,8 +116,10 @@ class SubnetAdmin extends Component {
     }
 
     let perBlockFee = await this.getPerBlockFee()
+    let contractAddress = await this.getContractAddress()
+
     this.generateIp()
-    this.setState({ bills, currentBlock, perBlockFee })
+    this.setState({ bills, contractAddress, currentBlock, perBlockFee })
   } 
 
   componentWillUnmount() {
@@ -239,6 +242,14 @@ class SubnetAdmin extends Component {
     } catch (e) { console.log(e) }
   } 
 
+  getContractAddress = async () => {
+    return new Promise(resolve =>{
+      this.props.app.call('contractAddress').subscribe(v => {
+        resolve(v)
+      })
+    })
+  } 
+
   formatIp = async e => {
     let addr = new Address6(e.target.value)
     if (addr.isValid()) this.setState({ ipAddress: addr.correctForm() + addr.subnet })
@@ -249,6 +260,7 @@ class SubnetAdmin extends Component {
     let { 
       bills, 
       checkResult, 
+      contractAddress,
       currentBlock, 
       ethAddress, 
       ipAddress, 
@@ -295,7 +307,7 @@ class SubnetAdmin extends Component {
                 </Row>
                 <QrCard>
                   <Text.Block>To assign this IP to a router, go to Networking Settings -> Subnet DAOs in the Althea Dashboard web interface and click the Scan QR button, then position this QR code in the center of the camera.</Text.Block>
-                  <QrCode value={ipAddress} size={250} style={{height: 250, marginTop: 15}} />
+                  <QrCode value={JSON.stringify({contractAddress, ipAddress})} size={250} style={{height: 250, marginTop: 15}} />
                 </QrCard>
               </Field>
               <Field label={t('ethAddress')}>

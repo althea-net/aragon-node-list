@@ -50,6 +50,11 @@ contract Althea is EtherTokenConstant, AragonApp {
     initialized();
   }
 
+
+  function contractAddress() external view returns (address addr) {
+    return this;
+  }
+
   function addMember(address _ethAddr, bytes16 _ip, bytes16 _nick)
     external 
     auth(ADD)
