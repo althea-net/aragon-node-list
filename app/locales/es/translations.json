@@ -1,4 +1,6 @@
 {
+  "scanQr": "Escanee este código QR desde el panel del enrutador del nodo para asignar las direcciones IP y de contrato que se muestran arriba.",
+  "contractAddress": "Dirección del contrato",
   "ethAddress": "Dirección de Ethereum",
   "ipAddress": "Dirección IP",
   "fundsRemaining": "Fondos Restantes",

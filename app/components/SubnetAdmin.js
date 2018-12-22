@@ -305,11 +305,19 @@ class SubnetAdmin extends Component {
                     <Button mode="outline" onClick={this.generateIp}>Generate IP</Button>
                   </Col>
                 </Row>
-                <QrCard>
-                  <Text.Block>To assign this IP to a router, go to Networking Settings -> Subnet DAOs in the Althea Dashboard web interface and click the Scan QR button, then position this QR code in the center of the camera.</Text.Block>
-                  <QrCode value={JSON.stringify({contractAddress, ipAddress})} size={250} style={{height: 250, marginTop: 15}} />
-                </QrCard>
               </Field>
+              <Field label={t('contractAddress')}>
+                <TextInput wide
+                  type="text"
+                  name="contractAddress"
+                  value={contractAddress}
+                  readonly
+                />
+              </Field>
+              <QrCard>
+                <Text.Block>{t('scanQr')}</Text.Block>
+                <QrCode value={JSON.stringify({contractAddress, ipAddress})} size={250} style={{height: 250, marginTop: 15}} />
+              </QrCard>
               <Field label={t('ethAddress')}>
                 <Row>
                   <Col md={8}>
