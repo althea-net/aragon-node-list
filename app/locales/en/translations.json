@@ -1,5 +1,5 @@
 {
-  "scanQr": "Scan this QR code from the node's router dashboard to assign the IP and contract addresses shown above.",
+  "scanQr": "Scan this QR code from the node's router dashboard to assign the IP and contract addresses:",
   "contractAddress": "Contract Address",
   "ethAddress": "Ethereum Address",
   "ipAddress": "IP Address",

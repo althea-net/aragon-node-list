@@ -4,7 +4,7 @@ import QrReader from 'react-qr-reader'
 import web3Utils from 'web3-utils'
 
 const handleScan = result => {
-  result = result.replace('ethereum:', '')
+  if (result) result = result.replace('ethereum:', '')
   if (web3Utils.isAddress(result)) {
     window.opener.postMessage('qr:' + result, '*')
     self.close()

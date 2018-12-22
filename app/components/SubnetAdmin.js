@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
-import { Card, TextInput, Info, Field, Button, Text } from '@aragon/ui'
+import { Badge, Card, TextInput, Info, Field, Button, Text } from '@aragon/ui'
 import { Row, Col } from 'react-flexbox-grid'
 import styled from 'styled-components'
 import { translate } from 'react-i18next'
@@ -306,17 +306,15 @@ class SubnetAdmin extends Component {
                   </Col>
                 </Row>
               </Field>
-              <Field label={t('contractAddress')}>
-                <TextInput wide
-                  type="text"
-                  name="contractAddress"
-                  value={contractAddress}
-                  readonly
-                />
-              </Field>
               <QrCard>
                 <Text.Block>{t('scanQr')}</Text.Block>
-                <QrCode value={JSON.stringify({contractAddress, ipAddress})} size={250} style={{height: 250, marginTop: 15}} />
+                <figure>
+                  <QrCode value={JSON.stringify({contractAddress, ipAddress})} size={300} style={{marginTop: 15}} />
+                  <figcaption style={{textAlign: 'center'}}>
+                    <div>0x12309750asda80sd9801982e0hd098{contractAddress}</div>
+                    <div>2001:2092:4124:1231::/28{ipAddress}</div>
+                  </figcaption>
+                </figure>
               </QrCard>
               <Field label={t('ethAddress')}>
                 <Row>
