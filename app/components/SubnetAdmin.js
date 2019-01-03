@@ -206,10 +206,8 @@ class SubnetAdmin extends Component {
   hexIp = ip =>
     '0x' + (new Address6(ip)).canonicalForm().replace(new RegExp(':', 'g'), '')
 
-
   ipExists = ip => {
     let { nodes } = this.props
-
     if (nodes)
       return nodes.findIndex(n => n.ipAddress === this.hexIp(ip)) > -1
 
@@ -242,11 +240,9 @@ class SubnetAdmin extends Component {
     } catch (e) { console.log(e) }
   } 
 
-  getContractAddress = async () => {
+  getContractAddress = () => {
     return new Promise(resolve =>{
-      this.props.app.call('contractAddress').subscribe(v => {
-        resolve(v)
-      })
+      this.props.app.call('contractAddress').subscribe(resolve)
     })
   } 
 
@@ -309,10 +305,14 @@ class SubnetAdmin extends Component {
               <QrCard>
                 <Text.Block>{t('scanQr')}</Text.Block>
                 <figure>
-                  <QrCode value={JSON.stringify({contractAddress, ipAddress})} size={300} style={{marginTop: 15}} />
+                  <QrCode value={
+                    JSON.stringify({contractAddress, ipAddress})}
+                    size={300}
+                    style={{marginTop: 15}}
+                  />
                   <figcaption style={{textAlign: 'center'}}>
-                    <div>0x12309750asda80sd9801982e0hd098{contractAddress}</div>
-                    <div>2001:2092:4124:1231::/28{ipAddress}</div>
+                    <div>{contractAddress}</div>
+                    <div>{ipAddress}</div>
                   </figcaption>
                 </figure>
               </QrCard>
