@@ -4,6 +4,7 @@ import { Row, Col } from 'react-flexbox-grid'
 import styled from 'styled-components'
 import { translate } from 'react-i18next'
 import QrCode from 'qrcode.react'
+import web3Utils from 'web3-utils'
 
 const StyledCard = styled(Card)`
   width: 100%;
@@ -34,8 +35,7 @@ class BillManagement extends React.Component {
     super()
     this.state = { 
       amount: '',
-      escrowBalance: 0,
-      ethBalance: 0,
+      escrowBalance: '0',
       days: 0,
     }
   } 
@@ -51,7 +51,6 @@ class BillManagement extends React.Component {
     if (isNaN(days)) days = 0
     return {
       escrowBalance: balance,
-      ethBalance: await this.getBalance(address),
       days
     }
   }
@@ -61,7 +60,7 @@ class BillManagement extends React.Component {
 
   addBill = async () => {
     await new Promise(resolve => {
-      this.props.app.addBill({ value: this.state.amount }).subscribe(resolve)
+      this.props.app.addBill({ value: web3Utils.toWei(this.state.amount)}).subscribe(resolve)
     })
 
     this.componentDidMount()
@@ -130,14 +129,15 @@ class BillManagement extends React.Component {
   }
 
   render() {
-    let { t, appAddress } = this.props;
+    let { t, appAddress} = this.props;
     if(!appAddress) appAddress = ''
     let {
       amount,
       escrowBalance,
-      ethBalance,
       days,
     } = this.state;
+
+    escrowBalance = web3Utils.fromWei(escrowBalance)
 
     return (
       <React.Fragment>
