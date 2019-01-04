@@ -2,6 +2,7 @@ import '@babel/polyfill'
 
 import Aragon from '@aragon/client'
 import { of } from 'rxjs/observable/of'
+import web3Utils from 'web3-utils'
 
 const app = new Aragon()
 

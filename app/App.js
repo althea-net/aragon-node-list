@@ -25,7 +25,7 @@ const AltheaAppBar = styled(AppBar)`
   height: 5em; 
 `
 
-const OrganizerModeLink = styled.a`
+const ModeLink = styled.a`
   cursor: pointer;
   color: blue;
   text-decoration: underline;
@@ -38,14 +38,27 @@ class App extends React.Component {
       mode: 'user',
       page: null
     }
+    this.renderLink = this.renderLink.bind(this);
   } 
 
   setMode = mode => this.setState({ mode })
   setPage = page => this.setState({ page })  
 
+  renderLink() {
+    let { mode } = this.state
+    return(
+      <Text.Block style={{marginTop: '20px'}}>
+        <ModeLink
+          onClick={() => {this.setMode(mode === 'user' ? 'organizer' : 'user')}}
+        >
+          {this.props.t(mode === 'user' ? 'organizerModeLink' : 'userModeLink')}
+        </ModeLink>
+      </Text.Block>
+    )
+  }
   render() {
     const Page = this.state.page;
-    const { app, nodes, t, appAddress } = this.props;
+    const { app, nodes, t, appAddress, daoAddress } = this.props;
     const { mode } = this.state;
     let title = t('altheaSubnetDAO')
     if (mode === 'organizer') title += ' ' + t('organizerMode')
@@ -68,18 +81,10 @@ class App extends React.Component {
                 app={app}
                 nodes={nodes}
                 appAddress={appAddress}
+                daoAddress={daoAddress}
               />
           }
-
-          {mode === 'user' &&
-          <Text.Block style={{marginTop: '20px'}}>
-            <OrganizerModeLink
-              onClick={() => this.setMode('organizer')}
-            >
-              {t('organizerModeLink')}
-            </OrganizerModeLink>
-          </Text.Block>
-          }
+          {this.renderLink()}
         </Grid>
       </AppContainer>
     )

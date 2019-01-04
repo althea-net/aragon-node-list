@@ -22,10 +22,11 @@
       "network": "development",
       "appName": "althea.aragonpm.eth"
     },
-    "rinkeby": {
-      "network": "rinkeby",
-      "registry": "0x98Df287B6C145399Aaa709692c8D308357bC085D",
-      "appName": "althea.open.aragonpm.eth"
+    "mainnet": {
+      "network": "mainnet",
+      "registry": "0x314159265dd8dbb310642f98f50c066173c1259b",
+      "appName": "althea.open.aragonpm.eth",
+      "wsRPC": "wss://mainnet.eth.aragon.network/ws"
     },
     "infura": {
       "network": "infura",
@@ -38,11 +39,6 @@
       "registry": "0x98Df287B6C145399Aaa709692c8D308357bC085D",
       "appName": "althea.open.aragonpm.eth",
       "wsRPC": "wss://rinkeby.eth.aragon.network/ws"
-    },
-    "ws": {
-      "network": "ws",
-      "registry": "0x98Df287B6C145399Aaa709692c8D308357bC085D",
-      "appName": "althea.open.aragonpm.eth"
     }
   }
 }

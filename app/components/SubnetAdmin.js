@@ -34,7 +34,6 @@ class SubnetAdmin extends Component {
     bills: 0,
     checkAddress: '',
     checkResult: null,
-    contractAddress: '',
     currentBlock: 0,
     delay: 300,
     ethAddress: '',
@@ -91,9 +90,7 @@ class SubnetAdmin extends Component {
 
   getPerBlockFee = async () => {
     return new Promise(resolve =>{
-      this.props.app.call('perBlockFee').subscribe(v => {
-        resolve(v)
-      })
+      this.props.app.call('perBlockFee').subscribe(resolve)
     })
   }
 
@@ -116,10 +113,12 @@ class SubnetAdmin extends Component {
     }
 
     let perBlockFee = await this.getPerBlockFee()
-    let contractAddress = await this.getContractAddress()
-
     this.generateIp()
-    this.setState({ bills, contractAddress, currentBlock, perBlockFee })
+    this.setState({
+      bills: web3Utils.fromWei(bills.toString()),
+      currentBlock,
+      perBlockFee
+    })
   } 
 
   componentWillUnmount() {
@@ -145,6 +144,7 @@ class SubnetAdmin extends Component {
 
   setPerBlockFee = async () => {
     let { newPerBlockFee } = this.state
+    newPerBlockFee = web3Utils.toWei(newPerBlockFee)
     try {
       await new Promise((resolve, reject) => {
         this.props.app.setPerBlockFee(newPerBlockFee)
@@ -206,10 +206,8 @@ class SubnetAdmin extends Component {
   hexIp = ip =>
     '0x' + (new Address6(ip)).canonicalForm().replace(new RegExp(':', 'g'), '')
 
-
   ipExists = ip => {
     let { nodes } = this.props
-
     if (nodes)
       return nodes.findIndex(n => n.ipAddress === this.hexIp(ip)) > -1
 
@@ -242,35 +240,29 @@ class SubnetAdmin extends Component {
     } catch (e) { console.log(e) }
   } 
 
-  getContractAddress = async () => {
-    return new Promise(resolve =>{
-      this.props.app.call('contractAddress').subscribe(v => {
-        resolve(v)
-      })
-    })
-  } 
-
   formatIp = async e => {
     let addr = new Address6(e.target.value)
     if (addr.isValid()) this.setState({ ipAddress: addr.correctForm() + addr.subnet })
   } 
 
   render() {
-    let { app, t } = this.props;
+    let { app, t, daoAddress } = this.props;
     let { 
       bills, 
       checkResult, 
-      contractAddress,
       currentBlock, 
       ethAddress, 
       ipAddress, 
       ipExists,
       ipValid,
       nickname, 
+      perBlockFee,
       perBlockFeeResult,
       removeResult,
       scanning,
     } = this.state
+
+    perBlockFee = web3Utils.fromWei(perBlockFee)
 
     return (
       <React.Fragment>
@@ -309,10 +301,14 @@ class SubnetAdmin extends Component {
               <QrCard>
                 <Text.Block>{t('scanQr')}</Text.Block>
                 <figure>
-                  <QrCode value={JSON.stringify({contractAddress, ipAddress})} size={300} style={{marginTop: 15}} />
+                  <QrCode value={
+                    JSON.stringify({daoAddress, ipAddress})}
+                    size={300}
+                    style={{marginTop: 15}}
+                  />
                   <figcaption style={{textAlign: 'center'}}>
-                    <div>0x12309750asda80sd9801982e0hd098{contractAddress}</div>
-                    <div>2001:2092:4124:1231::/28{ipAddress}</div>
+                    <div>{daoAddress}</div>
+                    <div>{ipAddress}</div>
                   </figcaption>
                 </figure>
               </QrCard>
@@ -378,7 +374,7 @@ class SubnetAdmin extends Component {
             <StyledCard>
               <Text size="xlarge">{t('updatePerBlockFee')}</Text>
               <br />
-              <Text size="large">{'Current: ' + this.state.perBlockFee}</Text>
+              <Text size="large">Current: &Xi;{perBlockFee}</Text>
               {perBlockFeeResult && <Info title="Per block fee succesfully updated" />}
               {perBlockFeeResult !== null && !perBlockFeeResult && <Info title="Can't find node" />}
               <Field>
