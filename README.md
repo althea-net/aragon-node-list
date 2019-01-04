@@ -7,6 +7,9 @@ For more information please read: [https://altheamesh.com/governance-paper](http
 
 ## Usage
 
+Before running the app locally one needs to setup the other aragon apps. Follow the instructions at [aragen](https://github.com/aragon/aragen)
+
+
 ```
 yarn install
 npm run start
