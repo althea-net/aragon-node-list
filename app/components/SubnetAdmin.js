@@ -244,7 +244,6 @@ class SubnetAdmin extends Component {
 
   render() {
     let { app, t, daoAddress } = this.props;
-    console.log('HEYO', daoAddress)
     let { 
       bills, 
       checkResult, 

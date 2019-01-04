@@ -59,7 +59,6 @@ class App extends React.Component {
   render() {
     const Page = this.state.page;
     const { app, nodes, t, appAddress, daoAddress } = this.props;
-    console.log('TOP', daoAddress)
     const { mode } = this.state;
     let title = t('altheaSubnetDAO')
     if (mode === 'organizer') title += ' ' + t('organizerMode')
