@@ -23,6 +23,14 @@ module.exports = {
       gas: 6.9e5,
       gasPrice: 150000000
     },
+    mainnet: {
+      provider: function() {
+        return new HDWalletProvider(
+          process.env.MNEMONIC_MAINNET,
+          "https://sasquatch.network/mainnnet"
+      )},
+      network_id: '1',
+    },
     infura: {
       provider: function() {
        return new HDWalletProvider(
