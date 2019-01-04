@@ -90,9 +90,7 @@ class SubnetAdmin extends Component {
 
   getPerBlockFee = async () => {
     return new Promise(resolve =>{
-      this.props.app.call('perBlockFee').subscribe(v => {
-        resolve(v)
-      })
+      this.props.app.call('perBlockFee').subscribe(resolve)
     })
   }
 
@@ -116,7 +114,11 @@ class SubnetAdmin extends Component {
 
     let perBlockFee = await this.getPerBlockFee()
     this.generateIp()
-    this.setState({ bills, currentBlock, perBlockFee })
+    this.setState({
+      bills: web3Utils.fromWei(bills.toString()),
+      currentBlock,
+      perBlockFee
+    })
   } 
 
   componentWillUnmount() {
@@ -142,6 +144,7 @@ class SubnetAdmin extends Component {
 
   setPerBlockFee = async () => {
     let { newPerBlockFee } = this.state
+    newPerBlockFee = web3Utils.toWei(newPerBlockFee)
     try {
       await new Promise((resolve, reject) => {
         this.props.app.setPerBlockFee(newPerBlockFee)
@@ -253,10 +256,13 @@ class SubnetAdmin extends Component {
       ipExists,
       ipValid,
       nickname, 
+      perBlockFee,
       perBlockFeeResult,
       removeResult,
       scanning,
     } = this.state
+
+    perBlockFee = web3Utils.fromWei(perBlockFee)
 
     return (
       <React.Fragment>
@@ -368,7 +374,7 @@ class SubnetAdmin extends Component {
             <StyledCard>
               <Text size="xlarge">{t('updatePerBlockFee')}</Text>
               <br />
-              <Text size="large">{'Current: ' + this.state.perBlockFee}</Text>
+              <Text size="large">Current: &Xi;{perBlockFee}</Text>
               {perBlockFeeResult && <Info title="Per block fee succesfully updated" />}
               {perBlockFeeResult !== null && !perBlockFeeResult && <Info title="Can't find node" />}
               <Field>
