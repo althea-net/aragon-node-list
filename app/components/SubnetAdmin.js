@@ -34,7 +34,6 @@ class SubnetAdmin extends Component {
     bills: 0,
     checkAddress: '',
     checkResult: null,
-    contractAddress: '',
     currentBlock: 0,
     delay: 300,
     ethAddress: '',
@@ -116,10 +115,8 @@ class SubnetAdmin extends Component {
     }
 
     let perBlockFee = await this.getPerBlockFee()
-    let contractAddress = await this.getContractAddress()
-
     this.generateIp()
-    this.setState({ bills, contractAddress, currentBlock, perBlockFee })
+    this.setState({ bills, currentBlock, perBlockFee })
   } 
 
   componentWillUnmount() {
@@ -240,23 +237,17 @@ class SubnetAdmin extends Component {
     } catch (e) { console.log(e) }
   } 
 
-  getContractAddress = () => {
-    return new Promise(resolve =>{
-      this.props.app.call('contractAddress').subscribe(resolve)
-    })
-  } 
-
   formatIp = async e => {
     let addr = new Address6(e.target.value)
     if (addr.isValid()) this.setState({ ipAddress: addr.correctForm() + addr.subnet })
   } 
 
   render() {
-    let { app, t } = this.props;
+    let { app, t, daoAddress } = this.props;
+    console.log('HEYO', daoAddress)
     let { 
       bills, 
       checkResult, 
-      contractAddress,
       currentBlock, 
       ethAddress, 
       ipAddress, 
@@ -306,12 +297,12 @@ class SubnetAdmin extends Component {
                 <Text.Block>{t('scanQr')}</Text.Block>
                 <figure>
                   <QrCode value={
-                    JSON.stringify({contractAddress, ipAddress})}
+                    JSON.stringify({daoAddress, ipAddress})}
                     size={300}
                     style={{marginTop: 15}}
                   />
                   <figcaption style={{textAlign: 'center'}}>
-                    <div>{contractAddress}</div>
+                    <div>{daoAddress}</div>
                     <div>{ipAddress}</div>
                   </figcaption>
                 </figure>
