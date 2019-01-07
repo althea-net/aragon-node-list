@@ -114,8 +114,8 @@ contract Althea is EtherTokenConstant, AragonApp {
   function withdrawFromBill() external {
     payMyBills();
     uint amount = billMapping[msg.sender].balance;
-    require(amount > 0, "Amount to payout is no more than zero, aborting");
-    billMapping[msg.sender].balance = 0;
+    require(amount > 0, "Amount to payout is no more than zero, reverting");
+    delete billMapping[msg.sender];
     address(msg.sender).transfer(amount);
     emit BillUpdated(msg.sender);
   }
