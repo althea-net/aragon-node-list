@@ -50,11 +50,6 @@ contract Althea is EtherTokenConstant, AragonApp {
     initialized();
   }
 
-
-  function contractAddress() external view returns (address addr) {
-    return this;
-  }
-
   function addMember(address _ethAddr, bytes16 _ip, bytes16 _nick)
     external 
     auth(ADD)
@@ -107,6 +102,7 @@ contract Althea is EtherTokenConstant, AragonApp {
         processBills(userMapping[subnetSubscribers[i]].ethAddr)
       );
     }
+    require(transferValue != 0, "Not enough value to send to vault");
     vault.deposit.value(transferValue)(ETH, transferValue);
   }
 
@@ -118,8 +114,8 @@ contract Althea is EtherTokenConstant, AragonApp {
   function withdrawFromBill() external {
     payMyBills();
     uint amount = billMapping[msg.sender].balance;
-    require(amount > 0, "Amount to payout is no more than zero, aborting");
-    billMapping[msg.sender].balance = 0;
+    require(amount > 0, "Amount to payout is no more than zero, reverting");
+    delete billMapping[msg.sender];
     address(msg.sender).transfer(amount);
     emit BillUpdated(msg.sender);
   }
