@@ -105,8 +105,7 @@ class BillManagement extends React.Component {
   renderQR(t, appAddress) {
     // This just checks if the address exist.
     // When there are no events ever on the contract
-    // the address cannot be acquired in the current
-    // work around in script.js
+    // the address cannot be acquired in script.js
     if(appAddress !== '') {
       return(
         <QrCard>
