@@ -34,6 +34,7 @@ class SubnetAdmin extends Component {
     bills: 0,
     checkAddress: '',
     checkResult: null,
+    daoAddress: '',
     currentBlock: 0,
     delay: 300,
     ethAddress: '',
@@ -113,10 +114,12 @@ class SubnetAdmin extends Component {
     }
 
     let perBlockFee = await this.getPerBlockFee()
+    let daoAddress = await this.getDaoAddress()
     this.generateIp()
     this.setState({
       bills: web3Utils.fromWei(bills.toString()),
       currentBlock,
+      daoAddress,
       perBlockFee
     })
   } 
@@ -240,16 +243,23 @@ class SubnetAdmin extends Component {
     } catch (e) { console.log(e) }
   } 
 
+  getDaoAddress = () => {
+    return new Promise(resolve =>{
+      this.props.app.call('kernel').subscribe(resolve)
+    })
+  }
+
   formatIp = async e => {
     let addr = new Address6(e.target.value)
     if (addr.isValid()) this.setState({ ipAddress: addr.correctForm() + addr.subnet })
   } 
 
   render() {
-    let { app, t, daoAddress } = this.props;
+    let { app, t, } = this.props;
     let { 
       bills, 
       checkResult, 
+      daoAddress,
       currentBlock, 
       ethAddress, 
       ipAddress, 
