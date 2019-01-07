@@ -50,9 +50,8 @@ contract Althea is EtherTokenConstant, AragonApp {
     initialized();
   }
 
-
-  function contractAddress() external view returns (address addr) {
-    return this;
+  function daoAddress() external view returns (address addr) {
+    return this.kernel();
   }
 
   function addMember(address _ethAddr, bytes16 _ip, bytes16 _nick)
@@ -107,6 +106,7 @@ contract Althea is EtherTokenConstant, AragonApp {
         processBills(userMapping[subnetSubscribers[i]].ethAddr)
       );
     }
+    require(transferValue != 0, "Not enough value to send to vault");
     vault.deposit.value(transferValue)(ETH, transferValue);
   }
 

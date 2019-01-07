@@ -309,7 +309,37 @@ contract('Althea', accounts => {
       }
 
       await althea.collectBills()
-      let bill = await althea.billMapping(accounts[0])
+    })
+
+    it(`Reverts when transfer value is zero`, async () => {
+
+      await althea.addMember(accounts[0], web3.utils.randomHex(32), nick)
+      // extra txns to run up the counter
+      for (var i = 0; i < 4; i++) {
+        await  web3.eth.sendTransaction({
+          from: accounts[1],
+          to: ZERO,
+          value: 1
+        })
+      }
+      await reverting(althea.collectBills())
+    })
+
+    it('Collect bills from bills that has no value and a bill with value', async () => {
+
+      let balanceOne = perBlockFee.mul(toBN(2))
+      await althea.addBill({from: accounts[1], value: balanceOne})
+      await althea.addMember(accounts[0], web3.utils.randomHex(32), nick)
+      await althea.addMember(accounts[1], web3.utils.randomHex(32), nick)
+      // extra txns to run up the counter
+      for (var i = 0; i < 4; i++) {
+        await  web3.eth.sendTransaction({
+          from: accounts[1],
+          to: ZERO,
+          value: 1
+        })
+      }
+      await althea.collectBills()
     })
   })
 
