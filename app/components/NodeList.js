@@ -20,7 +20,16 @@ const RemoveButton = ({ app, ip, t }) => {
 
 export default translate()(({ app, nodes, t }) => {
   let fundsColor = funds => (funds > 0) ? "green" : "red"
-  if (!nodes || !nodes.length) return <Text>{t('noNodes')}</Text>
+  // if (!nodes || !nodes.length) return <Text>{t('noNodes')}</Text>
+
+  if (!nodes || !nodes.length) {
+    nodes = [{
+      nickname: web3Utils.padRight(web3Utils.toHex('Adam'), 32),
+      bill: { balance: 5000000000000000 },
+      ethAddress: '0x8401Eb5ff34cc943f096A32EF3d5113FEbE8D4Eb',
+      ipAddress: '0x8401Eb5ff34cc943f096A32EF3d5113FEbE8D4Eb',
+    }]
+  } 
 
   return (
     <div>

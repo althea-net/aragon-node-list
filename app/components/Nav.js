@@ -11,11 +11,8 @@ const NavButton = styled(Button)`
   border-left: none;
   border-right: none;
   border-radius: 0;
+  border-bottom: 5px solid #37CFCB
 `
-
-NavButton.defaultProps = { 
-  mode: 'outline'
-}
 
 class Nav extends React.Component {
   constructor(props) {
@@ -78,7 +75,6 @@ class Nav extends React.Component {
     return (
       <div>
         {this.props.mode === 'organizer' ? this.renderOrganizer() : this.renderUser()}
-        <DropDown items={this.locales} onChange={this.setLocale} active={this.active()} />
       </div>
     );
   }

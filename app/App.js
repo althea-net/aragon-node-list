@@ -1,5 +1,5 @@
 import React from 'react'
-import { AragonApp, AppBar, observe, Text } from '@aragon/ui'
+import { AragonApp, AppBar, Button, observe, Text } from '@aragon/ui'
 import Aragon, { providers } from '@aragon/client'
 import styled from 'styled-components'
 import { Grid } from 'react-flexbox-grid'
@@ -66,16 +66,15 @@ class App extends React.Component {
     return (
       <AppContainer>
         <Grid fluid>
-          <AltheaAppBar
-            title={title}
-            endContent={
-              <Nav
-                mode={mode}
-                setMode={this.setMode}
-                setPage={this.setPage}
-              />
-            } 
-          />
+          <div style={{ background: 'white', borderBottom: '1px solid #ddd' }}>
+            <Text size="xxlarge">Althea</Text>
+            <Button mode="strong" style={{ float: 'right' }}>New Node</Button>
+            <Nav
+              mode={mode}
+              setMode={this.setMode}
+              setPage={this.setPage}
+            />
+          </div>
           {this.state.page
            && <Page
                 app={app}
