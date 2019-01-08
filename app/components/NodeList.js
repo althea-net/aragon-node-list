@@ -41,17 +41,15 @@ export default translate()(({ app, nodes, t }) => {
           nickname = web3Utils.toUtf8(nickname)
           let addr = Address6.fromBigInteger(new BigInteger(ipAddress.substr(2), 16))
           let ip = addr.correctForm() + '/64'
-          //
-          // expecbill.balance = bill.blockNumber * current
 
-          bill.balance = web3Utils.fromWei(bill.balance.toString())
+          let balance = web3Utils.fromWei(bill.balance.toString())
           return (
             <TableRow key={i}>
               <TableCell>
                 <Text>{nickname}</Text>
               </TableCell>
               <TableCell>
-                <Text color={fundsColor(bill.balance)}>&Xi;{bill.balance}</Text>
+                <Text color={fundsColor(balance)}>&Xi;{balance}</Text>
               </TableCell>
               <TableCell>
                 <Text><Abbr title={ethAddress}>{trunc(ethAddress, 6)}</Abbr></Text>
