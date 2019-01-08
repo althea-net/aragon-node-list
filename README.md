@@ -98,4 +98,4 @@ aragon dao upgrade seabass.aragonid.eth althea.open.aragonpm.eth 2.0.0 --environ
 
 ## Deployments:
 
-Rinkeby: https://rinkeby.aragon.org/#/clatskanie.aragonid.eth with tag `v7.0.0-rinkeby`
+Rinkeby: https://rinkeby.aragon.org/#/clatskanie.aragonid.eth
