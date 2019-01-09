@@ -21,9 +21,24 @@ const RemoveButton = ({ app, ip, t }) => {
 class NodeList extends React.Component {
   constructor(){
     super()
+    this.state = {
+      blocknumber: 0
+    }
   }
 
   fundsColor = funds => (funds > 0) ? "green" : "red"
+
+  getLatestBlock = () => {
+    return new Promise(resolve => {
+      this.props.app.web3Eth('getBlock', 'latest').subscribe(resolve)
+    })
+  }
+
+  componentDidMount() {
+    this.getLatestBlock().then(values => {
+      this.setState({blocknumber: values.number})
+    })
+  }
 
   render() {
     let {nodes, t, app} = this.props
@@ -47,9 +62,10 @@ class NodeList extends React.Component {
             nickname = web3Utils.toUtf8(nickname)
             let addr = Address6.fromBigInteger(new BigInteger(ipAddress.substr(2), 16))
             let ip = addr.correctForm() + '/64'
-            console.log('HEYO', app)
 
-            let balance = web3Utils.fromWei(bill.balance.toString())
+            let v = (bill.balance - (this.state.blocknumber - bill.lastUpdated)*bill.perBlock).toString()
+            let balance = web3Utils.fromWei(v)
+
             return (
               <TableRow key={i}>
                 <TableCell>
