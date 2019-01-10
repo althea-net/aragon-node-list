@@ -1,0 +1,23 @@
+# This is a systemd service for Geth
+[Unit]
+Description=Geth wallet
+Requires=network.target
+
+[Service]
+Type=simple
+TimeoutStartSec=10s
+Restart=always
+RestartSec=10
+ExecStart=/usr/bin/geth \
+--cache "1024" \
+--rpc \
+--rpcport "8545" \
+--rpcaddr 0.0.0.0 \
+--rpcvhosts "*" \
+--nousb \
+--datadir {{blockchain_storage_dir}} \
+--keystore {{key_storage_dir}} \
+--syncmode fast \
+
+[Install]
+WantedBy=default.target

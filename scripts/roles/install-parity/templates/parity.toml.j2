@@ -1,12 +1,20 @@
 [parity]
-public_node = true
+mode = "active"
+
+[footprint]
+tracing = "off"
+pruning = "fast"
+db_compaction = "ssd"
+cache_size = 1024
+scale_verifiers = true
+num_verifiers = 4
 
 [ipfs]
 enable = true
 port = {{parity_ipfs_port}}
 interface = "local"
 cors = []
-hosts = ["none"]
+hosts = ["localhost"]
 
 [rpc]
 disable = false
@@ -14,12 +22,20 @@ port = {{parity_rpc_port}}
 interface = "local"
 cors = []
 apis = ["web3", "eth", "pubsub", "net", "parity", "parity_pubsub", "traces", "rpc", "shh", "shh_pubsub"]
-hosts = ["none"]
+hosts = ["all"]
+server_threads = 4
+processing_threads = 4
 
 [websockets]
 disable = false
 port = {{parity_websocket_port}}
 interface = "local"
-origins = ["none"]
+origins = ["all"]
 apis = ["web3", "eth", "pubsub", "net", "parity", "parity_pubsub", "traces", "rpc", "shh", "shh_pubsub"]
-hosts = ["none"]
+hosts = ["all"]
+
+[network]
+port = {{parity_peer_port}}
+min_peers = 50
+max_peers = 500
+

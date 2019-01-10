@@ -4,14 +4,10 @@
 - name: Setup Aragon infra server
   hosts: eth-infra
   user: root
-  serial:
-  - "10%"
-  - "30%"
-  - "100%"
-  max_fail_percentage: 10
   roles:
-   - firewall
-   - install-ipfs
-   - install-parity
-   - logrotate
-   - { role: graylog, when: enterprise }
+    - firewall
+    - install-ipfs
+    - install-parity
+    - nginx
+    - logrotate
+    - graylog

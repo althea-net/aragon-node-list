@@ -6,6 +6,10 @@
     src: "{{ipfs_tar_url}}"
     dest: "/tmp/"
   become: true
+  retries: 3
+  delay: 30
+  register: result
+  until: result is success
 
 - name: Copy bin to final location
   copy:
@@ -30,8 +34,8 @@
   systemd:
     daemon_reload: yes
     name: ipfs
-    state: restarted
-    enabled: yes
+    state: started
+    enabled: true
   become: true
 
 - name: Wait for Quick crashes
@@ -81,3 +85,7 @@
     - "iptables-save > /etc/iptables/rules.v4"
     - "ip6tables-save > /etc/iptables/rules.v6"
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: allow nonstandard gateway port on selinux machines
+  command: "semanage port -a -t http_port_t  -p tcp {{ipfs_gateway_port}}"
+  ignore_errors: yes

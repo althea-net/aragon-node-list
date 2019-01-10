@@ -9,3 +9,5 @@ package-lock.json
 rinkeby
 yarn-error.log
 *hosts
+hosts*
+*.pem

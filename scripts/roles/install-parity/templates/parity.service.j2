@@ -7,7 +7,11 @@ Requires=network.target
 Type=simple
 TimeoutStartSec=10s
 Environment=RUST_LOG=INFO
-ExecStart=/usr/bin/parity
+ExecStart=/usr/bin/parity \
+--config=/etc/parity.toml \
+--no-hardware-wallets \
+--no-secretstore \
+--no-secretstore-http 
 
 [Install]
 WantedBy=default.target

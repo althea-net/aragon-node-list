@@ -11,22 +11,44 @@ debian_deps:
   - iptables-persistent
   - logrotate
   - rsyslog
+  - nginx
+  - vim
+  - rsync
+  - htop
 
 centos_deps:
   - iptables-services
   - logrotate
   - rsyslog
+  - nginx
+  - vim
+  - rsync
+  - htop
 
 ubuntu_deps:
   - iptables-persistent
   - logrotate
   - rsyslog
+  - nginx
+  - vim
+  - rsync
+  - htop
 
 fedora_deps:
   - iptables-services
   - logrotate
   - rsyslog
+  - nginx
+  - vim
+  - rsync
+  - libselinux-python
+  - htop
+  - policycoreutils-python-utils
 
 arch_deps:
   - logrotate
   - rsyslog
+  - nginx
+  - vim
+  - rsync
+  - htop
