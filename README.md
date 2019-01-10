@@ -27,7 +27,6 @@ truffle test
 
 On three seperate terminals execute the following commands
 ```
-npm run devchain
 npm run start:app
 npm run start:aragon:http
 ```
