@@ -1,4 +1,10 @@
 {
+  "generateReport": "Generate Report",
+  "reportType": "Report Type",
+  "fileType": "File Type",
+  "periodStart": "Period Start",
+  "periodEnd": "Period End",
+  "reportName": "Report Name",
   "scanQr": "Scan this QR code from the node's router dashboard to assign the IP and contract addresses:",
   "daoAddress": "DAO Address",
   "ethAddress": "Ethereum Address",

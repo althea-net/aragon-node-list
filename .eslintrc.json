@@ -19,6 +19,7 @@
       "standard",
       "plugin:promise/recommended"
     ],
+    "parser": "babel-eslint",
     "parserOptions": {
         "ecmaFeatures": {
             "experimentalObjectRestSpread": true,
@@ -44,6 +45,11 @@
             "error",
             "unix"
         ]
-    }
+    },
+    "settings": {
+      "react": {
+        "version": "detect"
+      } 
+    } 
 }
  

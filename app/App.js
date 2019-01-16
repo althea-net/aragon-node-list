@@ -10,6 +10,8 @@ import CheckNode from './components/CheckNode'
 import DeleteNode from './components/DeleteNode'
 import Nav from './components/Nav'
 
+import GenerateReport from './components/GenerateReport'
+
 const AppContainer = styled(AragonApp)`
   display: flex;
   align-content: flex-start;
@@ -65,6 +67,7 @@ class App extends React.Component {
 
     return (
       <AppContainer>
+        <GenerateReport opened={true} />
         <Grid fluid>
           <div style={{ background: 'white', borderBottom: '1px solid #ddd' }}>
             <Text size="xxlarge">Althea</Text>
