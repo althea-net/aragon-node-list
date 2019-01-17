@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, DropDown, Field, SidePanel, Text, TextInput } from '@aragon/ui';
+import { Button, DropDown, Field, SidePanel, TextInput } from '@aragon/ui';
 import { translate } from 'react-i18next';
 import { Row, Col } from 'react-flexbox-grid';
 
@@ -21,7 +21,6 @@ class GenerateReport extends React.Component {
   };
 
   onChange = e => {
-    console.log(e);
     const { name, value } = e.target;
     this.setState({ [name]: value });
   };
