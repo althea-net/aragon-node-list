@@ -115,7 +115,7 @@ class GenerateReport extends React.Component {
 };
 
 GenerateReport.propTypes = {
-  t: PropTypes.object,
+  t: PropTypes.func,
   opened: PropTypes.bool
 };
 

@@ -1,83 +1,60 @@
-import React from 'react'
-import { Button, DropDown, Icon } from '@aragon/ui'
-import styled from 'styled-components'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Button } from '@aragon/ui';
+import styled from 'styled-components';
+import { translate } from 'react-i18next';
 
-import BillManagement from './BillManagement'
-import NodeList from './NodeList'
-import SubnetAdmin from './SubnetAdmin'
-import { translate } from 'react-i18next'
+import NodeList from './NodeList';
+import Settings from './Settings';
 
 const NavButton = styled(Button)`
   border-left: none;
   border-right: none;
   border-radius: 0;
-  border-bottom: 5px solid #37CFCB
-`
+  border-bottom: ${props => props.active ? '5px solid #37CFCB' : 'none'}
+`;
+
+const pages = {
+  nodeList: NodeList,
+  settings: Settings
+};
 
 class Nav extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { locale: 'EN' }
-    this.locales = ['EN', 'ES']
-    this.pages = {
-      nodeList: NodeList,
-      subnetAdmin: SubnetAdmin, 
-      billManagement: BillManagement 
-    } 
-    this.renderOrganizer = this.renderOrganizer.bind(this)
-    this.renderUser = this.renderUser.bind(this)
-  } 
-
-  componentDidMount() {
-    this.props.setPage(BillManagement)
-  } 
-
-  componentWillReceiveProps(nextProps) {
-    if (this.props.mode !== nextProps.mode) {
-      if(this.props.mode === 'organizer'){
-        this.props.setPage(BillManagement)
-      } else {
-        this.props.setPage(SubnetAdmin)
-      }
-    }
+  state = {
+    page: 'nodeList'
   }
 
-  setLocale = i => {
-    let locale = this.locales[i]
-    this.props.i18n.changeLanguage(locale.toLowerCase())
-    this.setState({ locale })
+  componentDidMount () {
+    this.props.setPage(NodeList);
   }
 
-  active = () => this.locales.findIndex(e => e === this.state.locale)
-
-  renderOrganizer = () => {
-    return(
-      <React.Fragment>
-        <NavButton onClick={() => this.props.setPage(NodeList)}> 
-          {this.props.t('nodeList')}
-        </NavButton>
-        <NavButton onClick={() => this.props.setPage(SubnetAdmin)}>
-          {this.props.t('subnetAdmin')}
-        </NavButton>
-      </React.Fragment>
-    )
+  setPage = p => {
+    this.setState({ page: p });
+    this.props.setPage(pages[p]);
   }
 
-  renderUser = () => {
-    return(
-      <NavButton onClick={() => this.props.setPage(BillManagement)}>
-        {this.props.t('billManagement')}
-      </NavButton>
-    )
-  }
+  render () {
+    const { page } = this.state;
 
-  render() {
     return (
       <div>
-        {this.props.mode === 'organizer' ? this.renderOrganizer() : this.renderUser()}
+        {Object.keys(pages).map(p => {
+          return (
+            <NavButton key={p} onClick={() => { this.setPage(p); }} active={page === p}>
+              {this.props.t(p)}
+            </NavButton>
+          );
+        })}
       </div>
     );
   }
 }
 
-export default translate()(Nav)
+Nav.propTypes = {
+  i18n: PropTypes.object,
+  setPage: PropTypes.func,
+  mode: PropTypes.string,
+  t: PropTypes.func
+};
+
+export default translate()(Nav);

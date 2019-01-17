@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Button, Table, TableHeader, TableRow, TableCell, Text } from '@aragon/ui';
 import { translate } from 'react-i18next';
 import styled from 'styled-components';
@@ -17,7 +18,13 @@ const RemoveButton = ({ app, ip, t }) => {
   return <Button emphasis="negative" onClick={deleteMember} mode="outline">{t('remove')}</Button>;
 };
 
-export default translate()(({ app, nodes, t }) => {
+RemoveButton.propTypes = {
+  app: PropTypes.object,
+  ip: PropTypes.string,
+  t: PropTypes.func
+};
+
+const NodeList = translate()(({ app, nodes, t }) => {
   let fundsColor = funds => (funds > 0) ? 'green' : 'red';
   // if (!nodes || !nodes.length) return <Text>{t('noNodes')}</Text>
 
@@ -78,3 +85,9 @@ export default translate()(({ app, nodes, t }) => {
     </div>
   );
 });
+
+NodeList.propTypes = {
+  t: PropTypes.func
+};
+
+export default NodeList;

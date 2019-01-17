@@ -17,56 +17,23 @@ const AppContainer = styled(AragonApp)`
   flex-direction: column;
 `;
 
-const ModeLink = styled.a`
-  cursor: pointer;
-  color: blue;
-  text-decoration: underline;
-`;
-
 class App extends React.Component {
-  constructor () {
-    super();
-    this.state = {
-      mode: 'user',
-      page: null
-    };
-    this.renderLink = this.renderLink.bind(this);
-  }
+  state = { page: null }
 
-  setMode = mode => this.setState({ mode })
-  setPage = page => this.setState({ page })
-
-  renderLink () {
-    let { mode } = this.state;
-    return (
-      <Text.Block style={{ marginTop: '20px' }}>
-        <ModeLink
-          onClick={() => { this.setMode(mode === 'user' ? 'organizer' : 'user'); }}
-        >
-          {this.props.t(mode === 'user' ? 'organizerModeLink' : 'userModeLink')}
-        </ModeLink>
-      </Text.Block>
-    );
-  }
   render () {
     const Page = this.state.page;
     const { app, nodes, appAddress, daoAddress } = this.props;
-    const { mode } = this.state;
 
     return (
       <AppContainer>
         <GenerateReport opened={false} />
         <SubscriptionFee opened={false} />
-        <NewNode opened={true} daoAddress={daoAddress} nodes={nodes} />
+        <NewNode opened={false} daoAddress={daoAddress} nodes={nodes} />
         <Grid fluid>
           <div style={{ background: 'white', borderBottom: '1px solid #ddd' }}>
             <Text size="xxlarge">Althea</Text>
             <Button mode="strong" style={{ float: 'right' }}>New Node</Button>
-            <Nav
-              mode={mode}
-              setMode={this.setMode}
-              setPage={this.setPage}
-            />
+            <Nav setPage={page => this.setState({ page })} />
           </div>
           {this.state.page &&
            <Page
@@ -76,7 +43,6 @@ class App extends React.Component {
              daoAddress={daoAddress}
            />
           }
-          {this.renderLink()}
         </Grid>
       </AppContainer>
     );
@@ -88,7 +54,7 @@ App.propTypes = {
   nodes: PropTypes.array,
   appAddress: PropTypes.string,
   daoAddress: PropTypes.string,
-  t: PropTypes.object
+  t: PropTypes.func
 };
 
 export default translate()(observe(

@@ -135,7 +135,7 @@ class NewNode extends React.Component {
 };
 
 NewNode.propTypes = {
-  t: PropTypes.object,
+  t: PropTypes.func,
   opened: PropTypes.bool,
   daoAddress: PropTypes.string,
   nodes: PropTypes.array

@@ -46,7 +46,7 @@ class SubscriptionFee extends React.Component {
 };
 
 SubscriptionFee.propTypes = {
-  t: PropTypes.object,
+  t: PropTypes.func,
   opened: PropTypes.bool
 };
 

@@ -1,4 +1,5 @@
 {
+  "settings": "Settings",
   "toAssign": "To assign an IP Address and Subnet organization to a router, navigate to <i>Network Settings</i> in the Althea Dashboard web interface, click the <i>Scan QR Code</i> button, then position this QR code in the center of the camera. You can also enter the data manually.",
   "configureSubnet": "Configure Subnet on Customer's Router",
   "newNode": "New Node",
@@ -42,10 +43,7 @@
   "removeNode": "Remove node",
   "removeNodeFromSubnetDAO": "Remove node from subnet DAO",
   "noNodes": "No nodes were found",
-  "organizerMode": "organizer mode",
-  "organizerModeLink": "Organizer mode (advanced)",
   "userModeLink": "User mode",
-  "backToUserMode": "Back to user mode",
   "paymentAddress": "Payment Address",
   "updatePaymentAddr": "Update finance app address",
   "enterPaymentAddr": "Enter the new address",
