@@ -50,16 +50,14 @@ class App extends React.Component {
   }
   render () {
     const Page = this.state.page;
-    const { app, nodes, t, appAddress, daoAddress } = this.props;
+    const { app, nodes, appAddress, daoAddress } = this.props;
     const { mode } = this.state;
-    let title = t('altheaSubnetDAO');
-    if (mode === 'organizer') title += ' ' + t('organizerMode');
 
     return (
       <AppContainer>
         <GenerateReport opened={false} />
         <SubscriptionFee opened={false} />
-        <NewNode opened={true} />
+        <NewNode opened={true} daoAddress={daoAddress} nodes={nodes} />
         <Grid fluid>
           <div style={{ background: 'white', borderBottom: '1px solid #ddd' }}>
             <Text size="xxlarge">Althea</Text>

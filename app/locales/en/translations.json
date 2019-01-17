@@ -30,7 +30,7 @@
   "enterAmount": "Enter amount to add",
   "withdrawAllFunds": "Withdraw all funds",
   "withdraw": "Withdraw",
-  "addNode": "Add node",
+  "addNode": "Add Node",
   "nodeNickname": "Node nickname",
   "whoOwns": "Who owns this node?",
   "enterEthAddress": "Enter node's Ethereum address",
