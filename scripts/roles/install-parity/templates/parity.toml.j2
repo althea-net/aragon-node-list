@@ -1,5 +1,8 @@
 [parity]
 mode = "active"
+{%if dai%}
+chain = "/etc/spec.json"
+{%endif%}
 
 [footprint]
 tracing = "off"
@@ -9,12 +12,13 @@ cache_size = 1024
 scale_verifiers = true
 num_verifiers = 4
 
-[ipfs]
-enable = true
-port = {{parity_ipfs_port}}
-interface = "local"
-cors = []
-hosts = ["localhost"]
+# prevents the printing of status messages
+# [ipfs]
+# enable = true
+# port = {{parity_ipfs_port}}
+# interface = "local"
+# cors = []
+# hosts = ["localhost"]
 
 [rpc]
 disable = false
@@ -38,4 +42,9 @@ hosts = ["all"]
 port = {{parity_peer_port}}
 min_peers = 50
 max_peers = 500
+{%if dai%}
+bootnodes = ["enode://72a0d16da3add4d67b4a6c4324698f11aebba042560ecca0a5acabdd1e5067c9ef563ffbe54574ec4fc762e8bc0c8627e6037a4f56b63bae565b55002282ba26@40.87.14.125:30303","enode://11e1ef6b78a1ac11cf32ed62d7a31731c642511c933adea729a4217c60c91d0fe04634e0834736f26aa20e4f0e8e32e4bba411fe3e6b4b1df66f9064983e84ed@40.87.15.152:30303"]
+{%endif%}
 
+[misc]
+logging = "info"

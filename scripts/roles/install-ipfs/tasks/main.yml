@@ -37,6 +37,16 @@
     state: started
     enabled: true
   become: true
+  when: not dai
+
+- name: Set ipfs to not run
+  systemd:
+    daemon_reload: yes
+    name: ipfs
+    state: stopped
+    enabled: false
+  become: true
+  when: dai
 
 - name: Wait for Quick crashes
   pause:
@@ -55,7 +65,7 @@
       Output of `systemctl status ipfs`:
       {{ service_ipfs_status.stdout }}
       {{ service_ipfs_status.stderr }}
-  when: service_ipfs_status is failed
+  when: not dai and service_ipfs_status is failed
 
 - name: Open ports
   iptables:

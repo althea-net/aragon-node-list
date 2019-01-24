@@ -11,11 +11,21 @@
 
 - name: Copy over ssl keys
   copy:
-    src: "{{item}}"
+    src: "eth-{{item}}"
     dest: "/etc/nginx/{{item}}"
   with_items:
     - fullchain.pem
     - privkey.pem
+  when: not dai
+
+- name: Copy over ssl keys
+  copy:
+    src: "dai-{{item}}"
+    dest: "/etc/nginx/{{item}}"
+  with_items:
+    - fullchain.pem
+    - privkey.pem
+  when: dai
 
 - name: restart nginx
   systemd:

@@ -18,6 +18,14 @@
     dest: "/etc/parity.toml"
   become: true
 
+- name: Copy over DAI chain details
+  copy:
+    src: "{{item}}"
+    dest: "/etc/{{item}}"
+  with_items:
+    - spec.json
+  when: dai
+
 - name: Template parity service file
   template:
     src: parity.service.j2
@@ -81,5 +89,5 @@
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
 - name: allow nonstandard rpc port on selinux machines
-  command: "semanage port -a -t http_port_t  -p tcp {{geth_rpc_port}}"
+  command: "semanage port -a -t http_port_t  -p tcp {{parity_external_ssl_port}}"
   ignore_errors: yes
