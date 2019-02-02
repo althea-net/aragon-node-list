@@ -3,3 +3,4 @@ ipfs_api_port: 5001 # do not expose!
 ipfs_gateway_port: 8090
 ipfs_swarm_port: 4001
 ipfs_ports: ["{{ipfs_gateway_port}}", "{{ipfs_swarm_port}}"]
+dai: false
