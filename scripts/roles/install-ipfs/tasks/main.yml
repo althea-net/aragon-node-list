@@ -34,8 +34,8 @@
   systemd:
     daemon_reload: yes
     name: ipfs
-    state: started
-    enabled: true
+    state: stopped
+    enabled: false
   become: true
   when: not dai
 
@@ -48,24 +48,24 @@
   become: true
   when: dai
 
-- name: Wait for Quick crashes
-  pause:
-    seconds: 30
+  #- name: Wait for Quick crashes
+  #pause:
+  #  seconds: 30
 
-- name: Check if ipfs is running
-  command: systemctl status ipfs
-  ignore_errors: yes
-  changed_when: false
-  register: service_ipfs_status
+    #- name: Check if ipfs is running
+    #command: systemctl status ipfs
+    #ignore_errors: yes
+    #changed_when: false
+    #register: service_ipfs_status
 
-- name: Report status of ipfs
-  fail:
-    msg: |
-      Service ipfs is not running.
-      Output of `systemctl status ipfs`:
-      {{ service_ipfs_status.stdout }}
-      {{ service_ipfs_status.stderr }}
-  when: not dai and service_ipfs_status is failed
+    #- name: Report status of ipfs
+    #fail:
+    #msg: |
+    #  Service ipfs is not running.
+    #  Output of `systemctl status ipfs`:
+    #  {{ service_ipfs_status.stdout }}
+    #  {{ service_ipfs_status.stderr }}
+    # when: not dai and service_ipfs_status is failed
 
 - name: Open ports
   iptables:
