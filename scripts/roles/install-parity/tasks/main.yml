@@ -7,17 +7,24 @@
     mode: 0755
     force: true
   become: true
-
-- name: Create parity config folder
-  file:
-    state: directory
-    path: "{{ansible_env.HOME}}/.local/share/io.parity.ethereum"
+  retries: 3
+  delay: 30
+  register: result
+  until: result is success
 
 - name: Copy the parity config
   template:
     src: parity.toml.j2
-    dest: "{{ansible_env.HOME}}/.local/share/io.parity.ethereum/"
+    dest: "/etc/parity.toml"
   become: true
+
+- name: Copy over DAI chain details
+  copy:
+    src: "{{item}}"
+    dest: "/etc/{{item}}"
+  with_items:
+    - spec.json
+  when: dai
 
 - name: Template parity service file
   template:
@@ -80,3 +87,7 @@
     - "iptables-save > /etc/iptables/rules.v4"
     - "ip6tables-save > /etc/iptables/rules.v6"
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: allow nonstandard rpc port on selinux machines
+  command: "semanage port -a -t http_port_t  -p tcp {{parity_external_ssl_port}}"
+  ignore_errors: yes

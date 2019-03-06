@@ -1,0 +1,15 @@
+geth_tar_url: https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.8.20-24d727b6.tar.gz
+geth_tar_name: geth-linux-amd64-1.8.20-24d727b6
+geth_websocket_port: 8546
+geth_peer_port: 30303
+geth_rpc_port: 443
+geth_ipfs_port: 6001
+geth_ports:
+  [
+    "{{geth_websocket_port}}",
+    "{{geth_ipfs_port}}",
+    "{{geth_rpc_port}}",
+    "{{geth_peer_port}}",
+  ]
+blockchain_storage_dir: "/blockchain"
+key_storage_dir: "/keystore"

@@ -1,6 +1,14 @@
-parity_bin_url: https://releases.parity.io/v2.0.6/x86_64-unknown-linux-gnu/parity
+parity_bin_url: https://releases.parity.io/ethereum/v2.4.0/x86_64-unknown-linux-gnu/parity
 parity_websocket_port: 8546
 parity_peer_port: 30303
 parity_rpc_port: 8545
 parity_ipfs_port: 6001
-parity_ports: ["{{parity_websocket_port}}", "{{parity_ipfs_port}}", "{{parity_rpc_port}}", "{{parity_peer_port}}"]
+parity_external_ssl_port: 443
+parity_ports:
+  [
+    "{{parity_websocket_port}}",
+    "{{parity_ipfs_port}}",
+    "{{parity_rpc_port}}",
+    "{{parity_peer_port}}",
+    "{{parity_external_ssl_port}}",
+  ]

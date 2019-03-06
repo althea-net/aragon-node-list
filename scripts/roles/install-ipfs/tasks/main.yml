@@ -6,6 +6,10 @@
     src: "{{ipfs_tar_url}}"
     dest: "/tmp/"
   become: true
+  retries: 3
+  delay: 30
+  register: result
+  until: result is success
 
 - name: Copy bin to final location
   copy:
@@ -30,28 +34,38 @@
   systemd:
     daemon_reload: yes
     name: ipfs
-    state: restarted
-    enabled: yes
+    state: stopped
+    enabled: false
   become: true
+  when: not dai
 
-- name: Wait for Quick crashes
-  pause:
-    seconds: 30
+- name: Set ipfs to not run
+  systemd:
+    daemon_reload: yes
+    name: ipfs
+    state: stopped
+    enabled: false
+  become: true
+  when: dai
 
-- name: Check if ipfs is running
-  command: systemctl status ipfs
-  ignore_errors: yes
-  changed_when: false
-  register: service_ipfs_status
+  #- name: Wait for Quick crashes
+  #pause:
+  #  seconds: 30
 
-- name: Report status of ipfs
-  fail:
-    msg: |
-      Service ipfs is not running.
-      Output of `systemctl status ipfs`:
-      {{ service_ipfs_status.stdout }}
-      {{ service_ipfs_status.stderr }}
-  when: service_ipfs_status is failed
+    #- name: Check if ipfs is running
+    #command: systemctl status ipfs
+    #ignore_errors: yes
+    #changed_when: false
+    #register: service_ipfs_status
+
+    #- name: Report status of ipfs
+    #fail:
+    #msg: |
+    #  Service ipfs is not running.
+    #  Output of `systemctl status ipfs`:
+    #  {{ service_ipfs_status.stdout }}
+    #  {{ service_ipfs_status.stderr }}
+    # when: not dai and service_ipfs_status is failed
 
 - name: Open ports
   iptables:
@@ -81,3 +95,7 @@
     - "iptables-save > /etc/iptables/rules.v4"
     - "ip6tables-save > /etc/iptables/rules.v6"
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: allow nonstandard gateway port on selinux machines
+  command: "semanage port -a -t http_port_t  -p tcp {{ipfs_gateway_port}}"
+  ignore_errors: yes
