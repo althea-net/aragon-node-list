@@ -72,6 +72,18 @@
     - "{{parity_ports}}"
     - ["ipv4", "ipv6"]
 
+- name: Open UDP port for parity
+  iptables:
+    chain: INPUT
+    protocol: udp
+    destination_port: "{{parity_peer_port}}"
+    jump: ACCEPT
+    ip_version: "{{item}}"
+    ctstate: NEW
+  become: true
+  with_items:
+    - ["ipv4", "ipv6"]
+
 - name: save iptables rules
   shell: "service {{item}} save"
   become: true
