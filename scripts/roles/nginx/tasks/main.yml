@@ -6,7 +6,7 @@
 
 - name: Make sure forwarding is allowed on selinux systems
   command: "setsebool -P httpd_can_network_connect on"
-  allow_errors: true
+  ignore_errors: true
   become: true
 
 - name: Copy over ssl keys
